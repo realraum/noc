@@ -1,0 +1,11 @@
+# Machines operated by the NOC
+
+- `alfred.mgmt.realraum.at`
+- `torwaechter.mgmt.realraum.at`
+- `gw.realraum.at`
+- `smsgw.realraum.at`
+
+# Third-party servers running r³ services
+
+- `atlas.chaos-at-home.org` runs `vex.realraum.at`.
+- Otti's server for our mail and XMPP services.

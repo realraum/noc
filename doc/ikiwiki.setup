@@ -30,6 +30,7 @@ add_plugins:
 - html
 - img
 - pagetemplate
+- sidebar
 
 # plugins to disable
 disable_plugins:
