@@ -1,0 +1,71 @@
+# IkiWiki::Setup::Yaml - YAML formatted setup file
+#
+# Setup file for ikiwiki.
+#
+# Passing this to ikiwiki --setup will make ikiwiki generate
+# wrappers and build the wiki.
+#
+# Remember to re-run ikiwiki --setup any time you edit this file.
+#
+# name of the wiki
+wikiname: Realraum NOC -- documentation
+# contact email for wiki
+adminemail: noc@realraum.at
+# where the source of the wiki is located
+srcdir: .
+# where to build the wiki
+destdir: ../../doc-dest
+
+# base url to the wiki; keep empty for local builds (with relpaths)
+url: ''
+# url to the ikiwiki.cgi; keep empty for disabling
+cgiurl: ''
+# Do not autopush
+gitorigin_branch: ''
+
+# rcs backend to use
+rcs: git
+# plugins to add to the default configuration
+add_plugins:
+- favicon
+- html
+- img
+- map
+- pagetemplate
+
+# plugins to disable
+disable_plugins:
+- htmlscrubber
+
+# additional directory to search for template files
+templatedir: /usr/share/ikiwiki/templates
+
+# base wiki source location
+underlaydir: /usr/share/ikiwiki/basewiki
+
+# use '!'-prefixed preprocessor directives?
+prefix_directives: '1'
+
+# use page/index.mdwn source files
+indexpages: '0'
+
+# generate HTML5?
+html5: '1'
+
+# extension to use for html files
+htmlext: html
+
+# strftime format string to display date
+timeformat: '%c'
+
+# UTF-8 locale to use
+locale: fr_FR.UTF-8
+
+# put user pages below specified page
+userdir: ''
+
+# how many backlinks to show before hiding excess (0 to show all)
+numbacklinks: '10'
+
+# attempt to hardlink source files? (optimisation for large files)
+hardlink: '0'
