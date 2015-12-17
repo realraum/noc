@@ -11,6 +11,4 @@ This documentation is meant to:
 # How to build the documentation
 
 The documentation can be built locally using the provided
-  `ikiwiki.setup` settings:
-
-	ikiwiki path/to/source path/to/dest
+  `ikiwiki.setup` settings, simply by calling `make`.
