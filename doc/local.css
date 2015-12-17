@@ -164,12 +164,12 @@ p>code, dd>code, li>code {
 	padding: 0;
 	border: none;
 	z-index: 100;
-	background: black;
+	background: #222;
 }
 
 .sidebar ul {
 	margin: 0;
-	padding: 0;
+	padding-left: 0.5em;
 	list-style: none;
 	background: transparent;
 }
@@ -192,6 +192,10 @@ p>code, dd>code, li>code {
 	text-decoration: none;
 	color: #aaaaaa;
 	background: transparent;
+}
+
+.sidebar ul li:hover {
+	background: #333;
 }
 
 .sidebar ul ul {
