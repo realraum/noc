@@ -1,7 +1,7 @@
 .PHONY: default clean serve
 
 default:
-	ikiwiki --setup ikiwiki.setup
+	ikiwiki --refresh --setup ikiwiki.setup
 
 clean:
 	rm -rf dest
