@@ -54,7 +54,7 @@ p>code, dd>code, li>code {
 /* {{{ .pageheader */
 .pageheader {
 	position: relative;
-	min-height: 95px;
+	min-height: 110px;
 	padding: 0 1em;
 	color: black;
 	background: #ffa430;
