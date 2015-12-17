@@ -14,7 +14,7 @@ adminemail: noc@realraum.at
 # where the source of the wiki is located
 srcdir: .
 # where to build the wiki
-#destdir: ../../doc-dest
+destdir: dest/
 
 # base url to the wiki; keep empty for local builds (with relpaths)
 url: ''
