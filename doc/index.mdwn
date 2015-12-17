@@ -8,7 +8,7 @@ This documentation is meant to:
 - contain a list of all systems the NOC administers,
   along with a description of their configuration.
 
-# How to build the documentation
+## How to build the documentation
 
 The documentation can be built locally using the provided
   `ikiwiki.setup` settings, simply by calling `make`.
