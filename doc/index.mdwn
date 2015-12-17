@@ -11,4 +11,6 @@ This documentation is meant to:
 ## How to build the documentation
 
 The documentation can be built locally using the provided
-  `ikiwiki.setup` settings, simply by calling `make`.
+  `ikiwiki.setup` settings, simply by calling `make`. By
+  calling `make serve` a small webserver will be started
+  on `*:8000` which will serve the wiki directly.
