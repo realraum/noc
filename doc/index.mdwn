@@ -1,3 +1,10 @@
 [[!meta title="Index"]]
 
 # Documentation from r³'s NOC
+
+# How to build the documentation
+
+The documentation can be built locally using the provided
+  `ikiwiki.setup` settings:
+
+	ikiwiki path/to/source path/to/dest
