@@ -3,6 +3,7 @@
 # Documentation from r³'s NOC
 
 This documentation is meant to:
+
 - be public;
 - contain a list of all systems the NOC administers,
   along with a description of their configuration.
