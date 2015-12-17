@@ -57,10 +57,7 @@ htmlext: html
 timeformat: '%c'
 
 # UTF-8 locale to use
-locale: fr_FR.UTF-8
-
-# put user pages below specified page
-userdir: ''
+locale: en_US.UTF-8
 
 # how many backlinks to show before hiding excess (0 to show all)
 numbacklinks: '10'
