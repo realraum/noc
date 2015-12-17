@@ -27,10 +27,8 @@ gitorigin_branch: ''
 rcs: git
 # plugins to add to the default configuration
 add_plugins:
-- favicon
 - html
 - img
-- map
 - pagetemplate
 
 # plugins to disable
