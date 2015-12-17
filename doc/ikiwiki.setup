@@ -64,3 +64,9 @@ numbacklinks: '10'
 
 # attempt to hardlink source files? (optimisation for large files)
 hardlink: '0'
+
+# Do not do foo/index.html
+usedirs: '0'
+
+# Do not try to compile dest/
+exclude: ^dest
