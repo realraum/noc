@@ -8,9 +8,9 @@ body {
 	margin: 0;
 	padding: 0;
 	font-size: 10pt;
-	font-family: "Source Sans Pro", sans-serif;
+	font-family: "PT Sans", sans-serif;
 	color: #ccc;
-	background: #111;
+	background: #333;
 }
 
 a {
@@ -48,17 +48,17 @@ p>code, dd>code, li>code {
 	max-width: 80em;
 	margin: 2em auto 0 auto;
 	border-radius: 16px 16px 0 0;
-	background: black;
+	background: #222;
 }
 
 /* {{{ .pageheader */
 .pageheader {
 	position: relative;
 	min-height: 110px;
-	padding: 0 1em;
 	color: black;
-	background: #ffa430;
+	background: #761407;
 	border-radius: 16px 16px 0 0;
+  padding: 1.2em 0.3em 0.9em 0.3em;
 }
 .pageheader #logo {
 	display: block;
@@ -105,14 +105,18 @@ p>code, dd>code, li>code {
 	font-size: 16pt;
 }
 
+.pageheader .actions ul {
+  border: none;
+}
+
 /* {{{ .actions */
 .actions {
 	text-align: right;
 }
 
 .actions ul li {
-	background: #ffa430;
-	border-radius: 0.8em 0.8em 0 0;
+	background: #763d35;
+  border-bottom: 0;
 }
 
 .actions ul li a {
@@ -266,7 +270,7 @@ p>code, dd>code, li>code {
 /* #content }}} */
 
 .recentchanges .pagelinks a {
-	color: #ffa430;
+	color: #763d35;
 }
 
 .recentchanges .committer a {
