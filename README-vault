@@ -1,0 +1,11 @@
+Creating key:
+    pwgen -s 128 -1 | gpg2 -e -a -o vault-pass.gpg
+
+Reencrypt for new set of keys:
+    ./open-vault.sh | gpg2 -e -a -o vault-pass.gpg
+
+Create a new vault file:
+    ansible-vault create secrets/foo.yaml
+
+Edit a vault file:
+    ansible-vault edit secrets/foo.yaml
