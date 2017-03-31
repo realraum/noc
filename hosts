@@ -22,3 +22,12 @@ virtualservers
 
 [desktops]
 wuerfel
+
+
+[alix]
+gw
+torwaechter
+
+[apu]
+gnocchi1
+gnocchi2
