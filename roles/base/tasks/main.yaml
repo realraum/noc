@@ -42,8 +42,6 @@
     - mtr-tiny
     - tcpdump
     - debian-goodies
-    - dbus
-    - libpam-systemd
     - lsof
     - haveged
     - ntp
@@ -53,6 +51,13 @@
     - ca-certificates
     - file
     - zsh
+
+- name: install systemd specific packages
+  apt: name={{ item }} state=present
+  with_items:
+    - dbus
+    - libpam-systemd
+  when: ansible_service_mgr == "systemd"
 
 - name: install zshrc
   copy: src={{ item.src }} dest={{ item.dest }} mode=0640
