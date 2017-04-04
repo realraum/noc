@@ -29,7 +29,7 @@
     exclusive: yes
 
 - name: disable apt suggests and recommends
-  copy: src=02no-recommends dest=/etc/apt/apt.conf.d/ mode=0640
+  copy: src=02no-recommends dest=/etc/apt/apt.conf.d/ mode=0644
 
 - name: install basic packages
   apt: name={{ item }} state=present
