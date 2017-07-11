@@ -1,7 +1,7 @@
 SSH Hardening
 =========
 
-A brief description of the role goes here.
+This is a role to give a baseline level of security to SSH on systems.
 
 Role Variables
 --------------
