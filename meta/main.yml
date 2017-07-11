@@ -1,0 +1,19 @@
+galaxy_info:
+  author: ameliaikeda
+  description: A role to harden SSH.
+  license: BSD
+  min_ansible_version: 2.0.0
+  galaxy_tags:
+    - ssh
+    - security
+  platforms:
+    - name: Ubuntu
+      versions:
+        - precise
+        - trusty
+        - xenial
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
+dependencies: []

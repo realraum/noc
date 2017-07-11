@@ -1,0 +1,21 @@
+---
+- name: remove dsa-based keys
+  file: path={{ item }} state=absent
+  with_items:
+    - /etc/ssh/ssh_host_ecdsa_key
+    - /etc/ssh/ssh_host_ecdsa_key.pub
+    - /etc/ssh/ssh_host_dsa_key
+    - /etc/ssh/ssh_host_dsa_key.pub
+
+- name: fix sshd config file
+  register: sshd_config
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0440'
+
+- name: restart ssh
+  when: sshd_config.changed
+  service: name=ssh state=restarted
