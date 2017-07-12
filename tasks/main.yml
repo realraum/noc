@@ -7,14 +7,31 @@
     - /etc/ssh/ssh_host_dsa_key
     - /etc/ssh/ssh_host_dsa_key.pub
 
-- name: fix sshd config file
-  register: sshd_config
-  template:
-    src: sshd_config.j2
-    dest: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: '0440'
+- name: Save original ssh config
+  slurp:
+    src: /etc/ssh/sshd_config
+  register: original_config
+
+- block:
+    - name: fix sshd config file
+      register: sshd_config
+      template:
+        src: sshd_config.j2
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: '0440'
+
+    - name: Validate sshd config
+      command: sshd -t
+
+  rescue:
+    - name: Restore sshd config
+      copy:
+        dest: /etc/ssh/sshd_config
+        content: "{{ original_config.content | b64decode }}"
+    - fail:
+        msg: The generated sshd_config is invalid
 
 - name: restart ssh
   when: sshd_config.changed
