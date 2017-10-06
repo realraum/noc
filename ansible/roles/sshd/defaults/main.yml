@@ -1,6 +1,8 @@
 ---
 # addresses to bind ssh to. note that port is required on each entry.
-sshd_config_bind_addresses: ['0.0.0.0:22']
+sshd_config_bind_addresses:
+  - '{{ ansible_default_ipv4.address }}:22000'
+  - '{{ ansible_default_ipv6.address }}:22000'
 
 # key exchange algorithms to use. only change these if you have reason to.
 # you can grab an up-to-date list at https://cipherli.st
