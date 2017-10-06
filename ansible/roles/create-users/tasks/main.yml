@@ -1,0 +1,28 @@
+- name: Create users
+  become: True
+  user:
+    name:     "{{ item }}"
+    shell:    "{{ users[item].shell }}"
+  with_items: "{{ user_groups[group] }}"
+
+- name: Set SSH keys for users
+  become: True
+  authorized_key:
+    user: "{{ item }}"
+    key:  "{{ users[item].get('key') or lookup('file', 'files/keys/' + item + '.pub') }}"
+  with_items: "{{ user_groups[group] }}"
+
+- name: Set SSH keys for root
+  become: True
+  authorized_key:
+    exclusive: True
+    user: root
+    key: |
+      {% for user in user_groups[group] %}
+      {{ users[item].key or lookup('file', 'files/keys/' + item + '.pub') }}
+      {% endfor %}
+
+# TODO:
+# - on user creation, generate a password and send it, along with useful info
+#   (hostname, IP, SSH host key, ...), by encrypted email;
+# - execute user-specific playbooks for deploying dotfiles?

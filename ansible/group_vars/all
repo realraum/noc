@@ -1,0 +1,28 @@
+user_groups:
+  noc:
+    - equinox
+    - gebi
+    - nicoo
+    
+  automation:
+    - xro
+
+users:
+  equinox:
+    email: equinox@realraum.at
+    gpg:   0xD74907C9E64E6CED8FE3
+    shell: /bin/zsh
+  gebi:
+    email: michael@mgeb.org
+    gpg:   0x6E302CF4D98B9702
+    shell: /bin/zsh
+  nicoo:
+    email: nicolas@braud-santoni.eu
+    gpg:   0x3F41B0739AAD91B7CDC0
+    shell: /bin/zsh
+  xro:
+    email: xro@realraum.at
+    gpg:   0xE3468B9CE81EB4F91486
+    shell: /bin/zsh
+
+read-only_root: False
