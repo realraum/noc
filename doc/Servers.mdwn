@@ -1,4 +1,4 @@
-# Machines operated by the NOC
+# (Physical) machines operated by the NOC
 
 - `alfred.mgmt.realraum.at`
 - `torwaechter.mgmt.realraum.at`
