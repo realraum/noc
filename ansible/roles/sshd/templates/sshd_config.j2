@@ -1,0 +1,20 @@
+{% for address in sshd_config_bind_addresses %}
+ListenAddress {{ address }}
+{% endfor %}
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+PermitRootLogin {{ 'yes' if sshd_config_root_login else 'no' }}
+X11Forwarding {{ 'yes' if sshd_config_x11_forwarding else 'no' }}
+Subsystem sftp /usr/lib/openssh/sftp-server
+KexAlgorithms {{ sshd_config_kex_algorithms }}
+Ciphers {{ sshd_config_ciphers }}
+MACs {{ sshd_config_macs }}
+
+TCPKeepAlive yes
+StrictModes yes
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+PasswordAuthentication no
+PermitEmptyPasswords no
+UsePAM yes
+ChallengeResponseAuthentication no

@@ -1,0 +1,22 @@
+---
+# addresses to bind ssh to. note that port is required on each entry.
+sshd_config_bind_addresses: ['0.0.0.0:22']
+
+# key exchange algorithms to use. only change these if you have reason to.
+# you can grab an up-to-date list at https://cipherli.st
+sshd_config_kex_algorithms: 'curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256'
+
+# message authentication code methods to use. only change these if you have reason to.
+# you can grab an up-to-date list at https://cipherli.st
+sshd_config_macs: 'hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com'
+
+# ssh ciphers to use. only change these if you have reason to.
+# you can grab an up-to-date list at https://cipherli.st
+sshd_config_ciphers: 'chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr'
+
+# whether to allow root login. boolean.
+# remember to make a new user with sudo if using root for this!
+sshd_config_root_login: yes
+
+# whether to allow x11 forwarding. not recommended.
+sshd_config_x11_forwarding: no
