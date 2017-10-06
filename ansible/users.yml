@@ -1,0 +1,5 @@
+- name: Create users for the NOC
+  hosts: all
+  roles:
+    - name: create-user
+      group: noc
