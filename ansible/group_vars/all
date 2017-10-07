@@ -26,3 +26,4 @@ users:
     shell: /bin/zsh
 
 read-only_root: False
+admin_extra_groups: ''

@@ -3,3 +3,5 @@
   roles:
     - name: create-users
       group: noc
+      aux_groups: "{{ ['adm', 'sudo'] + admin_extra_groups.split(',') }}"
+      root_access: True

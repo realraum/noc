@@ -3,6 +3,7 @@
   user:
     name:     "{{ item }}"
     shell:    "{{ users[item].shell }}"
+    groups:   "{{ aux_groups }}"
   with_items: "{{ user_groups[group] }}"
 
 - name: Set SSH keys for users
@@ -21,6 +22,7 @@
       {% for user in user_groups[group] %}
       {{ users[item].key or lookup('file', 'files/keys/' + item + '.pub') }}
       {% endfor %}
+  when: root_access
 
 # TODO:
 # - on user creation, generate a password and send it, along with useful info
