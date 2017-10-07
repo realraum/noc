@@ -12,9 +12,7 @@ MACs {{ sshd_config_macs }}
 
 TCPKeepAlive yes
 StrictModes yes
-PubkeyAuthentication yes
+
+AuthenticationMethods publickey
 AuthorizedKeysFile .ssh/authorized_keys
-PasswordAuthentication no
-PermitEmptyPasswords no
 UsePAM yes
-ChallengeResponseAuthentication no
