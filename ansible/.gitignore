@@ -1,0 +1,5 @@
+/log
+/gpg/vault-keyring.gpg~
+*.pyc
+*.retry
+.*.sw?
