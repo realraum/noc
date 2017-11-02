@@ -44,6 +44,7 @@
     - debian-goodies
     - lsof
     - haveged
+    - net-tools
     - ntp
     - screen
     - aptitude
