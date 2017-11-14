@@ -11,7 +11,7 @@
      dest: /etc/ssh/sshd_config
      regexp: "^AllowUsers"
      line: "AllowUsers {{ ' '.join([ 'root' ] | union(sshd_allowusers_group | default([])) | union(sshd_allowusers_host | default([]))) }}"
-  when: "{{ sshd_allowusers_set | default(true) }}"
+  when: sshd_allowusers_set | default(true)
   notify: restart ssh
 
 - name: limit allowed users (2/2)
@@ -19,7 +19,7 @@
      dest: /etc/ssh/sshd_config
      regexp: "^AllowUsers"
      state: absent
-  when: "not {{ sshd_allowusers_set | default(true) }}"
+  when: not sshd_allowusers_set | default(true)
   notify: restart ssh
 
 - name: Set authorized keys for root user
