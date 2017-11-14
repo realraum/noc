@@ -81,6 +81,10 @@ Host galley
     Hostname galley.mgmt.realraum.at
     Port 22000
 
+Host metrics
+    Hostname metrics.mgmt.realraum.at
+    Port 22000
+
 Host athsdisc
     Hostname athsdisc.realraum.at
     Port 22000
