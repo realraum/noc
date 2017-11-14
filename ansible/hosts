@@ -1,20 +1,25 @@
+[all:vars]
+host_domain=realraum.at
+ansible_host={{ inventory_hostname }}.{{ host_domain }}
+ansible_user=root
+
 [baremetalservers]
-alfred
+alfred.mgmt
 
 [kvmhosts]
-alfred
+alfred.mgmt
 
 [virtualservers]
 athsdisc
-calendar
+calendar.mgmt
 ctf
 entrance
-galley
-hacksch
-metrics
-r3home
-tickets
-tools
+galley.mgmt
+hacksch.mgmt
+metrics.mgmt
+r3home.mgmt
+tickets.mgmt
+tools.mgmt
 
 [servers:children]
 baremetalservers
@@ -27,8 +32,8 @@ wuerfel
 
 [alix]
 gw
-torwaechter
+torwaechter.mgmt
 
-[apu]
-gnocchi1
-gnocchi2
+#[apu]
+#gnocchi1
+#gnocchi2
