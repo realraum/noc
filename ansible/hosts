@@ -19,7 +19,6 @@ hacksch.mgmt
 metrics.mgmt
 r3home.mgmt
 tickets.mgmt
-tools.mgmt
 
 [servers:children]
 baremetalservers
