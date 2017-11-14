@@ -29,9 +29,9 @@ virtualservers
 wuerfel
 
 
-[alix]
-gw
-torwaechter.mgmt
+#[alix]
+#gw
+#torwaechter.mgmt
 
 #[apu]
 #gnocchi1
