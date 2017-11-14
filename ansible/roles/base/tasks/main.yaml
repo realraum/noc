@@ -52,6 +52,7 @@
     - ca-certificates
     - file
     - zsh
+    - python-apt
 
 - name: install systemd specific packages
   apt: name={{ item }} state=present
