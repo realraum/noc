@@ -1,4 +1,9 @@
 ---
+- set_fact:
+    sshd_allowusers: >-
+      {{ [ 'root' ] | union(sshd_allowusers_group | default([]))
+                    | union(sshd_allowusers_host  | default([])) }}
+
 - name: only allow pubkey auth for root
   lineinfile:
      dest: /etc/ssh/sshd_config
@@ -10,7 +15,7 @@
   lineinfile:
      dest: /etc/ssh/sshd_config
      regexp: "^#?AllowUsers"
-     line: "AllowUsers {{ ' '.join([ 'root' ] | union(sshd_allowusers_group | default([])) | union(sshd_allowusers_host | default([]))) }}"
+     line: "AllowUsers {{ ' '.join(sshd_allowusers) }}"
   when: sshd_allowusers_set is defined and sshd_allowgroup is not defined
   notify: restart ssh
 
@@ -32,7 +37,7 @@
         name: "{{ item }}"
         groups: "{{ sshd_allowgroup }}"
         append: True
-      with_items: "{{ [ 'root' ] | union(sshd_allowusers_group | default([])) | union(sshd_allowusers_host | default([])) }}"
+      with_items: "{{ sshd_allowusers }}"
 
   when: sshd_allowgroup is defined
 
