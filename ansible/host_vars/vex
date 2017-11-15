@@ -1,0 +1,3 @@
+sshd_allowusers_host:
+  - www
+  - www-data

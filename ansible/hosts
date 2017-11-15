@@ -19,6 +19,7 @@ hacksch.mgmt
 metrics.mgmt
 r3home.mgmt
 tickets.mgmt
+vex
 
 [servers:children]
 baremetalservers
