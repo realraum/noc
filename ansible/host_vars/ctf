@@ -1,3 +1,3 @@
-sshd_allowusers_set:
+sshd_allowusers_host:
   - f0rki
   - verr

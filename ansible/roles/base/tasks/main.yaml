@@ -1,7 +1,8 @@
 ---
 - set_fact:
     sshd_allowusers: >-
-      {{ [ 'root' ] | union(sshd_allowusers_group | default([]))
+      {{ [ 'root' ] | union(user_groups.noc)
+                    | union(sshd_allowusers_group | default([]))
                     | union(sshd_allowusers_host  | default([])) }}
 
 - name: only allow pubkey auth for root
@@ -11,28 +12,30 @@
      line: "PermitRootLogin without-password"
   notify: restart ssh
 
-- name: limit allowed users (1/3)
+- name: limit allowed users (1/2)
   lineinfile:
      dest: /etc/ssh/sshd_config
      regexp: "^#?AllowUsers"
      line: "AllowUsers {{ ' '.join(sshd_allowusers) }}"
-  when: sshd_allowusers_set is defined and sshd_allowgroup is not defined
+  when: sshd_allowgroup is not defined
   notify: restart ssh
 
 - block:
-    - name: "limit allowed users (2/3): Make sure AllowUsers is not in sshd_config"
+    - name: "limit allowed users (2/2): Make sure AllowUsers is not in sshd_config"
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "^AllowUsers"
         state: absent
+      notify: restart ssh
 
-    - name: "limit allowed users (2/3): Set AllowGroups in sshd_config"
+    - name: "limit allowed users (2/2): Set AllowGroups in sshd_config"
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "^#?AllowGroups"
         line: AllowGroups {{ sshd_allowgroup }}
+      notify: restart ssh
 
-    - name: "limit allowed users (2/3): Add allowed users to ssh group"
+    - name: "limit allowed users (2/2): Add allowed users to ssh group"
       user:
         name: "{{ item }}"
         groups: "{{ sshd_allowgroup }}"
@@ -40,14 +43,6 @@
       with_items: "{{ sshd_allowusers }}"
 
   when: sshd_allowgroup is defined
-
-- name: limit allowed users (3/3)
-  lineinfile:
-     dest: /etc/ssh/sshd_config
-     regexp: "^Allow(Users|Groups)"
-     state: absent
-  when: sshd_allowusers_set is not defined and sshd_allowgroup is not defined
-  notify: restart ssh
 
 - name: Set authorized keys for root user
   authorized_key:
