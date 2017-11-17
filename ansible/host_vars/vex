@@ -1,3 +1,4 @@
 sshd_allowusers_host:
+  - git
   - www
   - www-data
