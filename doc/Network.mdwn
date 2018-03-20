@@ -1,0 +1,63 @@
+# Network infrastructure
+
+## VLANs
+
+NOC runs 2 core switches (one in each room), carrying a bunch of VLANs:
+- 33 is the management VLAN (192.168.33.0/24);
+- 127 is the LAN (192.168.127.0/24);
+- 255 (`0xFF`) is our Funkfeuer VLAN.
+
+The switches have hostnames `sw{0,1}.mgmt.realraum.at`, and the WiFi access
+points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
+`1` denotes Wöhnung 2.
+
+
+## WiFi
+
+Each location has a single AP, `ap{0,1}.mgmt.realraum.at`, which provides SSIDs
+for the management VLAN (`realstuff`) and the LAN (`realraum` and `realraum5`);
+we use Ubiquity hardware running OpenWRT.
+
+Moreover, realfunk has an Archer C7 acting as a VLAN-capable switch
+and as a Funkfeuer node; it does **not** provide the realraum SSIDs.
+
+
+## Physical locations
+
+### Wöhnung 2
+
+#### Raum 1
+
+r1w2 has two fiber connections: one to the main room, and one to the radio room.
+(We use fiber to avoid creating a ground loop between the locations.)
+
+In r1w2, we have a rack hosting a number of devices:
+- the patch panel and core switch (`sw1.mgmt.realraum.at`) for W2;
+- the `alfred` virtualization server;
+- miscelaneous devices:
+  - RIPE ATLAS probe;
+  - some Raspberry Pi belonging to members;
+  - ...
+
+**Note:** members setting up devices that only need power and network access
+          should do so in this rack (or even better, run a VM or a container
+          on `alfred`).
+          
+
+#### realfunk
+
+realfunk receives the `0xFF` and LAN VLANs trunked on a single fiber;
+the switch there, `sw2.mgmt.realraum.at`, provides untagged ports on either VLAN.
+
+
+### Main room
+
+The main room has its patch panel and core switch (`sw0.mgmt.realraum.at`) in
+Cx. The patch panel has a fiber link to r2w1, and a copper link to an external
+antenna for our link to Funkfeuer.
+
+The network shelf in Cx also houses some important devices:
+- `gw.realraum.at`;
+- `smsgw.mgmt.realraum.at`, plus its mobile phone;
+- the PoE injectors for `ap0.mgmt.realraum.at` and `sch24.r3.ffgraz.net`;
+- `test.r3.ffgraz.net`, which is a test Funkfeuer node.
