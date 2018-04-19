@@ -1,5 +1,7 @@
 /log
 /gpg/vault-keyring.gpg~
+/files/openwrt
+/files/.cache
 *.pyc
 *.retry
 .*.sw?

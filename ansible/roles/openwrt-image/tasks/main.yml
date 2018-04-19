@@ -1,0 +1,58 @@
+- include: 00-fetch.yml
+  when: openwrt_imgbuilder_tarball is not defined
+
+- name: Create temporary build directory
+  command: mktemp -d openwrt-{{ ansible_hostname }}.XXXXXX
+  register: tmpdir
+
+- set_fact:
+    openwrt_imgbuilder_dir:   "{{ tmpdir.stdout }}"
+    openwrt_imgbuilder_files: "{{ tmpdir.stdout }}/files"
+
+- name: Create the directory for slipstreamed files
+  file:
+    path: "{{ openwrt_imgbuilder_files }}"
+    state: directory
+
+
+- block:
+#    - unarchive:
+#        copy: False
+#        src:  "{{ download_dir }}/{{ openwrt_tarball_name }}"
+#        dest: "{{ openwrt_imgbuilder_dir }}"
+
+    - name: Decompress the OpenWrt image builder
+      command: >-
+        tar -xf  "{{ download_dir }}/{{ openwrt_tarball_name }}"
+            -C   "{{ openwrt_imgbuilder_dir     }}"
+
+#    - include: 02-prepare.yml
+
+    - name: Create the output directory for built images
+      file:
+        path: "{{ openwrt_output_dir }}"
+        state: directory
+
+    - name: Build the OpenWrt image
+      shell: >-
+        make -C {{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }} image
+
+          FILES="{{ openwrt_imgbuilder_files }}"
+          
+          PACKAGES="
+            {% for x in openwrt_packages_remove %}-{{x}} {% endfor %}
+            {% for x in openwrt_packages_add    %} {{x}} {% endfor %}
+            {% for x in openwrt_packages_extra  %} {{x}} {% endfor %}
+          "
+          BIN_DIR="{{ openwrt_output_dir }}"
+          
+          {% if openwrt_extra_name is defined %}
+          EXTRA_IMAGE_NAME="{{ openwrt_extra_name }}"
+          {% endif %}
+
+
+  always:
+    - name: Delete the temporary build directory
+      file:
+        path: "{{ openwrt_imgbuilder_dir }}"
+        state: absent
