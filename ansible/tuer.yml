@@ -1,0 +1,25 @@
+- hosts: torwaechter
+  connection: local
+  roles:
+    - role: openwrt-image
+      delegate_to: localhost
+      vars:
+        openwrt_arch: x86
+        openwrt_target: geode
+        openwrt_packages_remove:
+          - ppp
+          - ppp-mod-pppoe
+          - dnsmasq
+          - firewall
+          - odhcpd
+        openwrt_packages_add:
+          - flashrom
+          - haveged
+          - htop
+          - hwclock
+          - ip
+          - less
+          - nano
+          - tcpdump
+        openwrt_packages_extra:
+          - git
