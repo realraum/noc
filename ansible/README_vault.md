@@ -17,11 +17,11 @@ You can use the following command to generate a new GPG key:
    - select "RSA and RSA" as kind (should be option: 1)
    - set keysize to: 4096
    - set key expiration to: 2y
-   - set Real name and eMail adress
+   - set Real name and eMail address
    - set a passphrase for the key (please use a strong passphrase!!!)
 ```
 
-This command prints the fingerprint and other inforamtion about the newly
+This command prints the fingerprint and other information about the newly
 generated key. In the line starting with pub you can find the key ID. This
 ID can be used to uniquely identify your key. Here is a sample output:
 
@@ -56,7 +56,7 @@ following command:
 ```
 
 This will add the new key to the keyring stored inside the repository and
-reencrypt the secret to unlock the vault for all keys inside the keyring.
+re-encrypt the secret to unlock the vault for all keys inside the keyring.
 
 
 
@@ -71,7 +71,7 @@ following command:
 ```
 
 This will remove the key from the keyring stored inside the repository and
-reencrypt the secret to unlock the vault for all remaining keys inside the
+re-encrypt the secret to unlock the vault for all remaining keys inside the
 keyring.
 
 You can find out the key ID using the command:
@@ -115,4 +115,4 @@ Working with Vault files
    ```
    # ansible-vault view secrets/foo.vault.yml
    ```
-   This will automatially decrypt the file and print it's contents.
+   This will automatically decrypt the file and print it's contents.

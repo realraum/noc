@@ -83,7 +83,7 @@ be two files:
 
 Of course the latter file needs to be created using `ansible-vault`.
 
-If you wan't to store secrets that by default shouldn't be automatically
+If you want to store secrets that by default shouldn't be automatically
 exposed to hosts and groups as variables please put the vault files into
 `secrets` directory and should be name <some-name>.vault.yml.
 
