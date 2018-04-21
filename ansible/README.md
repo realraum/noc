@@ -16,6 +16,8 @@ ansible-playbook foo.yml -D -C
 #   -m ... load module shell
 #   -a ... arguments to module call
 ansible vex -m shell -a 'uname -a'
+ansible servers -m apt -a 'name=foo state=present'
+ansible desktops -m file -a 'name=/make/sure/this/file/is/gone state=absent'
 ```
 
 ### check if all server are reachable
@@ -33,7 +35,7 @@ ansible-playbook foo.yml
 ./apply-role.sh wuerfel base
 ```
 
-### deploy a single role to a group of hosts using additional options
+### deploy a single role to a group of hosts with check-mode to see what would be done
 ```
 ./apply-role.sh servers base -C -D
 ```
