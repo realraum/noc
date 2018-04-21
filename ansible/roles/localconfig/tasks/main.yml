@@ -1,0 +1,29 @@
+---
+- name: load additional config from .ssh dir
+  include_vars:
+    dir: "{{ '~/.ssh' | expanduser }}"
+    depth: 1
+    files_matching: 'r3_localconfig.yml'
+
+- name: create .ssh/config.d
+  file:
+    path: "~/.ssh/config.d/"
+    state: directory
+
+- name: install generated ssh config snippets
+  template:
+    src: "ssh/{{ item | basename }}"
+    dest: "~/.ssh/config.d/{{ item | basename | regex_replace('^(.*)\\.j2$', '\\1') }}"
+  with_fileglob:
+    - "../templates/ssh/*.conf.j2"
+
+- name: install static ssh config snippets
+  copy:
+    src: ssh/
+    dest: ~/.ssh/config.d/
+
+- name: assemble ssh config
+  assemble:
+    src: ~/.ssh/config.d/
+    regexp: "\\.conf$"
+    dest: ~/.ssh/config
