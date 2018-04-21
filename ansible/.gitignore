@@ -3,4 +3,4 @@
 *.pyc
 *.retry
 .*.sw?
-/facts/
+/.cache/facts/
