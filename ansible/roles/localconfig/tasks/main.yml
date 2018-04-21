@@ -27,3 +27,4 @@
     src: ~/.ssh/config.d/
     regexp: "\\.conf$"
     dest: ~/.ssh/config
+  when: localconfig_overwrite_ssh_config == True
