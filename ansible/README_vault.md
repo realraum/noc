@@ -2,7 +2,7 @@ Secrets and Vaults
 ==================
 
 All secrets are stored inside encrypted ansible vault files which live in
-`host-vars`, `group_vars` or inside the secrets directory.
+`host_vars`, `group_vars` or inside the `secrets` directory.
 Access to the vault files is controlled via GPG keys. Anybody who uses this
 ansible repository needs to have a GPG key.
 

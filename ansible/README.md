@@ -85,7 +85,7 @@ Of course the latter file needs to be created using `ansible-vault`.
 
 If you want to store secrets that by default shouldn't be automatically
 exposed to hosts and groups as variables please put the vault files into
-`secrets` directory and should be name <some-name>.vault.yml.
+`secrets` directory and name them <some-name>.vault.yml.
 
 r3 NOC uses [ansible-vault-tools](https://github.com/building5/ansible-vault-tools)
 to manage/diff/merge changes in vaults.
