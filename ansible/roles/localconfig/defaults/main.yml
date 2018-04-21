@@ -1,0 +1,13 @@
+---
+### use .ssh/r3_localconfig.yml to overwrite
+localconfig_overwrite_ssh_config: False
+# localconfig_ssh_user:
+localconfig_ssh_ids:
+  - ~/.ssh/id_r3_rsa
+  - ~/.ssh/id_r3_ed25519
+
+
+### to be set inhost_vars and group_vars
+# localconfig_ssh_config_proxycommand:
+# localconfig_ssh_config_user:
+# localconfig_ssh_config_port:

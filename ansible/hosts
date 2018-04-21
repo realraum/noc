@@ -1,19 +1,26 @@
+[all:vars]
+host_domain=realraum.at
+ansible_host={{ inventory_hostname }}.{{ host_domain }}
+ansible_user=root
+
 [baremetalservers]
-alfred
+alfred.mgmt
 
 [kvmhosts]
-alfred
+alfred.mgmt
 
 [virtualservers]
 athsdisc
-calendar
+calendar.mgmt
 ctf
 entrance
-galley
-hacksch
-r3home
-tickets
-tools
+galley.mgmt
+hacksch.mgmt
+## TODO: remove the variable once https://github.com/ansible/ansible/issues/39119 is fixed
+metrics.mgmt localconfig_ssh_config_user=root
+r3home.mgmt
+tickets.mgmt
+vex
 
 [servers:children]
 baremetalservers
@@ -24,10 +31,11 @@ virtualservers
 wuerfel
 
 
-[alix]
-gw
-torwaechter
+#[alix]
+#gw
+#torwaechter.mgmt
 
-[apu]
-gnocchi1
-gnocchi2
+#[apu]
+#gnocchi1
+#gnocchi2
+

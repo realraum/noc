@@ -1,0 +1,27 @@
+user_groups:
+  noc:
+    - equinox
+    - gebi
+    - nicoo
+    - bernhard
+
+users:
+  equinox:
+    email: equinox@realraum.at
+    gpg:   0xD74907C9E64E6CED8FE3
+
+  gebi:
+    email: michael@mgeb.org
+    gpg:   0x6E302CF4D98B9702
+
+  nicoo:
+    email: nicolas@braud-santoni.eu
+    gpg:   0x3F41B0739AAD91B7CDC0
+
+  bernhard:
+    email: xro@realraum.at
+    gpg:   0xE3468B9CE81EB4F91486
+
+noc_groups:
+  - adm
+  - sudo

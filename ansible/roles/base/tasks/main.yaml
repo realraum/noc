@@ -1,4 +1,10 @@
 ---
+- set_fact:
+    sshd_allowusers: >-
+      {{ [ 'root' ] | union(user_groups.noc)
+                    | union(sshd_allowusers_group | default([]))
+                    | union(sshd_allowusers_host  | default([])) }}
+
 - name: only allow pubkey auth for root
   lineinfile:
      dest: /etc/ssh/sshd_config
@@ -9,18 +15,34 @@
 - name: limit allowed users (1/2)
   lineinfile:
      dest: /etc/ssh/sshd_config
-     regexp: "^AllowUsers"
-     line: "AllowUsers {{ ' '.join([ 'root' ] | union(sshd_allowusers_group | default([])) | union(sshd_allowusers_host | default([]))) }}"
-  when: "{{ sshd_allowusers_set | default(true) }}"
+     regexp: "^#?AllowUsers"
+     line: "AllowUsers {{ ' '.join(sshd_allowusers) }}"
+  when: sshd_allowgroup is not defined
   notify: restart ssh
 
-- name: limit allowed users (2/2)
-  lineinfile:
-     dest: /etc/ssh/sshd_config
-     regexp: "^AllowUsers"
-     state: absent
-  when: "not {{ sshd_allowusers_set | default(true) }}"
-  notify: restart ssh
+- block:
+    - name: "limit allowed users (2/2): Make sure AllowUsers is not in sshd_config"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^AllowUsers"
+        state: absent
+      notify: restart ssh
+
+    - name: "limit allowed users (2/2): Set AllowGroups in sshd_config"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#?AllowGroups"
+        line: AllowGroups {{ sshd_allowgroup }}
+      notify: restart ssh
+
+    - name: "limit allowed users (2/2): Add allowed users to ssh group"
+      user:
+        name: "{{ item }}"
+        groups: "{{ sshd_allowgroup }}"
+        append: True
+      with_items: "{{ sshd_allowusers }}"
+
+  when: sshd_allowgroup is defined
 
 - name: Set authorized keys for root user
   authorized_key:
@@ -44,6 +66,7 @@
     - debian-goodies
     - lsof
     - haveged
+    - net-tools
     - ntp
     - screen
     - aptitude
@@ -51,17 +74,24 @@
     - ca-certificates
     - file
     - zsh
+    - python-apt
 
-- name: install systemd specific packages
-  apt: name={{ item }} state=present
-  with_items:
-    - dbus
-    - libpam-systemd
+- block:
+    - name: install systemd specific packages
+      apt: name={{ item }} state=present
+      with_items:
+        - dbus
+        - libpam-systemd
+
+    - name: set systemd-related environment variables
+      copy: src=xdg_runtime_dir.sh dest=/etc/profile.d/xdg_runtime_dir.sh mode=0644
+
   when: ansible_service_mgr == "systemd"
 
 - name: install zshrc
-  copy: src={{ item.src }} dest={{ item.dest }} mode=0640
+  copy: src={{ item.src }} dest={{ item.dest }} mode=0644
   with_items:
+    - { "src": "zprofile", "dest": "/etc/zsh/zprofile" }
     - { "src": "zshrc", "dest": "/etc/zsh/zshrc" }
     - { "src": "zshrc.skel", "dest": "/etc/skel/.zshrc" }
 
