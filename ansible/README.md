@@ -46,29 +46,29 @@ Local ssh config
 
 By default hosts in the inventory use the FQDNs as the name so most
 hosts should be reachable without any special configuration.
-In addition r3 NOC uses the localconfig playbook/role to generate a
+In addition r3 NOC uses the `localconfig` playbook/role to generate a
 ssh config snippet to add nicer/shorter aliases for the hosts and also
-to automatically add jump hosts and some other special settins.
+to automatically add jump hosts and some other special settings.
 
 The way this works is that config snippets are generated inside
-`~/.ssh/config.d/` and (optionally) then compiled to a single file in
+`~/.ssh/config.d/` and (optionally) then compiled to a single file
 `~/.ssh/config`. If you want to use it as well you should move your
-current ssh config file to `~/.ssh/confi.d/` and run the playbook
-localconfig.yml.
+current ssh config file to `~/.ssh/config.d/` and run the playbook
+`localconfig.yml`.
 In order to make the generated config snippet work for different
 people the role sources the file `~/.ssh/r3_localconfig.yml`.
 All variables inside that file will take precedence of files from
-host_vars, group_varis, facts, etc.
+`host_vars`, `group_vars`, gathered facts, etc.
 
 
 Secrets
 -------
 
-See [README_vault.md](/README_vault.md) on how to create vaults.
+See [README_vault.md](/ansible/README_vault.md) on how to create vaults.
 
 In general vaults should live in `host_vars/<hostname>/vault.yml` or
 `group_vars/<groupname>/vault.yml`. The variables defined inside the
-vaults should be prefix with `vault_` and be referenced by other
+vaults should be prefixed with `vault_` and be referenced by other
 variables and not used directly in plays and roles. For example if you
 want to set a secret variable `root_pasword` for host `foo` there should
 be two files:
@@ -83,5 +83,9 @@ be two files:
 
 Of course the latter file needs to be created using `ansible-vault`.
 
-If you wan't to store secrets that by default shouldn't be exposed to
-hosts and groups as variables please put the vault files into `secrets`.
+If you wan't to store secrets that by default shouldn't be automatically
+exposed to hosts and groups as variables please put the vault files into
+`secrets` directory and should be name <some-name>.vault.yml.
+
+r3 NOC uses [ansible-vault-tools](https://github.com/building5/ansible-vault-tools)
+to manage/diff/merge changes in vaults.
