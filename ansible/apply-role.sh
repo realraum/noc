@@ -10,4 +10,4 @@ role="$1"
 shift
 
 echo "######## applying the role '$role' to host(s) '$hosts' ########"
-exec ansible-playbook -e "hosts=$hosts" -e "role=$role" $@ generic.yaml
+exec ansible-playbook -e "myhosts=$hosts" -e "myrole=$role" $@ generic.yaml

@@ -1,5 +1,5 @@
 ---
-- name: "Apply role {{ role }} to hosts: {{ hosts }}"
-  hosts: "{{ hosts }}"
+- name: "Apply role {{ myrole }} to hosts: {{ myhosts }}"
+  hosts: "{{ myhosts }}"
   roles:
-    - role: "{{ role }}"
+    - role: "{{ myrole }}"
