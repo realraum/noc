@@ -7,17 +7,17 @@
 
 - name: only allow pubkey auth for root
   lineinfile:
-     dest: /etc/ssh/sshd_config
-     regexp: "^PermitRootLogin"
-     line: "PermitRootLogin without-password"
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin without-password"
   notify: restart ssh
 
 - name: limit allowed users (1/2)
-  lineinfile:
-     dest: /etc/ssh/sshd_config
-     regexp: "^#?AllowUsers"
-     line: "AllowUsers {{ ' '.join(sshd_allowusers) }}"
   when: sshd_allowgroup is not defined
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?AllowUsers"
+    line: "AllowUsers {{ ' '.join(sshd_allowusers) }}"
   notify: restart ssh
 
 - block:
@@ -51,60 +51,82 @@
     exclusive: yes
 
 - name: disable apt suggests and recommends
-  copy: src=02no-recommends dest=/etc/apt/apt.conf.d/ mode=0644
+  copy:
+    src: 02no-recommends
+    dest: /etc/apt/apt.conf.d/
+    mode: 0644
 
 - name: install basic packages
-  apt: name={{ item }} state=present
-  with_items:
-    - less
-    - psmisc
-    - sudo
-    - htop
-    - dstat
-    - mtr-tiny
-    - tcpdump
-    - debian-goodies
-    - lsof
-    - haveged
-    - net-tools
-    - ntp
-    - screen
-    - aptitude
-    - unp
-    - ca-certificates
-    - file
-    - zsh
-    - python-apt
+  apt:
+    name:
+      - less
+      - psmisc
+      - sudo
+      - htop
+      - dstat
+      - mtr-tiny
+      - tcpdump
+      - debian-goodies
+      - lsof
+      - haveged
+      - net-tools
+      - ntp
+      - screen
+      - aptitude
+      - unp
+      - ca-certificates
+      - file
+      - zsh
+      - python-apt
+    state: present
 
 - name: make sure grml-(etc|scripts)-core is not installed
-  apt: name={{ item }} state=absent purge=yes
-  with_items:
-    - grml-etc-core
-    - grml-scripts-core
+  apt:
+    name:
+      - grml-etc-core
+      - grml-scripts-core
+    state: absent
+    purge: yes
 
 - block:
     - name: install systemd specific packages
-      apt: name={{ item }} state=present
-      with_items:
-        - dbus
-        - libpam-systemd
+      apt:
+        name:
+          - dbus
+          - libpam-systemd
+        state: present
 
     - name: set systemd-related environment variables
-      copy: src=xdg_runtime_dir.sh dest=/etc/profile.d/xdg_runtime_dir.sh mode=0644
+      copy:
+        src: xdg_runtime_dir.sh
+        dest: /etc/profile.d/xdg_runtime_dir.sh
+        mode: 0644
 
   when: ansible_service_mgr == "systemd"
 
 - name: install zshrc
-  copy: src={{ item.src }} dest={{ item.dest }} mode=0644
   with_items:
-    - { "src": "zprofile", "dest": "/etc/zsh/zprofile" }
-    - { "src": "zshrc", "dest": "/etc/zsh/zshrc" }
-    - { "src": "zshrc.skel", "dest": "/etc/skel/.zshrc" }
+    - src: "zprofile"
+      dest: "/etc/zsh/zprofile"
+    - src: "zshrc"
+      dest: "/etc/zsh/zshrc"
+    - src: "zshrc.skel"
+      dest: "/etc/skel/.zshrc"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
 
 - name: set root default shell to zsh
-  user: name=root shell=/bin/zsh
+  user:
+    name: root
+    shell: /bin/zsh
 
 - name: set default shell for adduser
-  lineinfile: dest=/etc/adduser.conf regexp={{ item.regexp }} line={{ item.line }}
   with_items:
-    - { regexp: "^DSHELL", line: "DSHELL=/bin/zsh" }
+    - regexp: "^DSHELL"
+      line: "DSHELL=/bin/zsh"
+  lineinfile:
+    dest: /etc/adduser.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
