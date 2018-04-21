@@ -76,6 +76,12 @@
     - zsh
     - python-apt
 
+- name: make sure grml-(etc|scripts)-core is not installed
+  apt: name={{ item }} state=absent purge=yes
+  with_items:
+    - grml-etc-core
+    - grml-scripts-core
+
 - block:
     - name: install systemd specific packages
       apt: name={{ item }} state=present
