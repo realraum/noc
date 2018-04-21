@@ -1,0 +1,7 @@
+---
+- name: Basic Setup for server: testvm
+  hosts:
+  roles:
+  - role: base
+  - role: vm-grub
+  - role: vm-network

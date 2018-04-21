@@ -1,0 +1,53 @@
+---
+- name: install tftpd and python-libvirt
+  apt:
+    name:
+      - atftpd
+      - openbsd-inetd
+      - qemu-kvm
+      - libvirt-bin
+      - python-libvirt
+    state: present
+
+- name: configure tftpd via inetd
+  lineinfile:
+    regexp: "^#?({{ vm_host.network.ip }}:)?tftp"
+    line: "{{ vm_host.network.ip }}:tftp		dgram	udp4	wait	nobody /usr/sbin/tcpd /usr/sbin/in.tftpd --tftpd-timeout 300 --retry-timeout 5 --maxthread 10 --verbose=5 {{ vm_host.installer.preseed_path }}"
+    path: /etc/inetd.conf
+  notify: restart inetd
+
+- name: make sure installer directories exists
+  with_items:
+    - "{{ vm_host.installer.path }}"
+    - "{{ vm_host.installer.preseed_path }}"
+  file:
+    name: "{{ item }}"
+    state: directory
+
+- name: prepare directories for installer images
+  with_subelements:
+    - "{{ vm_host.installer.distros }}"
+    - arch
+  file:
+    name: "{{ vm_host.installer.path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}"
+    state: directory
+
+- name: download installer kernel images
+  with_subelements:
+    - "{{ vm_host.installer.distros }}"
+    - arch
+  get_url:
+    url: "{{ vm_host_installer_url[item.0.distro] }}/dists/{{ item.0.codename }}/main/installer-{{ item.1 }}/current/images/netboot/{{ item.0.distro }}-installer/{{ item.1 }}/linux"
+    dest: "{{ vm_host.installer.path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}/linux"
+    mode: 0644
+    force: "{{ vm_host_force_download_installer }}"
+
+- name: download installer initrd.gz
+  with_subelements:
+    - "{{ vm_host.installer.distros }}"
+    - arch
+  get_url:
+    url: "{{ vm_host_installer_url[item.0.distro] }}/dists/{{ item.0.codename }}/main/installer-{{ item.1 }}/current/images/netboot/{{ item.0.distro }}-installer/{{ item.1 }}/initrd.gz"
+    dest: "{{ vm_host.installer.path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}/initrd.gz"
+    mode: 0644
+    force: "{{ vm_host_force_download_installer }}"

@@ -1,0 +1,21 @@
+---
+- name: Basic Installation
+  hosts: "{{ vmname }}"
+  gather_facts: no
+  pre_tasks:
+  - name: Gather facts of vm host
+    setup:
+    delegate_to: "{{ vm_install.host }}"
+    delegate_facts: yes
+  roles:
+  - role: vm-install
+
+- import_playbook: "host_playbooks/{{ vmname }}.yml"
+
+- name: Reboot and wait for VM come back
+  hosts: "{{ vmname }}"
+  gather_facts: no
+  roles:
+  - role: reboot-and-wait
+    reboot_delay: 10
+    reboot_timeout: 120

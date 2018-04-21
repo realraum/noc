@@ -1,0 +1,124 @@
+---
+- name: generate preseed file
+  template:
+    src: "preseed_{{ vmdistro }}-{{ vmdistcodename }}.cfg.j2"
+    dest: "{{ hostvars[vm_install.host].vm_host.installer.preseed_path }}/vm-{{ inventory_hostname }}-{{ vmdistro }}-{{ vmdistcodename }}.cfg"
+  delegate_to: "{{ vm_install.host }}"
+
+- name: create disks for vm
+  with_dict: "{{ vm_install.disks.virtio | default({}) | combine(vm_install.disks.scsi | default({})) }}"
+  lvol:
+    vg: "{{ item.value.vg }}"
+    lv: "{{ item.value.lv }}"
+    size: "{{ item.value.size }}"
+  delegate_to: "{{ vm_install.host }}"
+
+- name: check if vm already exists
+  virt:
+    name: "{{ inventory_hostname }}"
+    command: info
+  delegate_to: "{{ vm_install.host }}"
+  register: vmhost_info
+
+- name: destroy exisiting vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    state: destroyed
+  delegate_to: "{{ vm_install.host }}"
+  when: inventory_hostname in vmhost_info
+
+- name: wait for vm to be destroyed
+  wait_for_virt:
+    name: "{{ inventory_hostname }}"
+    states: shutdown,crashed
+    timeout: 5
+  delegate_to: "{{ vm_install.host }}"
+  when: inventory_hostname in vmhost_info
+
+- name: undefining exisiting vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    command: undefine
+  delegate_to: "{{ vm_install.host }}"
+  when: inventory_hostname in vmhost_info
+
+- name: enable installer in VM config
+  set_fact:
+    run_installer: True
+
+- name: define new installer vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    command: define
+    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+  delegate_to: "{{ vm_install.host }}"
+
+- name: start vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    state: running
+  delegate_to: "{{ vm_install.host }}"
+
+- name: wait for installer to start
+  wait_for_virt:
+    name: "{{ inventory_hostname }}"
+    states: running
+    timeout: 10
+  delegate_to: "{{ vm_install.host }}"
+
+- debug:
+    msg: "you can check on the status of the installer running this command 'virsh console {{ inventory_hostname }}' on host {{ vm_install.host }}."
+
+- name: wait for installer to finish or crash
+  wait_for_virt:
+    name: "{{ inventory_hostname }}"
+    states: shutdown,crashed
+    timeout: 900
+  delegate_to: "{{ vm_install.host }}"
+  register: installer_result
+  failed_when: installer_result.failed or installer_result.state == "crashed"
+
+- name: undefining installer vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    command: undefine
+  delegate_to: "{{ vm_install.host }}"
+
+- name: disable installer in VM config
+  set_fact:
+    run_installer: False
+
+- name: define new production vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    command: define
+    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+  delegate_to: "{{ vm_install.host }}"
+
+- name: start vm
+  virt:
+    name: "{{ inventory_hostname }}"
+    state: running
+  delegate_to: "{{ vm_install.host }}"
+
+- name: mark vm as autostarted
+  virt:
+    name: "{{ inventory_hostname }}"
+    autostart: "{{ vm_install.autostart }}"
+    command: info ## virt module needs either command or state
+  delegate_to: "{{ vm_install.host }}"
+  when: vm_install.autostart is defined
+
+  ## TODO: find a better way to fetch host key of new VMs
+- name: disable ssh StrictHostKeyChecking for the next step
+  set_fact:
+    ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+
+- name: wait for vm to start up
+  wait_for_connection:
+    delay: 5
+    timeout: 120
+
+- name: reenable StrictHostKeyChecking
+  set_fact:
+    ansible_ssh_extra_args: ""
