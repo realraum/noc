@@ -11,11 +11,11 @@
     state: directory
 
 - name: install generated ssh config snippets
+  with_fileglob:
+    - "../templates/ssh/*.conf.j2"
   template:
     src: "ssh/{{ item | basename }}"
     dest: "~/.ssh/config.d/{{ item | basename | regex_replace('^(.*)\\.j2$', '\\1') }}"
-  with_fileglob:
-    - "../templates/ssh/*.conf.j2"
 
 - name: install static ssh config snippets
   copy:
