@@ -1,9 +1,10 @@
 Secrets and Vaults
 ==================
 
-All secrets are stored inside encrypted ansible vault files which live
-inside the secrets directory. Access to the vault files is controlled via
-GPG keys. Anybody who uses this ansible repository needs to have a GPG key.
+All secrets are stored inside encrypted ansible vault files which live in
+`host-vars`, `group_vars` or inside the secrets directory.
+Access to the vault files is controlled via GPG keys. Anybody who uses this
+ansible repository needs to have a GPG key.
 
 
 Creating a GPG key
@@ -98,20 +99,20 @@ Working with Vault files
 
  * create new vault:
    ```
-# ansible-vault create secrets/foo.vault.yml
+   # ansible-vault create host_vars/foo/vault.yml
    ```
    This will open up an editor which allows you to add variables. Once you
    store and close the file the content is automatically encrypted.
 
  * edit a vault file:
    ```
-# ansible-vault edit secrets/foo.vault.yml
+   # ansible-vault edit group_vars/foo/vault.yml
    ```
    This will open up an editor which allows you to add/remove/change variables.
    Once you store and close the file the content is automatically encrypted.
 
  * show the contents of a vault file:
    ```
-# ansible-vault view secrets/foo.vault.yml
+   # ansible-vault view secrets/foo.vault.yml
    ```
    This will automatially decrypt the file and print it's contents.
