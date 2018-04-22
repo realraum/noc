@@ -1,5 +1,46 @@
 - hosts: torwaechter
   connection: local
+  tasks:
+    - name: Create cache repository
+      file:
+        path: .cache/openwrt/tuer
+        state: directory
+
+    - name: Create GOPATH directory
+      file:
+        path: .cache/openwrt/tuer/gopath
+        state: directory
+
+    - name: Clone necessary git repositories
+      git:
+        repo: https://github.com/realraum/{{ item }}.git
+        dest: .cache/openwrt/tuer/{{ item }}
+        update: True
+      with_items: [ door_and_sensors ]
+
+#    - name: Build update-keys
+
+    - name: Download dependencies
+      command: go get -d ./...
+      args:
+        chdir: .cache/openwrt/tuer/door_and_sensors/{{ item }}
+      environment:
+        GOPATH: "{{ playbook_dir }}/.cache/openwrt/tuer/gopath"
+      with_items: [ door_client, door_daemon ]
+
+    - name: Cross-compile Go binaries
+      command: go build -ldflags "-s"
+      args:
+        chdir: .cache/openwrt/tuer/door_and_sensors/{{ item }}
+      environment:
+        GO386: 387
+        CGO_ENABLED: 0
+        GOOS: linux
+        GOARCH: 386
+      with_items: [ door_client, door_daemon ]
+
+- hosts: torwaechter
+  connection: local
   roles:
     - role: openwrt-image
       delegate_to: localhost
