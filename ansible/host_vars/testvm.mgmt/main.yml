@@ -1,4 +1,6 @@
 ---
+localconfig_ssh_config_user: root
+
 vm_install_host: alfred.mgmt
 
 vm_install:
@@ -9,7 +11,7 @@ vm_install:
     primary: vda
     virtio:
       vda:
-        vg: storage
+        vg: alfred
         lv: "{{ inventory_hostname }}"
         size: 10g
   interfaces:

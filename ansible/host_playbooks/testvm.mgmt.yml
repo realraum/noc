@@ -1,6 +1,6 @@
 ---
-- name: Basic Setup for server: testvm
-  hosts:
+- name: Basic Setup for testvm
+  hosts: testvm.mgmt
   roles:
   - role: base
   - role: vm-grub

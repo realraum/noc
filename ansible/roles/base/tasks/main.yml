@@ -47,7 +47,9 @@
 - name: Set authorized keys for root user
   authorized_key:
     user: root
-    key: "{{ lookup('pipe','cat ssh/noc/*.pub') }}"
+    ### TODO: this lookup doesn't work if the playbook lives in another directory
+    ###       replace this with variables!!!
+    key: "{{ lookup('pipe','cat ../ssh/noc/*.pub') }}"
     exclusive: yes
 
 - name: disable apt suggests and recommends
