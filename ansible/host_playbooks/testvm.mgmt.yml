@@ -3,5 +3,5 @@
   hosts: testvm.mgmt
   roles:
   - role: base
-  - role: vm-grub
-  - role: vm-network
+  - role: vm/grub
+  - role: vm/network

@@ -3,4 +3,4 @@
   hosts: alfred.mgmt
   roles:
   - role: base
-  - role: vm-host
+  - role: vm/host

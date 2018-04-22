@@ -17,7 +17,7 @@
 - name: basic installation
   hosts: _vmhost_
   roles:
-  - role: vm-install
+  - role: vm/install
 
 - name: wait for new vm to start up
   hosts: "{{ vmname }}"
