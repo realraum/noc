@@ -1,15 +1,11 @@
 - hosts: torwaechter
   connection: local
   tasks:
-    - name: Create cache repository
+    - name: Create go directories
       file:
-        path: .cache/openwrt/tuer
+        path: .cache/openwrt/tuer/{{ item }}
         state: directory
-
-    - name: Create GOPATH directory
-      file:
-        path: .cache/openwrt/tuer/gopath
-        state: directory
+      with_items: [ gopath, gocache ]
 
     - name: Clone necessary git repositories
       git:
@@ -25,7 +21,8 @@
       args:
         chdir: .cache/openwrt/tuer/door_and_sensors/{{ item }}
       environment:
-        GOPATH: "{{ playbook_dir }}/.cache/openwrt/tuer/gopath"
+        GOCACHE: "{{ playbook_dir }}/.cache/openwrt/tuer/gocache"
+        GOPATH:  "{{ playbook_dir }}/.cache/openwrt/tuer/gopath"
       with_items: [ door_client, door_daemon ]
 
     - name: Cross-compile Go binaries
@@ -33,6 +30,8 @@
       args:
         chdir: .cache/openwrt/tuer/door_and_sensors/{{ item }}
       environment:
+        GOCACHE: "{{ playbook_dir }}/.cache/openwrt/tuer/gocache"
+        GOPATH:  "{{ playbook_dir }}/.cache/openwrt/tuer/gopath"
         GO386: 387
         CGO_ENABLED: 0
         GOOS: linux
