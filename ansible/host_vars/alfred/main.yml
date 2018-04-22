@@ -24,4 +24,4 @@ vm_host:
     - 192.168.33.1
     - 10.12.0.10
     indices:
-      testvm.mgmt: 200
+      testvm: 200

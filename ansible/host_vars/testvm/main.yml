@@ -1,7 +1,7 @@
 ---
 localconfig_ssh_config_user: root
 
-vm_install_host: alfred.mgmt
+vm_install_host: alfred
 
 vm_install:
   host: "{{ vm_install_host }}"
