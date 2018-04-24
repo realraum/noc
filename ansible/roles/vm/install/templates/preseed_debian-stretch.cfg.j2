@@ -13,11 +13,11 @@ d-i keyboard-configuration/xkb-keymap select us
 #d-i netcfg/get_ipaddress string {{ hostvars[vmname].vm_network_cooked.primary.ip }}
 #d-i netcfg/get_netmask string {{ hostvars[vmname].vm_network_cooked.primary.mask }}
 #d-i netcfg/get_gateway string {{ hostvars[vmname].vm_network_cooked.primary.gateway }}
-#d-i netcfg/get_nameservers string {{ hostvars[vmname].vm_network_cooked.primary.nameservers | join(' ') }}
+#d-i netcfg/get_nameservers string {{ hostvars[vmname].vm_network_cooked.nameservers | join(' ') }}
 #d-i netcfg/confirm_static boolean true
 
 d-i netcfg/get_hostname string {{ vmname }}
-d-i netcfg/get_domain string {{ hostvars[vmname].vm_network_cooked.primary.domain }}
+d-i netcfg/get_domain string {{ hostvars[vmname].vm_network_cooked.domain }}
 d-i netcfg/wireless_wep string
 
 

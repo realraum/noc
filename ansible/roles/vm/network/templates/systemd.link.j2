@@ -1,5 +1,5 @@
 [Match]
-Path=*pci-0000:01:{{ "%02d" | format(item.idx) }}.0
+Path=*pci-0000:01:{{ "%02d" | format(interface_index + 1) }}.0
 
 [Link]
 Name={{ item.name }}

@@ -15,18 +15,19 @@ vm_install:
         lv: "{{ inventory_hostname }}"
         size: 10g
   interfaces:
-  - idx: 1
-    bridge: "{{ hostvars[vm_install_host].vm_host.network.interface }}"
-    name: primary0
+  - bridge: "{{ hostvars[vm_install_host].vm_host.network.interface }}"
+    name: mgmt0
+  - bridge: "br-http"
+    name: http0
   autostart: True
 
 vm_network:
+  nameservers: "{{ hostvars[vm_install_host].vm_host.network.nameservers }}"
+  domain: realraum.at
   systemd_link:
     interfaces: "{{ vm_install.interfaces }}"
   primary:
-    interface: primary0
+    interface: mgmt0
     ip: "{{ (hostvars[vm_install_host].vm_host.network.ip+'/'+hostvars[vm_install_host].vm_host.network.mask) | ipaddr(hostvars[vm_install_host].vm_host.network.indices[inventory_hostname]) | ipaddr('address') }}"
     mask: "{{ hostvars[vm_install_host].vm_host.network.mask }}"
     gateway: "{{ hostvars[vm_install_host].vm_host.network.gateway | default(hostvars[vm_install_host].vm_host.network.ip) }}"
-    nameservers: "{{ hostvars[vm_install_host].vm_host.network.nameservers }}"
-    domain: realraum.at

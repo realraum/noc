@@ -9,10 +9,12 @@
         state: absent
 
     - name: install systemd network link units
+      with_items: "{{ vm_network.systemd_link.interfaces }}"
+      loop_control:
+        index_var: interface_index
       template:
         src: systemd.link.j2
-        dest: "/etc/systemd/network/{{ '%02d' | format(item.idx + 10) }}-{{ item.name }}.link"
-      with_items: "{{ vm_network.systemd_link.interfaces }}"
+        dest: "/etc/systemd/network/{{ '%02d' | format(interface_index + 11) }}-{{ item.name }}.link"
       notify: rebuild initramfs
 
   when: vm_network.systemd_link is defined
@@ -22,3 +24,14 @@
     src: interfaces.j2
     dest: /etc/network/interfaces
     mode: 0644
+
+- name: remove resolvconf package
+  apt:
+    name: resolvconf
+    state: absent
+    purge: yes
+
+- name: generate resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
