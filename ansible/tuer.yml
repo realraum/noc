@@ -1,6 +1,6 @@
 - hosts: torwaechter
   connection: local
-  tasks:
+  pre_tasks:
     - name: Create go directories
       file:
         path: .cache/openwrt/tuer/{{ item }}
@@ -14,8 +14,6 @@
         update: True
       with_items: [ door_and_sensors ]
 
-#    - name: Build update-keys
-
     - name: Download dependencies
       command: go get -d ./...
       args:
@@ -23,7 +21,7 @@
       environment:
         GOCACHE: "{{ playbook_dir }}/.cache/openwrt/tuer/gocache"
         GOPATH:  "{{ playbook_dir }}/.cache/openwrt/tuer/gopath"
-      with_items: [ door_client, door_daemon ]
+      with_items: [ door_client, door_daemon, update-keys ]
 
     - name: Cross-compile Go binaries
       command: go build -ldflags "-s"
@@ -36,10 +34,8 @@
         CGO_ENABLED: 0
         GOOS: linux
         GOARCH: 386
-      with_items: [ door_client, door_daemon ]
+      with_items: [ door_client, door_daemon, update-keys ]
 
-- hosts: torwaechter
-  connection: local
   roles:
     - role: openwrt-image
       delegate_to: localhost
@@ -63,3 +59,42 @@
           - tcpdump
         openwrt_packages_extra:
           - git
+
+        openwrt_mixin:
+          files:
+            # Go binaries
+            /usr/local/bin/door_client: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_client/door_client"
+            /usr/local/bin/door_daemon: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_daemon/door_daemon"
+            /usr/local/bin/update-keys: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
+
+          content:
+            /etc/config/network: |
+              config interface 'loopback'
+              	option ifname 'lo'
+              	option proto 'static'
+              	option ipaddr '127.0.0.1'
+              	option netmask '255.0.0.0'
+              
+              config globals 'globals'
+              	option ula_prefix 'fdc9:e01f:83db::/48'
+              
+              config interface 'lan'
+              	option ifname 'eth0'
+              	option accept_ra '0'
+              	option proto 'static'
+                option ipaddr  '192.168.33.7'
+                option netmask '255.255.255.0'
+                option gateway '192.168.33.1'
+                option dns     '192.168.33.1'
+                option dns_search 'realraum.at'
+
+            /etc/config/dropbear: |
+              config dropbear
+              	option PasswordAuth 'on'
+              	option RootPasswordAuth 'off'
+              	option Port '22000'
+
+            /etc/dropbear/authorized_keys: |-
+              {% for key in noc_ssh_keys %}
+              key
+              {% endfor %}

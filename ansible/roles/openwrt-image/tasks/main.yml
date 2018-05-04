@@ -2,18 +2,37 @@
   when: openwrt_imgbuilder_tarball is not defined
 
 - name: Create temporary build directory
-  command: mktemp -d openwrt-{{ ansible_hostname }}.XXXXXX
+  command: mktemp --tmpdir -d openwrt-{{ ansible_hostname }}.XXXXXX
   register: tmpdir
 
 - set_fact:
     openwrt_imgbuilder_dir:   "{{ tmpdir.stdout }}"
     openwrt_imgbuilder_files: "{{ tmpdir.stdout }}/files"
 
-- name: Create the directory for slipstreamed files
+- name: Create the directories for mixins
   file:
-    path: "{{ openwrt_imgbuilder_files }}"
+    path: "{{ item }}"
     state: directory
+  with_items:
+    - "{{ openwrt_imgbuilder_files }}"
+    - "{{ openwrt_mixin.files | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+    - "{{ openwrt_mixin.content | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
 
+- name: Copy mixins in place [1/2]
+  copy:
+    src: "{{ item.value }}"
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+  with_dict: "{{ openwrt_mixin.files }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Copy mixins in place [2/2]
+  copy:
+    content: "{{ item.value }}"
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+  with_dict: "{{ openwrt_mixin.content }}"
+  loop_control:
+    label: "{{ item.key }}"
 
 - block:
 #    - unarchive:
@@ -33,26 +52,23 @@
         path: "{{ openwrt_output_dir }}"
         state: directory
 
+    - set_fact:
+        openwrt_packages: >-
+          {{ openwrt_packages_remove | map('regex_replace', '^', '-') | join(' ') }}
+          {{ openwrt_packages_add   | join(' ') }}
+          {{ openwrt_packages_extra | join(' ') }}
+
     - name: Build the OpenWrt image
-      shell: >-
+      command: >-
         make -C {{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }} image
-
           FILES="{{ openwrt_imgbuilder_files }}"
-          
-          PACKAGES="
-            {% for x in openwrt_packages_remove %}-{{x}} {% endfor %}
-            {% for x in openwrt_packages_add    %} {{x}} {% endfor %}
-            {% for x in openwrt_packages_extra  %} {{x}} {% endfor %}
-          "
+          PACKAGES="{{ openwrt_packages }}"
           BIN_DIR="{{ openwrt_output_dir }}"
-          
-          {% if openwrt_extra_name is defined %}
-          EXTRA_IMAGE_NAME="{{ openwrt_extra_name }}"
-          {% endif %}
+          {% if openwrt_extra_name is defined %} EXTRA_IMAGE_NAME="{{ openwrt_extra_name }}" {% endif %}
 
 
-  always:
-    - name: Delete the temporary build directory
-      file:
-        path: "{{ openwrt_imgbuilder_dir }}"
-        state: absent
+#  always:
+#    - name: Delete the temporary build directory
+#      file:
+#        path: "{{ openwrt_imgbuilder_dir }}"
+#        state: absent
