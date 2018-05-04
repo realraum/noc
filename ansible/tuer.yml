@@ -98,6 +98,7 @@
               	option RootPasswordAuth 'off'
               	option Port '22000'
 
+            # TODO: mode needs to be 0600
             /etc/dropbear/authorized_keys: |-
               {% for key in noc_ssh_keys %}
               {{ key }}
