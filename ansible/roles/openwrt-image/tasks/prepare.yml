@@ -1,0 +1,44 @@
+---
+- name: Create temporary build directory
+  command: mktemp --tmpdir -d openwrt-{{ inventory_hostname }}.XXXXXX
+  register: tmpdir
+
+- set_fact:
+    openwrt_imgbuilder_dir:   "{{ tmpdir.stdout }}"
+    openwrt_imgbuilder_files: "{{ tmpdir.stdout }}/files"
+
+- name: Create the directories for mixins
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ openwrt_imgbuilder_files }}"
+    - "{{ openwrt_mixin.files | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+    - "{{ openwrt_mixin.content | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+
+- name: Copy mixins in place [1/2]
+  copy:
+    src: "{{ item.value }}"
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+  with_dict: "{{ openwrt_mixin.files }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Copy mixins in place [2/2]
+  copy:
+    content: "{{ item.value }}"
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+  with_dict: "{{ openwrt_mixin.content }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+### TODO: this just hangs?
+# - unarchive:
+#     copy: False
+#     src:  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
+#     dest: "{{ openwrt_imgbuilder_dir }}"
+
+- name: Decompress the OpenWrt image builder
+  command: >-
+    tar -xf  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
+    -C   "{{ openwrt_imgbuilder_dir     }}"

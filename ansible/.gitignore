@@ -4,3 +4,4 @@
 *.retry
 .*.sw?
 /.cache/
+/files/

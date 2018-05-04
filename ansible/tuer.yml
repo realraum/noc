@@ -43,6 +43,9 @@
       vars:
         openwrt_arch: x86
         openwrt_target: geode
+        openwrt_output_image_suffixes:
+          - combined-ext4.img.gz
+          - combined-squashfs.img
         openwrt_packages_remove:
           - ppp
           - ppp-mod-pppoe
@@ -75,19 +78,19 @@
               	option proto 'static'
               	option ipaddr '127.0.0.1'
               	option netmask '255.0.0.0'
-              
+
               config globals 'globals'
               	option ula_prefix 'fdc9:e01f:83db::/48'
-              
+
               config interface 'lan'
               	option ifname 'eth0'
               	option accept_ra '0'
               	option proto 'static'
-                option ipaddr  '192.168.33.7'
-                option netmask '255.255.255.0'
-                option gateway '192.168.33.1'
-                option dns     '192.168.33.1'
-                option dns_search 'realraum.at'
+              	option ipaddr  '192.168.33.7'
+              	option netmask '255.255.255.0'
+              	option gateway '192.168.33.1'
+              	option dns     '192.168.33.1'
+              	option dns_search 'realraum.at'
 
             /etc/config/dropbear: |
               config dropbear
@@ -97,5 +100,5 @@
 
             /etc/dropbear/authorized_keys: |-
               {% for key in noc_ssh_keys %}
-              key
+              {{ key }}
               {% endfor %}

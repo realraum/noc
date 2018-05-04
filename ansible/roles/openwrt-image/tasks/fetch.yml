@@ -31,14 +31,9 @@
 
     - name: Download imagebuilder
       get_url:
-        url: "{{ openwrt_url }}/{{ openwrt_tarball_name }}" #lede-imagebuilder-{{ openwrt_release }}-{{ openwrt_arch }}.Linux-x86_64.tar.xz"
+        url: "{{ openwrt_url }}/{{ openwrt_tarball_name }}"
         dest: "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
         checksum: sha256:{{ sha256.stdout.split(' ') | first }}
-
-    # /!\ This needs to be the last task in 00-fetch.yml
-#    - set_fact:
-#        openwrt_imgbuilder_tarball: >
-#          {{ openwrt_download_dir }}/{{ openwrt_tarball_name }}
 
   rescue:
     - name: Delete downloaded artifacts
