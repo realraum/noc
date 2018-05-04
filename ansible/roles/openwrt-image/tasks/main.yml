@@ -1,3 +1,4 @@
+---
 - include: 00-fetch.yml
   when: openwrt_imgbuilder_tarball is not defined
 
@@ -37,12 +38,12 @@
 - block:
 #    - unarchive:
 #        copy: False
-#        src:  "{{ download_dir }}/{{ openwrt_tarball_name }}"
+#        src:  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
 #        dest: "{{ openwrt_imgbuilder_dir }}"
 
     - name: Decompress the OpenWrt image builder
       command: >-
-        tar -xf  "{{ download_dir }}/{{ openwrt_tarball_name }}"
+        tar -xf  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
             -C   "{{ openwrt_imgbuilder_dir     }}"
 
 #    - include: 02-prepare.yml

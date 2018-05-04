@@ -1,8 +1,9 @@
+---
 - name: Create download directory
   file:
-    dest: "{{ download_dir }}"
+    dest: "{{ openwrt_download_dir }}"
     state: directory
-  
+
 - block:
     - name: Generate OpenWrt download URLs
       set_fact:
@@ -12,41 +13,41 @@
     - name: Download sha256sums
       get_url:
         url: "{{ openwrt_url }}/sha256sums"
-        dest: "{{ download_dir }}/{{ openwrt_tarball_basename }}.sha256"
+        dest: "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256"
 
     - name: Download sha256sums.asc
       get_url:
         url: "{{ openwrt_url }}/sha256sums.asc"
-        dest: "{{ download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
+        dest: "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
 
     - name: Check OpenPGP signature
-      command: gpg --verify "{{ download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
+      command: gpg --verify "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
       changed_when: False
 
     - name: Extract SHA256 hash of the imagebuilder archive
-      command: grep '{{ openwrt_tarball_name }}' "{{ download_dir }}/{{ openwrt_tarball_basename }}.sha256"
+      command: grep '{{ openwrt_tarball_name }}' "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256"
       register: sha256
       changed_when: False
 
     - name: Download imagebuilder
       get_url:
         url: "{{ openwrt_url }}/{{ openwrt_tarball_name }}" #lede-imagebuilder-{{ openwrt_release }}-{{ openwrt_arch }}.Linux-x86_64.tar.xz"
-        dest: "{{ download_dir }}/{{ openwrt_tarball_name }}"
+        dest: "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
         checksum: sha256:{{ sha256.stdout.split(' ') | first }}
 
     # /!\ This needs to be the last task in 00-fetch.yml
 #    - set_fact:
 #        openwrt_imgbuilder_tarball: >
-#          {{ download_dir }}/{{ openwrt_tarball_name }}
-        
+#          {{ openwrt_download_dir }}/{{ openwrt_tarball_name }}
+
   rescue:
     - name: Delete downloaded artifacts
       file:
         path: "{{ item }}"
         state: absent
       with_items:
-        - "{{ download_dir }}/{{ openwrt_tarball_basename }}.sha256"
-        - "{{ download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
-        - "{{ download_dir }}/{{ openwrt_tarball_name }}"
+        - "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256"
+        - "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
+        - "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
     - fail:
         msg: Something borked

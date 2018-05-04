@@ -1,5 +1,6 @@
+---
 openwrt_release: 17.01.4
-download_dir: .cache/openwrt
+openwrt_download_dir: .cache/openwrt
 openwrt_tarball_basename: lede-imagebuilder-{{ openwrt_release }}-{{ openwrt_arch }}{% if openwrt_target != 'generic' %}-{{ openwrt_target }}{% endif %}.Linux-x86_64
 openwrt_tarball_name: "{{ openwrt_tarball_basename }}.tar.xz"
 openwrt_target: generic

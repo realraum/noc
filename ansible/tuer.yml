@@ -1,3 +1,4 @@
+---
 - hosts: torwaechter
   connection: local
   pre_tasks:
