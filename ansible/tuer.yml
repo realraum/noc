@@ -65,14 +65,16 @@
           - git
 
         openwrt_mixin:
-          files:
-            # Go binaries
-            /usr/local/bin/door_client: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_client/door_client"
-            /usr/local/bin/door_daemon: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_daemon/door_daemon"
-            /usr/local/bin/update-keys: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
+          # Go binaries
+          /usr/local/bin/door_client:
+            file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_client/door_client"
+          /usr/local/bin/door_daemon:
+            file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_daemon/door_daemon"
+          /usr/local/bin/update-keys:
+            file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
 
-          content:
-            /etc/config/network: |
+          /etc/config/network:
+            content: |
               config interface 'loopback'
               	option ifname 'lo'
               	option proto 'static'
@@ -92,14 +94,16 @@
               	option dns     '192.168.33.1'
               	option dns_search 'realraum.at'
 
-            /etc/config/dropbear: |
+          /etc/config/dropbear:
+            content: |
               config dropbear
               	option PasswordAuth 'off'
               	option RootPasswordAuth 'off'
               	option Port '22000'
 
-            # TODO: mode needs to be 0600
-            /etc/dropbear/authorized_keys: |-
+          # TODO: mode needs to be 0600
+          /etc/dropbear/authorized_keys:
+            content: |-
               {% for key in noc_ssh_keys %}
               {{ key }}
               {% endfor %}

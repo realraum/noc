@@ -13,14 +13,14 @@
     state: directory
   with_items:
     - "{{ openwrt_imgbuilder_files }}"
-    - "{{ openwrt_mixin.files | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
-    - "{{ openwrt_mixin.content | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+    - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
 
 - name: Copy mixins in place [1/2]
   copy:
-    src: "{{ item.value }}"
+    src: "{{ item.file }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
-  with_dict: "{{ openwrt_mixin.files }}"
+  with_dict: "{{ openwrt_mixin }}"
+  when: '"file" in item'
   loop_control:
     label: "{{ item.key }}"
 
@@ -28,7 +28,8 @@
   copy:
     content: "{{ item.value }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
-  with_dict: "{{ openwrt_mixin.content }}"
+  with_dict: "{{ openwrt_mixin }}"
+  when: '"content" in item'
   loop_control:
     label: "{{ item.key }}"
 
