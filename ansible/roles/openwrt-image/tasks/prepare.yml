@@ -19,6 +19,7 @@
   copy:
     src: "{{ item.file }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+    mode: "{{ item.mode | default(0644) }}"
   with_dict: "{{ openwrt_mixin }}"
   when: '"file" in item'
   loop_control:
@@ -28,6 +29,7 @@
   copy:
     content: "{{ item.value }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+    mode: "{{ item.mode | default(0644) }}"
   with_dict: "{{ openwrt_mixin }}"
   when: '"content" in item'
   loop_control:
