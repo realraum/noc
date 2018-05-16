@@ -72,7 +72,7 @@
     dest: "{{ openwrt_imgbuilder_files }}/etc/group"
     mode: 0644
     trim_blocks: yes
-  when: openwrt_groups or openwrt_users is defined
+  when: openwrt_groups is defined or openwrt_users is defined
 
 ### TODO: this just hangs?
 # - unarchive:

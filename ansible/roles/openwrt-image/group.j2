@@ -13,7 +13,9 @@ network:x:101:
 {{ name }}:x:{{ opt.id | default(loop.index + 110) }}:
 {% endif %}
 {% endfor %}
+{% if openwrt_groups is defined %}
 {% for name, opt in openwrt_groups.items() %}
 {{ name }}:x:{{ opt.id | default(loop.index + 200) }}:
 {% endfor %}
+{% endif %}
 nogroup:x:65534:
