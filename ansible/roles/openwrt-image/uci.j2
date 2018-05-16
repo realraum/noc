@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+{% for section in item.value %}
+config {{ section.name }}
+{% for option, value in section.options.items() %}
+  option {{ option }} '{{ value }}'
+{% endfor %}
+
+{% endfor %}

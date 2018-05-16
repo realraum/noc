@@ -12,8 +12,9 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ openwrt_imgbuilder_files }}"
+    - "{{ openwrt_imgbuilder_files }}/etc/config"
     - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+
 
 - name: Copy mixins in place [1/2]
   copy:
@@ -34,6 +35,18 @@
   when: '"content" in item'
   loop_control:
     label: "{{ item.key }}"
+
+- name: Create UCI configuration files
+  template:
+    src: uci.j2
+    dest: "{{ openwrt_imgbuilder_files }}/etc/config/{{ item.key }}"
+    mode: 0644
+    trim_blocks: yes
+#   force: no  ## TODO: fail when overwriting a file
+  with_dict: "{{ openwrt_uci }}"
+  loop_control:
+    label: "{{ item.key }}"
+
 
 ### TODO: this just hangs?
 # - unarchive:

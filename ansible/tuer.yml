@@ -76,37 +76,40 @@
             mode: 0755
             file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
 
-          /etc/config/network:
-            content: |
-              config interface 'loopback'
-              	option ifname 'lo'
-              	option proto 'static'
-              	option ipaddr '127.0.0.1'
-              	option netmask '255.0.0.0'
-
-              config globals 'globals'
-              	option ula_prefix 'fdc9:e01f:83db::/48'
-
-              config interface 'lan'
-              	option ifname 'eth0'
-              	option accept_ra '0'
-              	option proto 'static'
-              	option ipaddr  '192.168.33.7'
-              	option netmask '255.255.255.0'
-              	option gateway '192.168.33.1'
-              	option dns     '192.168.33.1'
-              	option dns_search 'realraum.at'
-
-          /etc/config/dropbear:
-            content: |
-              config dropbear
-              	option PasswordAuth 'off'
-              	option RootPasswordAuth 'off'
-              	option Port '22000'
-
           /etc/dropbear/authorized_keys:
             mode: 0600
             content: |-
               {% for key in noc_ssh_keys %}
               {{ key }}
               {% endfor %}
+
+        openwrt_uci:
+          network:
+            - name: globals 'globals'
+              options:
+                ula_prefix: fdc9:e01f:83db::/48
+
+            - name: interface 'loopback'
+              options:
+                ifname: lo
+                proto: static
+                ipaddr: 127.0.0.1
+                netmask: 255.0.0.0
+
+            - name: interface 'lan'
+              options:
+                ifname: eth0
+                accept_ra: 0
+                proto: static
+                ipaddr: 192.168.33.7
+                netmask: 255.255.255.0
+                gateway: 192.168.33.1
+                dns: 192.168.33.1
+                dns_search: realraum.at
+
+          dropbear:
+            - name: dropbear
+              options:
+                PasswordAuth: off
+                RootPasswordAuth: off
+                Port: 22000
