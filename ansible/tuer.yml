@@ -62,6 +62,8 @@
           - nano
           - tcpdump
         openwrt_packages_extra:
+          - "-dropbear"
+          - openssh-server
           - git
 
         openwrt_mixin:
@@ -76,8 +78,20 @@
             mode: 0755
             file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
 
-          /etc/dropbear/authorized_keys:
-            mode: 0600
+          /etc/ssh/sshd_config:
+            content: |-
+              Port 22000
+
+              AllowUsers root tuerctl tuergit
+              AuthenticationMethods publickey
+              AuthorizedKeysFile /etc/ssh/authorized_keys.d/%u
+
+              AllowAgentForwarding no
+              AllowTcpForwarding no
+              X11Forwarding no
+              UsePrivilegeSeparation sandbox
+
+          /etc/ssh/authorized_keys.d/root:
             content: |-
               {% for key in noc_ssh_keys %}
               {{ key }}
@@ -107,12 +121,6 @@
                 dns: 192.168.33.1
                 dns_search: realraum.at
 
-          dropbear:
-            - name: dropbear
-              options:
-                PasswordAuth: off
-                RootPasswordAuth: off
-                Port: 22000
 
         openwrt_mounts:
           - path: /run
