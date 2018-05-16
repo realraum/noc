@@ -113,3 +113,9 @@
                 PasswordAuth: off
                 RootPasswordAuth: off
                 Port: 22000
+
+        openwrt_mounts:
+          - path: /run
+            src: none
+            fstype: tmpfs
+            opts: nosuid,nodev,noexec,noatime

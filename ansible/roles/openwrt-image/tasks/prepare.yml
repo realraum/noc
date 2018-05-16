@@ -36,6 +36,17 @@
   loop_control:
     label: "{{ item.key }}"
 
+- name: Generate /etc/fstab
+  mount:
+    fstab: "{{ openwrt_imgbuilder_files }}/etc/fstab"
+    state: present
+  args:
+    "{{ item }}"
+  when: openwrt_mounts is defined
+  with_items: "{{ openwrt_mounts }}"
+  loop_control:
+    label: "{{ item.path }}"
+
 - name: Create UCI configuration files
   template:
     src: uci.j2
