@@ -78,6 +78,10 @@
             mode: 0755
             file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
 
+          /usr/local/bin/authorized_keys.sh:
+            mode: 0755
+            file: "{{ playbook_dir }}/files/tuer/authorized_keys.sh"
+
           /etc/ssh/sshd_config:
             content: |-
               Port 22000
@@ -90,6 +94,12 @@
               AllowTcpForwarding no
               X11Forwarding no
               UsePrivilegeSeparation sandbox
+
+              Match User tuerctl
+                AuthorizedKeysFile /dev/null
+                AuthorizedKeysCommand /usr/local/bin/authorized_keys.sh
+                AuthorizedKeysCommandUser tuergit
+
 
           /etc/ssh/authorized_keys.d/root:
             content: |-
