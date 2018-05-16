@@ -1,0 +1,19 @@
+{{ ansible_managed | comment }}
+root:x:0:
+daemon:x:1:
+adm:x:4:
+mail:x:8:
+audio:x:29:
+www-data:x:33:
+ftp:x:55:
+users:x:100:
+network:x:101:
+{% for name, opt in openwrt_users.items() %}
+{% if 'group_id' not in opt %}
+{{ name }}:x:{{ opt.id | default(loop.index + 110) }}:
+{% endif %}
+{% endfor %}
+{% for name, opt in openwrt_groups.items() %}
+{{ name }}:x:{{ opt.id | default(loop.index + 200) }}:
+{% endfor %}
+nogroup:x:65534:

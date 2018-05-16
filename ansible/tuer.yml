@@ -119,3 +119,11 @@
             src: none
             fstype: tmpfs
             opts: nosuid,nodev,noexec,noatime
+
+        openwrt_users:
+          tuerd: {}
+          tuergit:
+            home:  /var/tuer
+            shell: /usr/bin/git-shell
+          tuerctl:
+            shell: /bin/false # TODO fixme
