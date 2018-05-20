@@ -11,6 +11,7 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: '0755'
   with_items:
     - "{{ openwrt_imgbuilder_files }}/etc/config"
     - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
