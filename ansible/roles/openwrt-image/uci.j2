@@ -3,7 +3,13 @@
 {% for section in item.value %}
 config {{ section.name }}
 {% for option, value in section.options.items() %}
+{%   if value is iterable and value is not string %}
+{%      for v in value %}
+  list {{ option }} '{{ v }}'
+{%      endfor %}
+{%   else %}
   option {{ option }} '{{ value }}'
+{%   endif %}
 {% endfor %}
 
 {% endfor %}

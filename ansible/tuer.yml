@@ -119,6 +119,25 @@
               {% endfor %}
 
         openwrt_uci:
+          system:
+            - name: system
+              options:
+                hostname: '{{ inventory_hostname }}'
+                timezone: 'CET-1CEST,M3.5.0,M10.5.0/3'
+                ttylogin: '0'
+                log_size: '64'
+                urandom_seed: '0'
+
+            - name: timeserver 'ntp'
+              options:
+                enabled: '1'
+                enable_server: '0'
+                server:
+                  - '0.lede.pool.ntp.org'
+                  - '1.lede.pool.ntp.org'
+                  - '2.lede.pool.ntp.org'
+                  - '3.lede.pool.ntp.org'
+
           network:
             - name: globals 'globals'
               options:
