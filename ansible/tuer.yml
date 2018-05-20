@@ -63,9 +63,12 @@
           - tcpdump
         openwrt_packages_extra:
           - "-dropbear"
-          - openssh-server
           - git
+          - kmod-usb-acm
+          - openssh-server
+          - screen
           - sudo
+          - usbutils
 
         openwrt_mixin:
           # Go binaries
