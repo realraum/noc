@@ -22,7 +22,7 @@
 
 set -e
 
-KEYS_DIR=${KEYS_DIR:-'/var/tuer/keys.git'}
+KEYS_DIR=${KEYS_DIR:-'/home/tuergit/keys.git'}
 KEYS_OPTIONS='no-port-forwarding'
 
 cd "${KEYS_DIR}"

@@ -65,6 +65,7 @@
           - "-dropbear"
           - openssh-server
           - git
+          - sudo
 
         openwrt_mixin:
           # Go binaries
@@ -81,6 +82,10 @@
           /usr/local/bin/authorized_keys.sh:
             mode: '0755'
             file: "{{ playbook_dir }}/files/tuer/authorized_keys.sh"
+
+          /usr/local/bin/update-keys-from-stdin.sh:
+            mode: '0755'
+            file: "{{ playbook_dir }}/files/tuer/update-keys-from-stdin.sh"
 
           /etc/ssh/sshd_config:
             content: |-
@@ -102,6 +107,12 @@
 
 
           /etc/ssh/authorized_keys.d/root:
+            content: |-
+              {% for key in noc_ssh_keys %}
+              {{ key }}
+              {% endfor %}
+
+          /etc/ssh/authorized_keys.d/tuergit:
             content: |-
               {% for key in noc_ssh_keys %}
               {{ key }}
@@ -141,7 +152,7 @@
         openwrt_users:
           tuerd: {}
           tuergit:
-            home:  /var/tuer
+            home:  /home/tuergit
             shell: /usr/bin/git-shell
           tuerctl:
             shell: /bin/false # TODO fixme
