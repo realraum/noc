@@ -69,17 +69,17 @@
         openwrt_mixin:
           # Go binaries
           /usr/local/bin/door_client:
-            mode: 0755
+            mode: '0755'
             file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_client/door_client"
           /usr/local/bin/door_daemon:
-            mode: 0755
+            mode: '0755'
             file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_daemon/door_daemon"
           /usr/local/bin/update-keys:
-            mode: 0755
+            mode: '0755'
             file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
 
           /usr/local/bin/authorized_keys.sh:
-            mode: 0755
+            mode: '0755'
             file: "{{ playbook_dir }}/files/tuer/authorized_keys.sh"
 
           /etc/ssh/sshd_config:

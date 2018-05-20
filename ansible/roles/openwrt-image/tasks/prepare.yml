@@ -18,21 +18,21 @@
 
 - name: Copy mixins in place [1/2]
   copy:
-    src: "{{ item.file }}"
+    src: "{{ item.value.file }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
-    mode: "{{ item.mode | default(0644) }}"
+    mode: "{{ item.value.mode | default('0644') }}"
   with_dict: "{{ openwrt_mixin }}"
-  when: '"file" in item'
+  when: '"file" in item.value'
   loop_control:
     label: "{{ item.key }}"
 
 - name: Copy mixins in place [2/2]
   copy:
-    content: "{{ item.value }}"
+    content: "{{ item.value.content }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
-    mode: "{{ item.mode | default(0644) }}"
+    mode: "{{ item.value.mode | default('0644') }}"
   with_dict: "{{ openwrt_mixin }}"
-  when: '"content" in item'
+  when: '"content" in item.value'
   loop_control:
     label: "{{ item.key }}"
 
