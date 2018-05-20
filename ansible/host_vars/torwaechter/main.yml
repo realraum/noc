@@ -1,0 +1,127 @@
+---
+openwrt_arch: x86
+openwrt_target: geode
+openwrt_output_image_suffixes:
+  - combined-ext4.img.gz
+  - combined-squashfs.img
+
+openwrt_packages_extra:
+  - "-dropbear"
+  - flashrom
+  - git
+  - kmod-usb-acm
+  - openssh-server
+  - openssh-sftp-server
+  - screen
+  - sudo
+  - usbutils
+
+openwrt_mixin:
+  # Go binaries
+  /usr/local/bin/door_client:
+    mode: '0755'
+    file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_client/door_client"
+  /usr/local/bin/door_daemon:
+    mode: '0755'
+    file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_daemon/door_daemon"
+  /usr/local/bin/update-keys:
+    mode: '0755'
+    file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
+
+  /usr/local/bin/authorized_keys.sh:
+    mode: '0755'
+    file: "{{ playbook_dir }}/files/tuer/authorized_keys.sh"
+
+  /usr/local/bin/update-keys-from-stdin.sh:
+    mode: '0755'
+    file: "{{ playbook_dir }}/files/tuer/update-keys-from-stdin.sh"
+
+  /etc/ssh/sshd_config:
+    content: |
+      Port 22000
+
+      AllowUsers root tuerctl tuergit
+      AuthenticationMethods publickey
+      AuthorizedKeysFile /etc/ssh/authorized_keys.d/%u
+
+      AllowAgentForwarding no
+      AllowTcpForwarding no
+      X11Forwarding no
+      UsePrivilegeSeparation sandbox
+
+      Subsystem sftp /usr/libexec/sftp-server
+
+      Match User tuerctl
+        AuthorizedKeysFile /dev/null
+        AuthorizedKeysCommand /usr/local/bin/authorized_keys.sh
+        AuthorizedKeysCommandUser tuergit
+
+  /etc/ssh/authorized_keys.d/root:
+    content: |-
+      {% for key in noc_ssh_keys %}
+      {{ key }}
+      {% endfor %}
+
+  /etc/ssh/authorized_keys.d/tuergit:
+    content: |-
+      {% for key in noc_ssh_keys %}
+      {{ key }}
+      {% endfor %}
+
+openwrt_uci:
+  system:
+    - name: system
+      options:
+        hostname: '{{ inventory_hostname }}'
+        timezone: 'CET-1CEST,M3.5.0,M10.5.0/3'
+        ttylogin: '0'
+        log_size: '64'
+        urandom_seed: '0'
+
+    - name: timeserver 'ntp'
+      options:
+        enabled: '1'
+        enable_server: '0'
+        server:
+          - '0.lede.pool.ntp.org'
+          - '1.lede.pool.ntp.org'
+          - '2.lede.pool.ntp.org'
+          - '3.lede.pool.ntp.org'
+
+  network:
+    - name: globals 'globals'
+      options:
+        ula_prefix: fdc9:e01f:83db::/48
+
+    - name: interface 'loopback'
+      options:
+        ifname: lo
+        proto: static
+        ipaddr: 127.0.0.1
+        netmask: 255.0.0.0
+
+    - name: interface 'lan'
+      options:
+        ifname: eth0
+        accept_ra: 0
+        proto: static
+        ipaddr: 192.168.33.7
+        netmask: 255.255.255.0
+        gateway: 192.168.33.1
+        dns: 192.168.33.1
+        dns_search: realraum.at
+
+
+openwrt_mounts:
+  - path: /run
+    src: none
+    fstype: tmpfs
+    opts: nosuid,nodev,noexec,noatime
+
+openwrt_users:
+  tuerd: {}
+  tuergit:
+    home:  /home/tuergit
+    shell: /usr/bin/git-shell
+  tuerctl:
+    shell: /bin/false # TODO fixme

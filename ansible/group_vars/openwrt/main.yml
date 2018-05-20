@@ -1,0 +1,15 @@
+---
+openwrt_packages_remove:
+  - ppp
+  - ppp-mod-pppoe
+  - dnsmasq
+  - firewall
+  - odhcpd
+openwrt_packages_add:
+  - haveged
+  - htop
+  - hwclock
+  - ip
+  - less
+  - nano
+  - tcpdump
