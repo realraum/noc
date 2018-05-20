@@ -66,6 +66,7 @@
           - git
           - kmod-usb-acm
           - openssh-server
+          - openssh-sftp-server
           - screen
           - sudo
           - usbutils
@@ -91,7 +92,7 @@
             file: "{{ playbook_dir }}/files/tuer/update-keys-from-stdin.sh"
 
           /etc/ssh/sshd_config:
-            content: |-
+            content: |
               Port 22000
 
               AllowUsers root tuerctl tuergit
@@ -103,11 +104,13 @@
               X11Forwarding no
               UsePrivilegeSeparation sandbox
 
+              Subsystem sftp /usr/libexec/sftp-server
+
               Match User tuerctl
                 AuthorizedKeysFile /dev/null
                 AuthorizedKeysCommand /usr/local/bin/authorized_keys.sh
                 AuthorizedKeysCommandUser tuergit
-
+              
 
           /etc/ssh/authorized_keys.d/root:
             content: |-
