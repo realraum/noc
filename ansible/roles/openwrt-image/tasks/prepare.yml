@@ -42,12 +42,18 @@
   mount:
     fstab: "{{ openwrt_imgbuilder_files }}/etc/fstab"
     state: present
-  args:
-    "{{ item }}"
+    src: "{{ item.src | default(omit) }}"
+    path: "{{ item.path | default(omit) }}"
+    fstype: "{{ item.fstype | default(omit) }}"
+    opts: "{{ item.opts | default(omit) }}"
+    boot: "{{ item.boot | default(omit) }}"
+    dump: "{{ item.dump | default(omit) }}"
+    passno: "{{ item.passno | default(omit) }}"
   when: openwrt_mounts is defined
   with_items: "{{ openwrt_mounts }}"
   loop_control:
     label: "{{ item.path }}"
+
 
 - name: Create UCI configuration files
   template:
@@ -85,7 +91,7 @@
 - name: Decompress the OpenWrt image builder
   command: >-
     tar -xf  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
-    -C   "{{ openwrt_imgbuilder_dir     }}"
+    -C   "{{ openwrt_imgbuilder_dir }}"
 
 - name: Symlink the cache repository
   file:
