@@ -13,6 +13,7 @@
     state: directory
     mode: '0755'
   with_items:
+    - "{{ openwrt_download_dir }}/dl"
     - "{{ openwrt_imgbuilder_files }}/etc/config"
     - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
 
@@ -85,3 +86,9 @@
   command: >-
     tar -xf  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
     -C   "{{ openwrt_imgbuilder_dir     }}"
+
+- name: Symlink the cache repository
+  file:
+    state: link
+    src: "{{ playbook_dir }}/{{ openwrt_download_dir }}/dl"
+    path: "{{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }}/dl"
