@@ -1,0 +1,28 @@
+#!/bin/sh
+## (c) Bernhard Tittelbach 2017-10-28, Tschunk-License
+## (c) nicoo               2018-05-20, Tschunk-License
+## this is the post-recieve hook installed in /home/tuergit/keys.git/hooks/
+
+set -eu
+
+keys_branch=$(git config hooks.keys_branch 2>/dev/null)
+keys_file=$(git config hooks.keys_file 2>/dev/null)
+keys_pipe_to=$(git config hooks.keys_pipe_to 2>/dev/null)
+
+keys_branch=${keys_branch:-master}
+keys_file=${keys_file:-keys}
+keys_pipe_to=${keys_pipe_to:-/usr/local/bin/update-keys-from-stdin.sh}
+
+changedcommits=$( grep "refs/heads/${keys_branch}" | sed 's/\([0-9a-f]\+\)\s\+\([0-9a-f]\+\)\s\+.*/\1..\2/;' )
+
+catgitkeyfile() {
+	git show "${keys_branch}:${keys_file}"
+}
+
+if git whatchanged --oneline $changedcommits | grep -qe "^:.*${keys_file}\$"; then
+  echo "./$keys_file changed in pushed commits. Updating keys in firmware!"
+  ## update door
+  catgitkeyfile | ${keys_pipe_to}
+else
+  echo "./$keys_file not changed, not updating keys in firmware"
+fi

@@ -1,0 +1,94 @@
+---
+- name: Create temporary build directory
+  command: mktemp --tmpdir -d openwrt-{{ inventory_hostname }}.XXXXXX
+  register: tmpdir
+
+- set_fact:
+    openwrt_imgbuilder_dir:   "{{ tmpdir.stdout }}"
+    openwrt_imgbuilder_files: "{{ tmpdir.stdout }}/files"
+
+- name: Create the directories for mixins
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - "{{ openwrt_download_dir }}/dl"
+    - "{{ openwrt_imgbuilder_files }}/etc/config"
+    - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+
+
+- name: Copy mixins in place [1/2]
+  copy:
+    src: "{{ item.value.file }}"
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+    mode: "{{ item.value.mode | default('0644') }}"
+  with_dict: "{{ openwrt_mixin }}"
+  when: '"file" in item.value'
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Copy mixins in place [2/2]
+  copy:
+    content: "{{ item.value.content }}"
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+    mode: "{{ item.value.mode | default('0644') }}"
+  with_dict: "{{ openwrt_mixin }}"
+  when: '"content" in item.value'
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Generate /etc/fstab
+  mount:
+    fstab: "{{ openwrt_imgbuilder_files }}/etc/fstab"
+    state: present
+  args:
+    "{{ item }}"
+  when: openwrt_mounts is defined
+  with_items: "{{ openwrt_mounts }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Create UCI configuration files
+  template:
+    src: uci.j2
+    dest: "{{ openwrt_imgbuilder_files }}/etc/config/{{ item.key }}"
+    mode: 0644
+    trim_blocks: yes
+#   force: no  ## TODO: fail when overwriting a file
+  with_dict: "{{ openwrt_uci }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Create /etc/passwd
+  template:
+    src: passwd.j2
+    dest: "{{ openwrt_imgbuilder_files }}/etc/passwd"
+    mode: 0644
+    trim_blocks: yes
+  when: openwrt_users is defined
+
+- name: Create /etc/group
+  template:
+    src: group.j2
+    dest: "{{ openwrt_imgbuilder_files }}/etc/group"
+    mode: 0644
+    trim_blocks: yes
+  when: openwrt_groups is defined or openwrt_users is defined
+
+### TODO: this just hangs?
+# - unarchive:
+#     copy: False
+#     src:  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
+#     dest: "{{ openwrt_imgbuilder_dir }}"
+
+- name: Decompress the OpenWrt image builder
+  command: >-
+    tar -xf  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
+    -C   "{{ openwrt_imgbuilder_dir     }}"
+
+- name: Symlink the cache repository
+  file:
+    state: link
+    src: "{{ playbook_dir }}/{{ openwrt_download_dir }}/dl"
+    path: "{{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }}/dl"

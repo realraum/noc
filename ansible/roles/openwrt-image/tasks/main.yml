@@ -1,0 +1,36 @@
+---
+- include: fetch.yml
+  when: openwrt_imgbuilder_tarball is not defined
+
+- block:
+    - include: prepare.yml
+
+    - name: Create the output directory for built images
+      file:
+        path: "{{ openwrt_output_dir }}"
+        state: directory
+
+    - set_fact:
+        openwrt_packages: >-
+          {{ openwrt_packages_remove | map('regex_replace', '^', '-') | join(' ') }}
+          {{ openwrt_packages_add   | join(' ') }}
+          {{ openwrt_packages_extra | join(' ') }}
+
+    - name: Build the OpenWrt image
+      command: >-
+        make -C {{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }} image
+          FILES="{{ openwrt_imgbuilder_files }}"
+          PACKAGES="{{ openwrt_packages }}"
+          {% if openwrt_extra_name is defined %} EXTRA_IMAGE_NAME="{{ openwrt_extra_name }}" {% endif %}
+
+    - name: Copy newly built OpenWrt image
+      with_items: "{{ openwrt_output_image_suffixes }}"
+      copy:
+        src: "{{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }}/bin/targets/{{ openwrt_arch }}/{{ openwrt_target }}/{{ openwrt_output_image_name_base }}-{{ item }}"
+        dest: "{{ openwrt_output_dir }}"
+
+  always:
+    - name: Delete the temporary build directory
+      file:
+        path: "{{ openwrt_imgbuilder_dir }}"
+        state: absent

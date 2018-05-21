@@ -1,0 +1,17 @@
+---
+openwrt_variant: lede
+openwrt_release: 17.01.4
+openwrt_download_dir: .cache/openwrt
+openwrt_tarball_basename: "{{ openwrt_variant }}-imagebuilder-{{ openwrt_release }}-{{ openwrt_arch }}{% if openwrt_target != 'generic' %}-{{ openwrt_target }}{% endif %}.Linux-x86_64"
+openwrt_tarball_name: "{{ openwrt_tarball_basename }}.tar.xz"
+openwrt_target: generic
+
+openwrt_output_dir: files/openwrt/{{ inventory_hostname }}
+openwrt_output_image_name_base: "{{ openwrt_variant }}-{{ openwrt_release }}-{{ openwrt_arch }}{% if openwrt_target != 'generic' %}-{{ openwrt_target }}{% endif %}"
+openwrt_output_image_suffixes:
+  - squashfs-sysupgrade.bin
+  - squashfs-factory.bin
+
+openwrt_packages_remove: []
+openwrt_packages_add: []
+openwrt_packages_extra: []
