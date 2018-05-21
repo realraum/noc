@@ -8,7 +8,6 @@ openwrt_packages_remove:
 openwrt_packages_add:
   - haveged
   - htop
-  - hwclock
   - ip
   - less
   - nano

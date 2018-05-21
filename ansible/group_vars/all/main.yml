@@ -1,7 +1,7 @@
 ---
 # Build-related directories
-global_cache_dir: "{{ inventory_dir }}/.cache/"
-global_artifacts_dir: "{{ inventory_dir }}/files/"
+global_cache_dir: "{{ inventory_dir }}/.cache"
+global_artifacts_dir: "{{ inventory_dir }}/files"
 
 # Default credentials
 ## Root password; by default, undefined

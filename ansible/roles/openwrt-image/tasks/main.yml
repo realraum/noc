@@ -1,5 +1,6 @@
 ---
 - include: fetch.yml
+  run_once: true
   when: openwrt_imgbuilder_tarball is not defined
 
 - block:
@@ -19,6 +20,7 @@
     - name: Build the OpenWrt image
       command: >-
         make -C {{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }} image
+          {% if openwrt_profile is defined %}PROFILE="{{ openwrt_profile }}" {% endif %}
           FILES="{{ openwrt_imgbuilder_files }}"
           PACKAGES="{{ openwrt_packages }}"
           {% if openwrt_extra_name is defined %} EXTRA_IMAGE_NAME="{{ openwrt_extra_name }}" {% endif %}

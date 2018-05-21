@@ -7,6 +7,7 @@ openwrt_output_image_suffixes:
 
 openwrt_packages_extra:
   - "-dropbear"
+  - hwclock
   - flashrom
   - git
   - kmod-usb-acm
