@@ -21,7 +21,11 @@
         dest: "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
 
     - name: Check OpenPGP signature
-      command: gpg --verify "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
+      command: >-
+        gpg2 --no-options --no-default-keyring --secret-keyring /dev/null
+             --verify --keyring "{{ role_path }}/openwrt-keyring.gpg"
+             --trust-model always
+             "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
       changed_when: False
 
     - name: Extract SHA256 hash of the imagebuilder archive
