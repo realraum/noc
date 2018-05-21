@@ -1,0 +1,3 @@
+---
+reboot_delay: 60
+reboot_timeout: 300

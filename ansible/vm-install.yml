@@ -1,0 +1,46 @@
+---
+- name: preperations and sanity checks
+  hosts: "{{ vmname }}"
+  gather_facts: no
+  tasks:
+  - name: setup variables
+    set_fact:
+      vm_network_cooked: "{{ vm_network }}"
+      vm_install_cooked: "{{ vm_install }}"
+  - name: create temporary host group for vm host
+    add_host:
+      name: "{{ vm_install.host }}"
+      inventory_dir: "{{inventory_dir}}"
+      group: _vmhost_
+  # TODO: add some sanity checks
+
+- name: basic installation
+  hosts: _vmhost_
+  roles:
+  - role: vm/install
+
+- name: wait for new vm to start up
+  hosts: "{{ vmname }}"
+  gather_facts: no
+  tasks:
+    ## TODO: find a better way to fetch host key of new VMs
+  - name: disable ssh StrictHostKeyChecking for the next step
+    set_fact:
+      ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+  - name: wait for vm to start up
+    wait_for_connection:
+      delay: 5
+      timeout: 120
+  - name: reenable StrictHostKeyChecking
+    set_fact:
+      ansible_ssh_extra_args: ""
+
+- import_playbook: "host_playbooks/{{ vmname }}.yml"
+
+- name: reboot and wait for VM come back
+  hosts: "{{ vmname }}"
+  gather_facts: no
+  roles:
+  - role: reboot-and-wait
+    reboot_delay: 10
+    reboot_timeout: 120

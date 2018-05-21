@@ -1,0 +1,96 @@
+---
+- name: generate preseed file
+  template:
+    src: "preseed_{{ vmdistro }}-{{ vmdistcodename }}.cfg.j2"
+    dest: "{{ vm_host.installer.preseed_path }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.cfg"
+
+- name: create disks for vm
+  with_dict: "{{ hostvars[vmname].vm_install_cooked.disks.virtio | default({}) | combine(hostvars[vmname].vm_install_cooked.disks.scsi | default({})) }}"
+  lvol:
+    vg: "{{ item.value.vg }}"
+    lv: "{{ item.value.lv }}"
+    size: "{{ item.value.size }}"
+
+- name: check if vm already exists
+  virt:
+    name: "{{ vmname }}"
+    command: info
+  register: vmhost_info
+
+- name: destroy exisiting vm
+  virt:
+    name: "{{ vmname }}"
+    state: destroyed
+  when: vmname in vmhost_info
+
+- name: wait for vm to be destroyed
+  wait_for_virt:
+    name: "{{ vmname }}"
+    states: shutdown,crashed
+    timeout: 5
+  when: vmname in vmhost_info
+
+- name: undefining exisiting vm
+  virt:
+    name: "{{ vmname }}"
+    command: undefine
+  when: vmname in vmhost_info
+
+- name: enable installer in VM config
+  set_fact:
+    run_installer: True
+
+- name: define new installer vm
+  virt:
+    name: "{{ vmname }}"
+    command: define
+    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+
+- name: start vm
+  virt:
+    name: "{{ vmname }}"
+    state: running
+
+- name: wait for installer to start
+  wait_for_virt:
+    name: "{{ vmname }}"
+    states: running
+    timeout: 10
+
+- debug:
+    msg: "you can check on the status of the installer running this command 'virsh console {{ vmname }}' on host {{ inventory_hostname }}."
+
+- name: wait for installer to finish or crash
+  wait_for_virt:
+    name: "{{ vmname }}"
+    states: shutdown,crashed
+    timeout: 900
+  register: installer_result
+  failed_when: installer_result.failed or installer_result.state == "crashed"
+
+- name: undefining installer vm
+  virt:
+    name: "{{ vmname }}"
+    command: undefine
+
+- name: disable installer in VM config
+  set_fact:
+    run_installer: False
+
+- name: define new production vm
+  virt:
+    name: "{{ vmname }}"
+    command: define
+    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+
+- name: start vm
+  virt:
+    name: "{{ vmname }}"
+    state: running
+
+- name: mark vm as autostarted
+  virt:
+    name: "{{ vmname }}"
+    autostart: "{{ hostvars[vmname].vm_install_cooked.autostart }}"
+    command: info ## virt module needs either command or state
+  when: hostvars[vmname].vm_install_cooked.autostart is defined

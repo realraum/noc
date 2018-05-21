@@ -1,0 +1,37 @@
+---
+- block:
+    - name: remove legacy systemd.link units
+      with_items:
+        - 50-virtio-kernel-names.link
+        - 99-default.link
+      file:
+        name: "/etc/systemd/network/{{ item }}"
+        state: absent
+
+    - name: install systemd network link units
+      with_items: "{{ vm_network.systemd_link.interfaces }}"
+      loop_control:
+        index_var: interface_index
+      template:
+        src: systemd.link.j2
+        dest: "/etc/systemd/network/{{ '%02d' | format(interface_index + 11) }}-{{ item.name }}.link"
+      notify: rebuild initramfs
+
+  when: vm_network.systemd_link is defined
+
+- name: install basic interface config
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+    mode: 0644
+
+- name: remove resolvconf package
+  apt:
+    name: resolvconf
+    state: absent
+    purge: yes
+
+- name: generate resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf

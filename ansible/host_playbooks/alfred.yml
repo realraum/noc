@@ -1,0 +1,6 @@
+---
+- name: Basic Setup for alfred
+  hosts: alfred
+  roles:
+  - role: base
+  - role: vm/host

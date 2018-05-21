@@ -76,6 +76,7 @@
       - unp
       - ca-certificates
       - file
+      - nano
       - zsh
       - python-apt
     state: present
@@ -103,6 +104,21 @@
         mode: 0644
 
   when: ansible_service_mgr == "systemd"
+
+- block:
+    - name: workaround console-setup race condition (1/2)
+      file:
+        path: /etc/systemd/system/console-setup.service.d/
+        state: directory
+
+    - name: workaround console-setup race condition (2/2)
+      copy:
+        content: "[Unit]\nAfter=systemd-tmpfiles-setup.service\n"
+        dest: /etc/systemd/system/console-setup.service.d/override.conf
+        mode: 0644
+      # no need to relaod systemd here, it is only there to fix a boot-time race-condition
+
+  when: ansible_distribution == "Ubuntu"
 
 - name: install zshrc
   with_items:

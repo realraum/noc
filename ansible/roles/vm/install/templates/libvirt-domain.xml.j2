@@ -1,0 +1,70 @@
+<domain type='kvm'>
+  <name>{{ vmname }}</name>
+  <memory>{{ hostvars[vmname].vm_install_cooked.mem * 1024 }}</memory>
+  <currentMemory>{{ hostvars[vmname].vm_install_cooked.mem * 1024 }}</currentMemory>
+  <vcpu>{{ hostvars[vmname].vm_install_cooked.numcpu }}</vcpu>
+  <os>
+    <type arch='x86_64' machine='pc-0.12'>hvm</type>
+{% if run_installer %}
+    <kernel>{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/linux</kernel>
+    <initrd>{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/initrd.gz</initrd>
+    <cmdline>console=ttyS0,115200n8 auto=true interface=auto url=tftp://{{ hostvars[inventory_hostname]['ansible_' + (vm_host.installer.net_if | replace('-', '_'))].ipv4.address }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.cfg netcfg/choose_interface=enp1s1 netcfg/disable_autoconfig=true netcfg/get_ipaddress={{ hostvars[vmname].vm_network_cooked.primary.ip }} netcfg/get_netmask={{ hostvars[vmname].vm_network_cooked.primary.mask }} netcfg/get_gateway={{ hostvars[vmname].vm_network_cooked.primary.gateway }} netcfg/get_nameservers="{{ hostvars[vmname].vm_network_cooked.nameservers | join(' ') }}" netcfg/confirm_static=true netcfg/get_hostname={{ vmname }} netcfg/get_domain={{ hostvars[vmname].vm_network_cooked.domain }}</cmdline>
+{% endif %}
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+{% if run_installer %}
+  <on_reboot>destroy</on_reboot>
+  <on_crash>destroy</on_crash>
+{% else %}
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+{% endif %}
+  <devices>
+    <emulator>/usr/bin/kvm</emulator>
+
+{% if 'virtio' in hostvars[vmname].vm_install_cooked.disks %}
+{%   for device, lv in hostvars[vmname].vm_install_cooked.disks.virtio.items() %}
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='none' discard='unmap'/>
+      <source dev='/dev/mapper/{{ lv.vg | replace('-', '--') }}-{{ lv.lv | replace('-', '--') }}'/>
+      <target dev='{{ device }}' bus='virtio'/>
+    </disk>
+{%   endfor %}
+{% endif %}
+
+{% if 'scsi' in hostvars[vmname].vm_install_cooked.disks %}
+    <controller type='scsi' index='0' model='virtio-scsi'/>
+{%   for device, lv in hostvars[vmname].vm_install_cooked.disks.scsi.items() %}
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='none' discard='unmap'/>
+      <source dev='/dev/mapper/{{ lv.vg | replace('-', '--') }}-{{ lv.lv | replace('-', '--') }}'/>
+      <target dev='{{ device }}' bus='scsi'/>
+    </disk>
+{%   endfor %}
+{% endif %}
+
+{% if hostvars[vmname].vm_install_cooked.interfaces %}
+{%   for if in hostvars[vmname].vm_install_cooked.interfaces %}
+    <interface type='bridge'>
+      <source bridge='{{ if.bridge }}'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x0{{ loop.index }}' function='0x0'/>
+    </interface>
+{%   endfor %}
+{% endif %}
+
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+  </devices>
+</domain>

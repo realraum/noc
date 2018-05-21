@@ -1,0 +1,10 @@
+- name: reboot machine
+  shell: sleep 2 && shutdown -r now
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- name: waiting for host to come back
+  wait_for_connection:
+    delay: "{{ reboot_delay }}"
+    timeout: "{{ reboot_timeout }}"
