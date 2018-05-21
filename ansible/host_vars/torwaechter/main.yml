@@ -20,21 +20,21 @@ openwrt_mixin:
   # Go binaries
   /usr/local/bin/door_client:
     mode: '0755'
-    file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_client/door_client"
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/door_client/door_client"
   /usr/local/bin/door_daemon:
     mode: '0755'
-    file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/door_daemon/door_daemon"
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/door_daemon/door_daemon"
   /usr/local/bin/update-keys:
     mode: '0755'
-    file: "{{ playbook_dir }}/.cache/openwrt/tuer/door_and_sensors/update-keys/update-keys"
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/update-keys/update-keys"
 
   /usr/local/bin/authorized_keys.sh:
     mode: '0755'
-    file: "{{ playbook_dir }}/files/tuer/authorized_keys.sh"
+    file: "{{ global_artifacts_dir }}/{{ inventory_hostname }}/authorized_keys.sh"
 
   /usr/local/bin/update-keys-from-stdin.sh:
     mode: '0755'
-    file: "{{ playbook_dir }}/files/tuer/update-keys-from-stdin.sh"
+    file: "{{ global_artifacts_dir }}/{{ inventory_hostname }}/update-keys-from-stdin.sh"
 
   /etc/ssh/sshd_config:
     content: |

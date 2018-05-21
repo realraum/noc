@@ -1,4 +1,7 @@
 ---
+global_cache_dir: "{{ inventory_dir }}/.cache/"
+global_artifacts_dir: "{{ inventory_dir }}/files/"
+
 user_groups:
   noc:
     - equinox

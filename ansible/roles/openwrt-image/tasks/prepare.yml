@@ -90,5 +90,5 @@
 - name: Symlink the cache repository
   file:
     state: link
-    src: "{{ playbook_dir }}/{{ openwrt_download_dir }}/dl"
+    src: "{{ openwrt_download_dir }}/dl"
     path: "{{ openwrt_imgbuilder_dir }}/{{ openwrt_tarball_basename }}/dl"
