@@ -82,16 +82,10 @@
     trim_blocks: yes
   when: openwrt_groups is defined or openwrt_users is defined
 
-### TODO: this just hangs?
-# - unarchive:
-#     copy: False
-#     src:  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
-#     dest: "{{ openwrt_imgbuilder_dir }}"
-
-- name: Decompress the OpenWrt image builder
-  command: >-
-    tar -xf  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
-    -C   "{{ openwrt_imgbuilder_dir }}"
+- unarchive:
+    copy: False
+    src:  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
+    dest: "{{ openwrt_imgbuilder_dir }}"
 
 - name: Symlink the cache repository
   file:
