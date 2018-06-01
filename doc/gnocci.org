@@ -1,0 +1,55 @@
+* Roadmap
+** TODO Get tunnel & subnet from mur.at for testing [1/2]
+*** DONE Get approval from mur.at
+    CLOSED: [2018-06-01 Fri 20:29]
+*** TODO Set up tunnel
+    Assigned: equinox
+** TODO Create new VLANs [0/3]
+*** TODO mgmt VLAN 32 (aka new managemnt VLAN)
+    Assigned: equinox
+*** TODO Finish converting plan to diagram & push to ikiwiki
+    Assigned: nicoo
+*** TODO Remaining VLANs
+    Assigned: equinox (waiting for nicoo to upload the diagram)
+** TODO Bring gnocchi online [0/2]
+*** TODO Move gnocchis to the rack in W1
+    Assigned: nicoo
+*** TODO Setup [0/7]
+**** TODO Prepare preseed installs for gnocchis
+     Assigned: nicoo
+
+Generate preseed in Ansible, concat to initramfs.
+
+**** TODO 1 if -> mgmt, 2 if -> lacp -> tagged VLANs
+**** TODO Basic services on hypervisor [0/3]
+     Assigned: nicoo
+***** TODO OpenNTPd
+***** TODO Haveged
+***** TODO Provide time & entropy to guests
+**** TODO Get the vm-host role working there
+**** TODO Move gw to a gnocchi VM
+Clone the VM, run with the legacy VLANs
+**** TODO VMs for firewaling & basic net services (1/subnet)
+Sit directly on the service LAN (original /27)
+***** TODO Figure out best way to virtualize OpenWRT
+      Assigned: equinox
+**** TODO VMs for critical services [0/4]
+***** TODO DNS resolver
+unbound or getdns
+***** TODO Authoritative NS for realraum.at
+bind (potentially)
+***** TODO Authn/authz [0/2]
+****** TODO whawty
+****** TODO RADIUS
+***** TODO netboot.xyz
+* Future stuffs
+** Switch to a wireguard tunnel
+*** Upgrade r2ko to LEDE
+**** Forward-port murtun
+**** Actual upgrade
+*** Setup tunnel
+** Hardware RNG & key storage
+*** Design miniPCIe PCB for Flying Stone 1
+    Only uses power & USB
+    Assigned: equinox
+*** Forward key intarface to guests
