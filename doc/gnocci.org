@@ -7,8 +7,8 @@
     IPv4: 89.106.211.0/28
     IPv6: 2a02:3e0:4001::/48
     IPIP Tunnel Endpoint: 10.12.240.246
-** TODO Create new VLANs [0/3]
-*** TODO mgmt VLAN 32 (aka new managemnt VLAN)
+** TODO Create new VLANs [1/3]
+*** DONE mgmt VLAN 32 (aka new managemnt VLAN)
     Assigned: equinox
 *** TODO Finish converting plan to diagram & push to ikiwiki
     Assigned: nicoo
