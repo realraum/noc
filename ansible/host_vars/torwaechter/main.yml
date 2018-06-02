@@ -105,10 +105,10 @@ openwrt_uci:
         ifname: eth0
         accept_ra: 0
         proto: static
-        ipaddr: 192.168.33.7
+        ipaddr: 192.168.32.100
         netmask: 255.255.255.0
-        gateway: 192.168.33.1
-        dns: 192.168.33.1
+        gateway: 192.168.32.254
+        dns: 192.168.32.254
         dns_search: realraum.at
 
 
