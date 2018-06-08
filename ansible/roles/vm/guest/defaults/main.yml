@@ -1,0 +1,3 @@
+rngd_config:
+  HRNGDEVICE: /dev/hwrng
+  RNGDOPTIONS: '"-s 256 -W 80%"'
