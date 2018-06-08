@@ -3,14 +3,22 @@
     name: rng-tools
     state: present
 
-- name: Configure rngd
+- name: Configure rngd [1/2]
   lineinfile:
     path: /etc/default/rng-tools
     line: '{{ item.key }}={{ item.value }}'
     regexp: '^#?{{ item.key }}={{ item.value }}'
-  with_dict:
-    HRNGDEVICE: /dev/hwrng
-    RNGDOPTIONS: '"-s 256 -W 80%"'
+  with_dict: '{{ rngd_config }}'
+  loop_control:
+    label: "{{ item.key }}"
+  notify: restart rngd
+
+- name: Configure rngd [2/2]
+  lineinfile:
+    path: /etc/default/rng-tools
+    regexp: '^{{ item.key }}=(?!{{ item.value }})'
+    state: absent
+  with_dict: '{{ rngd_config }}'
   loop_control:
     label: "{{ item.key }}"
   notify: restart rngd
