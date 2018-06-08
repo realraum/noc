@@ -3,3 +3,8 @@
   service:
     name: openbsd-inetd
     state: restarted
+
+- name: restart haveged
+  service:
+    name: haveged
+    state: restarted

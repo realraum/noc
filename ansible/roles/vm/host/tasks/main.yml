@@ -1,5 +1,5 @@
 ---
-- name: install tftpd and python-libvirt
+- name: install dependencies
   apt:
     name:
       - atftpd
@@ -7,7 +7,15 @@
       - qemu-kvm
       - libvirt-bin
       - python-libvirt
+      - haveged
     state: present
+
+- name: configure haveged
+  lineinfile:
+    regexp: "^#?DAEMON_ARGS"
+    line: 'DAEMON_ARGS="-w 3072"'
+    path: /etc/default/haveged
+  notify: restart haveged
 
 - name: configure tftpd via inetd
   lineinfile:
