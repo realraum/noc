@@ -28,6 +28,12 @@
 {% endif %}
   <devices>
     <emulator>/usr/bin/kvm</emulator>
+    <!-- Provide a virtualized RNG to the guest -->
+    <rng model='virtio'>
+      <!-- Allow consuming up to 10kb/s, measured over 2s -->
+      <rate period="2000" bytes="20480"/>
+      <backend model='random'>/dev/urandom</backend>
+    </rng>
 
 {% if 'virtio' in hostvars[vmname].vm_install_cooked.disks %}
 {%   for device, lv in hostvars[vmname].vm_install_cooked.disks.virtio.items() %}

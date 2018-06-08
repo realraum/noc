@@ -1,0 +1,16 @@
+- name: Install rngd
+  apt:
+    name: rng-tools
+    state: present
+
+- name: Configure rngd
+  lineinfile:
+    path: /etc/default/rng-tools
+    line: '{{ item.key }}={{ item.value }}'
+    regexp: '^#?{{ item.key }}={{ item.value }}'
+  with_dict:
+    HRNGDEVICE: /dev/hwrng
+    RNGDOPTIONS: '"-s 256 -W 80%"'
+  loop_control:
+    label: "{{ item.key }}"
+  notify: restart rngd
