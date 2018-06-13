@@ -105,4 +105,6 @@ d-i preseed/late_command string \
     in-target bash -c "passwd -d root && passwd -l root"; \
     mkdir -p -m 0700 /target/root/.ssh; \
     cp /authorized_keys /target/root/.ssh/; \
-    in-target bash -c "sed -e 's/^\(\s*#*\s*Port.*\)/Port 22000/' -i /etc/ssh/sshd_config"
+{% if hostvars[vmname].ansible_port is defined %}
+    in-target bash -c "sed -e 's/^\(\s*#*\s*Port.*\)/Port {{ hostvars[vmname].ansible_port }}/' -i /etc/ssh/sshd_config"
+{% endif %}
