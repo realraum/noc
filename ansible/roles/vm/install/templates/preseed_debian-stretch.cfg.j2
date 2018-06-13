@@ -102,5 +102,7 @@ d-i finish-install/reboot_in_progress note
 d-i preseed/late_command string \
     lvremove -f {{ vmname }}/dummy; \
     in-target bash -c "apt-get update -q && apt-get full-upgrade -y -q"; \
-    in-target bash -c "passwd -d root; passwd -l root; umask 077; mkdir -p /root/.ssh/; echo -e '{{ noc_ssh_keys | join('\\n') }}' > /root/.ssh/authorized_keys"; \
+    in-target bash -c "passwd -d root && passwd -l root"; \
+    mkdir -p -m 0700 /target/root/.ssh; \
+    cp /authorized_keys /target/root/.ssh/; \
     in-target bash -c "sed -e 's/^\(\s*#*\s*Port.*\)/Port 22000/' -i /etc/ssh/sshd_config"

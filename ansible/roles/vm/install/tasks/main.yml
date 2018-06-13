@@ -19,12 +19,19 @@
         src: "preseed_{{ vmdistro }}-{{ vmdistcodename }}.cfg.j2"
         dest: "{{ tmpdir }}/preseed.cfg"
 
+    - name: generate authorized_keys file
+      authorized_key:
+        user: root
+        path: "{{ tmpdir }}/authorized_keys"
+        key: "{{ hostvars[vmname].ssh_keys | default(noc_ssh_keys) | join('\n') }}"
+
     - name: Inject files into initramfs
       shell: cpio -H newc -o | gzip -9 >> {{ initramfs }}
       args:
         chdir: "{{ tmpdir }}"
         stdin: |
           preseed.cfg
+          authorized_keys
 
   always:
     - name: Delete temporary directory
