@@ -139,10 +139,9 @@
     shell: /bin/zsh
 
 - name: set default shell for adduser
-  with_items:
-    - regexp: "^DSHELL"
-      line: "DSHELL=/bin/zsh"
+  with_dict:
+    DSHELL: /bin/zsh
   lineinfile:
     dest: /etc/adduser.conf
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
+    regexp: "^#?{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
