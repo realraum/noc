@@ -45,23 +45,23 @@
     command: info
   register: vmhost_info
 
-- name: destroy exisiting vm
-  virt:
-    name: "{{ vmname }}"
-    state: destroyed
-  when: vmname in vmhost_info
+- block:
+    - name: destroy exisiting vm
+      virt:
+        name: "{{ vmname }}"
+        state: destroyed
 
-- name: wait for vm to be destroyed
-  wait_for_virt:
-    name: "{{ vmname }}"
-    states: shutdown,crashed
-    timeout: 5
-  when: vmname in vmhost_info
+    - name: wait for vm to be destroyed
+      wait_for_virt:
+        name: "{{ vmname }}"
+        states: shutdown,crashed
+        timeout: 5
 
-- name: undefining exisiting vm
-  virt:
-    name: "{{ vmname }}"
-    command: undefine
+    - name: undefining exisiting vm
+      virt:
+        name: "{{ vmname }}"
+        command: undefine
+
   when: vmname in vmhost_info
 
 - name: enable installer in VM config
