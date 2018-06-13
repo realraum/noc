@@ -2,8 +2,6 @@
 - name: install dependencies
   apt:
     name:
-      - atftpd
-      - openbsd-inetd
       - qemu-kvm
       - libvirt-bin
       - python-libvirt
@@ -16,13 +14,6 @@
     line: 'DAEMON_ARGS="-w 3072"'
     path: /etc/default/haveged
   notify: restart haveged
-
-- name: configure tftpd via inetd
-  lineinfile:
-    regexp: "^#?({{ vm_host.network.ip }}:)?tftp"
-    line: "{{ vm_host.network.ip }}:tftp		dgram	udp4	wait	nobody /usr/sbin/tcpd /usr/sbin/in.tftpd --tftpd-timeout 300 --retry-timeout 5 --maxthread 10 --verbose=5 {{ vm_host.installer.preseed_path }}"
-    path: /etc/inetd.conf
-  notify: restart inetd
 
 - name: make sure installer directories exists
   with_items:
