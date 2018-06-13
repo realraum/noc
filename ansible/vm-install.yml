@@ -35,6 +35,13 @@
     set_fact:
       ansible_ssh_extra_args: ""
 
+- name: Apply VM configuration roles
+  hosts: "{{ vmname }}"
+  roles:
+  - role: vm/grub
+  - role: vm/network
+  - role: vm/guest
+
 - import_playbook: "host_playbooks/{{ vmname }}.yml"
 
 - name: reboot and wait for VM come back
