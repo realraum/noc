@@ -70,7 +70,6 @@
       - lsof
       - haveged
       - net-tools
-      - ntp
       - screen
       - aptitude
       - unp
@@ -80,6 +79,16 @@
       - zsh
       - python-apt
     state: present
+
+- name: check that ISC ntpd is not installed
+  apt:
+    name: ntp
+    state: absent
+    purge: yes
+
+- name: install openntpd
+  apt:
+    name: openntpd
 
 - name: make sure grml-(etc|scripts)-core is not installed
   apt:
