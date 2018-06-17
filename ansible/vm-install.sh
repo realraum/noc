@@ -15,9 +15,5 @@ shift
 echo "installing vm: $name with $distro/$codename"
 echo ""
 
-echo "########## clearing old ssh host keys #########"
-./remove-known-host.sh "$name"
-echo ""
-
 echo "######## running the install playbook ########"
 exec ansible-playbook -e "vmname=$name" -e "vmdistro=$distro" -e "vmdistcodename=$codename" $@ vm-install.yml

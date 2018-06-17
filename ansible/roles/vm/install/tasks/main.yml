@@ -1,8 +1,43 @@
 ---
-- name: generate preseed file
-  template:
-    src: "preseed_{{ vmdistro }}-{{ vmdistcodename }}.cfg.j2"
-    dest: "{{ vm_host.installer.preseed_path }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.cfg"
+- block:
+    - name: Make a temporary directory
+      command: mktemp -d
+      register: tmpdir
+
+    - set_fact:
+        tmpdir: "{{ tmpdir.stdout }}"
+        initramfs: "{{ vm_host.installer.preseed_path }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.initrd.gz"
+
+    - name: Copy initramfs into position
+      copy:
+        remote_src: yes
+        src: "{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/initrd.gz"
+        dest: "{{ initramfs }}"
+
+    - name: generate preseed file
+      template:
+        src: "preseed_{{ vmdistro }}-{{ vmdistcodename }}.cfg.j2"
+        dest: "{{ tmpdir }}/preseed.cfg"
+
+    - name: generate authorized_keys file
+      authorized_key:
+        user: root
+        path: "{{ tmpdir }}/authorized_keys"
+        key: "{{ hostvars[vmname].ssh_keys | default(noc_ssh_keys) | join('\n') }}"
+
+    - name: Inject files into initramfs
+      shell: cpio -H newc -o | gzip -9 >> {{ initramfs }}
+      args:
+        chdir: "{{ tmpdir }}"
+        stdin: |
+          preseed.cfg
+          authorized_keys
+
+  always:
+    - name: Delete temporary directory
+      file:
+        path: "{{ tmpdir }}"
+        state: absent
 
 - name: create disks for vm
   with_dict: "{{ hostvars[vmname].vm_install_cooked.disks.virtio | default({}) | combine(hostvars[vmname].vm_install_cooked.disks.scsi | default({})) }}"
@@ -17,23 +52,23 @@
     command: info
   register: vmhost_info
 
-- name: destroy exisiting vm
-  virt:
-    name: "{{ vmname }}"
-    state: destroyed
-  when: vmname in vmhost_info
+- block:
+    - name: destroy exisiting vm
+      virt:
+        name: "{{ vmname }}"
+        state: destroyed
 
-- name: wait for vm to be destroyed
-  wait_for_virt:
-    name: "{{ vmname }}"
-    states: shutdown,crashed
-    timeout: 5
-  when: vmname in vmhost_info
+    - name: wait for vm to be destroyed
+      wait_for_virt:
+        name: "{{ vmname }}"
+        states: shutdown,crashed
+        timeout: 5
 
-- name: undefining exisiting vm
-  virt:
-    name: "{{ vmname }}"
-    command: undefine
+    - name: undefining exisiting vm
+      virt:
+        name: "{{ vmname }}"
+        command: undefine
+
   when: vmname in vmhost_info
 
 - name: enable installer in VM config

@@ -3,6 +3,3 @@
   hosts: testvm
   roles:
   - role: base
-  - role: vm/grub
-  - role: vm/network
-  - role: vm/guest

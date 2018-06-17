@@ -1,16 +1,15 @@
 ---
 - name: enable serial console in grub and for kernel
-  with_items:
-    - regexp: '^GRUB_TIMEOUT='
-      line: 'GRUB_TIMEOUT=2'
-    - regexp: '^GRUB_CMDLINE_LINUX='
-      line: 'GRUB_CMDLINE_LINUX="console=ttyS0,115200n8"'
-    - regexp: '^GRUB_TERMINAL='
-      line: 'GRUB_TERMINAL=serial'
-    - regexp: '^GRUB_SERIAL_COMMAND='
-      line: 'GRUB_SERIAL_COMMAND="serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1"'
+  with_dict:
+    GRUB_TIMEOUT: 2
+    GRUB_CMDLINE_LINUX: '"console=ttyS0,115200n8"'
+    GRUB_TERMINAL: serial
+    GRUB_SERIAL_COMMAND: >-
+      "serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1"
   lineinfile:
     dest: /etc/default/grub
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
   notify: update grub
+  loop_control:
+    label: "{{ item.key }}"

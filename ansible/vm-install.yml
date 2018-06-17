@@ -14,6 +14,8 @@
       group: _vmhost_
   # TODO: add some sanity checks
 
+- import_playbook: remove_known_hosts.yml
+
 - name: basic installation
   hosts: _vmhost_
   roles:
@@ -34,6 +36,13 @@
   - name: reenable StrictHostKeyChecking
     set_fact:
       ansible_ssh_extra_args: ""
+
+- name: Apply VM configuration roles
+  hosts: "{{ vmname }}"
+  roles:
+  - role: vm/grub
+  - role: vm/network
+  - role: vm/guest
 
 - import_playbook: "host_playbooks/{{ vmname }}.yml"
 

@@ -22,3 +22,16 @@
   loop_control:
     label: "{{ item.key }}"
   notify: restart rngd
+
+- name: Provide a root shell on the VM console [1/2]
+  file:
+    path: /etc/systemd/system/serial-getty@ttyS0.service.d/
+    state: directory
+
+- name: Provide a root shell on the VM console [2/2]
+  copy:
+    dest: /etc/systemd/system/serial-getty@ttyS0.service.d/autologon.conf
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=-/sbin/agetty --keep-baud 115200,38400,9600 --noclear --autologin root --login-pause --host {{ vm_install_host }} %I $TERM

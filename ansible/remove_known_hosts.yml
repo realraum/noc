@@ -1,0 +1,11 @@
+- name: Purge host from known hosts
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - command: ssh-keygen -f ~/.ssh/known_hosts -R [{{ item }}]:{{ hostvars[vmname].ansible_port }}
+      with_items:
+        - "{{ hostvars[vmname].ansible_host }}"
+        - r3-{{ vmname }}
+        - r3g-{{ vmname }}
+        - r3e-{{ vmname }}
+        - "{{ hostvars[vmname].vm_network_cooked.primary.ip }}"

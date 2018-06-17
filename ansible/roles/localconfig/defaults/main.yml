@@ -10,4 +10,4 @@ localconfig_ssh_ids:
 ### to be set inhost_vars and group_vars
 # localconfig_ssh_config_proxycommand:
 # localconfig_ssh_config_user:
-# localconfig_ssh_config_port:
+# ansible_port

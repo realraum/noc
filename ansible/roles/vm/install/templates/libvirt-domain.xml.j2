@@ -7,8 +7,8 @@
     <type arch='x86_64' machine='pc-0.12'>hvm</type>
 {% if run_installer %}
     <kernel>{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/linux</kernel>
-    <initrd>{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/initrd.gz</initrd>
-    <cmdline>console=ttyS0,115200n8 auto=true interface=auto url=tftp://{{ hostvars[inventory_hostname]['ansible_' + (vm_host.installer.net_if | replace('-', '_'))].ipv4.address }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.cfg netcfg/choose_interface=enp1s1 netcfg/disable_autoconfig=true netcfg/get_ipaddress={{ hostvars[vmname].vm_network_cooked.primary.ip }} netcfg/get_netmask={{ hostvars[vmname].vm_network_cooked.primary.mask }} netcfg/get_gateway={{ hostvars[vmname].vm_network_cooked.primary.gateway }} netcfg/get_nameservers="{{ hostvars[vmname].vm_network_cooked.nameservers | join(' ') }}" netcfg/confirm_static=true netcfg/get_hostname={{ vmname }} netcfg/get_domain={{ hostvars[vmname].vm_network_cooked.domain }}</cmdline>
+    <initrd>{{ vm_host.installer.preseed_path }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.initrd.gz</initrd>
+    <cmdline>console=ttyS0,115200n8</cmdline>
 {% endif %}
     <boot dev='hd'/>
   </os>
