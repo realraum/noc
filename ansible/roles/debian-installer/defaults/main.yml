@@ -15,5 +15,5 @@ distros:
 debian_installer_force_download: no
 
 debian_installer_url:
-  debian: "http://debian.mur.at/debian"
+  debian: "https://debian.ffgraz.net/debian"
   ubuntu: "http://ubuntu.uni-klu.ac.at/ubuntu"
