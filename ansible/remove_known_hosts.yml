@@ -8,4 +8,4 @@
         - r3-{{ hostname }}
         - r3g-{{ hostname }}
         - r3e-{{ hostname }}
-        - "{{ hostvars[hostname].vm_network_cooked.primary.ip }}"
+        - "{{ hostvars[hostname].network_cooked.primary.ip }}"

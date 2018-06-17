@@ -5,11 +5,11 @@
   tasks:
   - name: setup variables
     set_fact:
-      vm_network_cooked: "{{ vm_network }}"
-      vm_install_cooked: "{{ vm_install }}"
+      network_cooked: "{{ network }}"
+      install_cooked: "{{ install }}"
   - name: create temporary host group for vm host
     add_host:
-      name: "{{ vm_install.host }}"
+      name: "{{ vm_host }}"
       inventory_dir: "{{inventory_dir}}"
       group: _vmhost_
   # TODO: add some sanity checks

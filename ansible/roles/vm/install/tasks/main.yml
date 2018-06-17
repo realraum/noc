@@ -1,6 +1,6 @@
 ---
 - name: create disks for vm
-  with_dict: "{{ hostvars[hostname].vm_install_cooked.disks.virtio | default({}) | combine(hostvars[hostname].vm_install_cooked.disks.scsi | default({})) }}"
+  with_dict: "{{ hostvars[hostname].install_cooked.disks.virtio | default({}) | combine(hostvars[hostname].install_cooked.disks.scsi | default({})) }}"
   lvol:
     vg: "{{ item.value.vg }}"
     lv: "{{ item.value.lv }}"
@@ -86,6 +86,6 @@
 - name: mark vm as autostarted
   virt:
     name: "{{ hostname }}"
-    autostart: "{{ hostvars[hostname].vm_install_cooked.autostart }}"
+    autostart: "{{ hostvars[hostname].install_cooked.autostart }}"
     command: info ## virt module needs either command or state
-  when: hostvars[hostname].vm_install_cooked.autostart is defined
+  when: hostvars[hostname].install_cooked.autostart is defined

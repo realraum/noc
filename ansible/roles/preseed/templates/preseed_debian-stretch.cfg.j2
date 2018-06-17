@@ -10,14 +10,14 @@ d-i keyboard-configuration/xkb-keymap select us
 d-i netcfg/disable_dhcp boolean true
 d-i netcfg/choose_interface select enp1s1
 d-i netcfg/disable_autoconfig boolean false
-d-i netcfg/get_ipaddress string {{ hostvars[hostname].vm_network_cooked.primary.ip }}
-d-i netcfg/get_netmask string {{ hostvars[hostname].vm_network_cooked.primary.mask }}
-d-i netcfg/get_gateway string {{ hostvars[hostname].vm_network_cooked.primary.gateway }}
-d-i netcfg/get_nameservers string {{ hostvars[hostname].vm_network_cooked.nameservers | join(' ') }}
+d-i netcfg/get_ipaddress string {{ hostvars[hostname].network_cooked.primary.ip }}
+d-i netcfg/get_netmask string {{ hostvars[hostname].network_cooked.primary.mask }}
+d-i netcfg/get_gateway string {{ hostvars[hostname].network_cooked.primary.gateway }}
+d-i netcfg/get_nameservers string {{ hostvars[hostname].network_cooked.nameservers | join(' ') }}
 d-i netcfg/confirm_static boolean true
 
 d-i netcfg/get_hostname string {{ hostname }}
-d-i netcfg/get_domain string {{ hostvars[hostname].vm_network_cooked.domain }}
+d-i netcfg/get_domain string {{ hostvars[hostname].network_cooked.domain }}
 d-i netcfg/wireless_wep string
 
 
@@ -37,7 +37,7 @@ d-i time/zone string Europe/Vienna
 d-i clock-setup/ntp boolean false
 
 
-d-i partman-auto/disk string /dev/{{ hostvars[hostname].vm_install_cooked.disks.primary }}
+d-i partman-auto/disk string /dev/{{ hostvars[hostname].install_cooked.disks.primary }}
 d-i partman-auto/method string lvm
 d-i partman-lvm/device_remove_lvm boolean true
 d-i partman-md/device_remove_md boolean true
@@ -92,7 +92,7 @@ d-i pkgsel/include string openssh-server python
 d-i pkgsel/upgrade select safe-upgrade
 popularity-contest popularity-contest/participate boolean false
 
-d-i grub-installer/choose_bootdev string /dev/{{ hostvars[hostname].vm_install_cooked.disks.primary }}
+d-i grub-installer/choose_bootdev string /dev/{{ hostvars[hostname].install_cooked.disks.primary }}
 d-i grub-installer/only_debian boolean true
 d-i grub-installer/with_other_os boolean false
 

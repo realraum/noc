@@ -1,12 +1,12 @@
 <domain type='kvm'>
   <name>{{ hostname }}</name>
-  <memory>{{ hostvars[hostname].vm_install_cooked.mem * 1024 }}</memory>
-  <currentMemory>{{ hostvars[hostname].vm_install_cooked.mem * 1024 }}</currentMemory>
-  <vcpu>{{ hostvars[hostname].vm_install_cooked.numcpu }}</vcpu>
+  <memory>{{ hostvars[hostname].install_cooked.mem * 1024 }}</memory>
+  <currentMemory>{{ hostvars[hostname].install_cooked.mem * 1024 }}</currentMemory>
+  <vcpu>{{ hostvars[hostname].install_cooked.numcpu }}</vcpu>
   <os>
     <type arch='x86_64' machine='pc-0.12'>hvm</type>
 {% if run_installer %}
-    <kernel>{{ debian_installer_path }}/{{ distro }}-{{ distcodename }}/{{ hostvars[hostname].vm_install_cooked.arch | default('amd64') }}/linux</kernel>
+    <kernel>{{ debian_installer_path }}/{{ distro }}-{{ distcodename }}/{{ hostvars[hostname].install_cooked.arch | default('amd64') }}/linux</kernel>
     <initrd>{{ preseed_path }}/{{ hostname }}-{{ distro }}-{{ distcodename }}.initrd.gz</initrd>
     <cmdline>console=ttyS0,115200n8</cmdline>
 {% endif %}
@@ -35,8 +35,8 @@
       <backend model='random'>/dev/urandom</backend>
     </rng>
 
-{% if 'virtio' in hostvars[hostname].vm_install_cooked.disks %}
-{%   for device, lv in hostvars[hostname].vm_install_cooked.disks.virtio.items() %}
+{% if 'virtio' in hostvars[hostname].install_cooked.disks %}
+{%   for device, lv in hostvars[hostname].install_cooked.disks.virtio.items() %}
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='none' discard='unmap'/>
       <source dev='/dev/mapper/{{ lv.vg | replace('-', '--') }}-{{ lv.lv | replace('-', '--') }}'/>
@@ -45,9 +45,9 @@
 {%   endfor %}
 {% endif %}
 
-{% if 'scsi' in hostvars[hostname].vm_install_cooked.disks %}
+{% if 'scsi' in hostvars[hostname].install_cooked.disks %}
     <controller type='scsi' index='0' model='virtio-scsi'/>
-{%   for device, lv in hostvars[hostname].vm_install_cooked.disks.scsi.items() %}
+{%   for device, lv in hostvars[hostname].install_cooked.disks.scsi.items() %}
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='none' discard='unmap'/>
       <source dev='/dev/mapper/{{ lv.vg | replace('-', '--') }}-{{ lv.lv | replace('-', '--') }}'/>
@@ -56,8 +56,8 @@
 {%   endfor %}
 {% endif %}
 
-{% if hostvars[hostname].vm_install_cooked.interfaces %}
-{%   for if in hostvars[hostname].vm_install_cooked.interfaces %}
+{% if hostvars[hostname].install_cooked.interfaces %}
+{%   for if in hostvars[hostname].install_cooked.interfaces %}
     <interface type='bridge'>
       <source bridge='{{ if.bridge }}'/>
       <model type='virtio'/>

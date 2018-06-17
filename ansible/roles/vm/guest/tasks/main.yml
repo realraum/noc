@@ -34,4 +34,4 @@
     content: |
       [Service]
       ExecStart=
-      ExecStart=-/sbin/agetty --keep-baud 115200,38400,9600 --noclear --autologin root --login-pause --host {{ vm_install_host }} %I $TERM
+      ExecStart=-/sbin/agetty --keep-baud 115200,38400,9600 --noclear --autologin root --login-pause --host {{ vm_host }} %I $TERM
