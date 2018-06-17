@@ -13,8 +13,8 @@ Host {{ hostvars[host].ansible_host }} r3-{{ host }} r3g-{{ host }} r3e-{{ host 
 {% if 'localconfig_ssh_config_user' in hostvars[host] %}
     User {{ hostvars[host].localconfig_ssh_config_user }}
 {% endif %}
-{% if 'localconfig_ssh_config_port' in hostvars[host] %}
-    Port {{ hostvars[host].localconfig_ssh_config_port }}
+{% if hostvars[host].ansible_port != 22000 %}
+    Port {{ hostvars[host].ansible_port }}
 {% endif %}
 
 {% endfor %}
