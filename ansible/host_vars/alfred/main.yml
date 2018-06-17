@@ -2,8 +2,6 @@
 vm_host:
   installer:
     net_if: br-mgmt
-    preseed_path: /srv/preseed
-    path: /srv/installer
     distros:
     - distro: debian
       codename: stretch

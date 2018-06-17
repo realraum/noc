@@ -6,8 +6,8 @@
   <os>
     <type arch='x86_64' machine='pc-0.12'>hvm</type>
 {% if run_installer %}
-    <kernel>{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/linux</kernel>
-    <initrd>{{ vm_host.installer.preseed_path }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.initrd.gz</initrd>
+    <kernel>{{ debian_installer_path }}/{{ distro }}-{{ distcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/linux</kernel>
+    <initrd>{{ preseed_path }}/{{ vmname }}-{{ distro }}-{{ distcodename }}.initrd.gz</initrd>
     <cmdline>console=ttyS0,115200n8</cmdline>
 {% endif %}
     <boot dev='hd'/>

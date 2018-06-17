@@ -1,0 +1,2 @@
+preseed_path: /srv/preseed
+debian_installer_path: /srv/installer

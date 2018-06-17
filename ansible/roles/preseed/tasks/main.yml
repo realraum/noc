@@ -1,0 +1,39 @@
+- block:
+    - name: Make a temporary directory
+      command: mktemp -d
+      register: tmpdir
+
+    - set_fact:
+        tmpdir: "{{ tmpdir.stdout }}"
+        initramfs: "{{ preseed_path | mandatory }}/{{ hostname }}-{{ distro }}-{{ distcodename }}.initrd.gz"
+
+    - name: Copy initramfs into position
+      copy:
+        remote_src: yes
+        src: "{{ debian_installer_path | mandatory }}/{{ distro }}-{{ distcodename }}/{{ install.arch | default('amd64') }}/initrd.gz"
+        dest: "{{ initramfs }}"
+
+    - name: Generate preseed file
+      template:
+        src: "preseed_{{ distro }}-{{ distcodename }}.cfg.j2"
+        dest: "{{ tmpdir }}/preseed.cfg"
+
+    - name: Generate authorized_keys file
+      authorized_key:
+        user: root
+        path: "{{ tmpdir }}/authorized_keys"
+        key: "{{ ssh_keys | join('\n') }}"
+
+    - name: Inject files into initramfs
+      shell: cpio -H newc -o | gzip -9 >> '{{ initramfs }}'
+      args:
+        chdir: "{{ tmpdir }}"
+        stdin: |
+          preseed.cfg
+          authorized_keys
+
+  always:
+    - name: Delete temporary directory
+      file:
+        path: "{{ tmpdir }}"
+        state: absent
