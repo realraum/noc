@@ -16,4 +16,4 @@ echo "installing vm: $name with $distro/$codename"
 echo ""
 
 echo "######## running the install playbook ########"
-exec ansible-playbook -e "vmname=$name" -e "distro=$distro" -e "distcodename=$codename" $@ vm-install.yml
+exec ansible-playbook -e "hostname=$name" -e "distro=$distro" -e "distcodename=$codename" $@ vm-install.yml
