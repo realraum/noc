@@ -11,7 +11,7 @@ install:
     primary: vda
     virtio:
       vda:
-        vg: alfred
+        vg: "{{ vm_host }}"
         lv: "{{ inventory_hostname }}"
         size: 10g
   interfaces:
