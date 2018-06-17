@@ -3,3 +3,8 @@
   service:
     name: ssh
     state: restarted
+
+- name: restart openntpd
+  service:
+    name: openntpd
+    state: restarted
