@@ -1,0 +1,19 @@
+arch: amd64
+
+distros:
+  - distro: debian
+    codename: stretch
+    arch:
+      - amd64
+      - i386
+  - distro: ubuntu
+    codename: xenial
+    arch:
+      - amd64
+      - i386
+
+debian_installer_force_download: no
+
+debian_installer_url:
+  debian: "http://debian.mur.at/debian"
+  ubuntu: "http://ubuntu.uni-klu.ac.at/ubuntu"

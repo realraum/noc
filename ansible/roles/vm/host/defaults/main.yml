@@ -1,5 +1,0 @@
----
-vm_host_force_download_installer: False
-vm_host_installer_url:
-  debian: "http://debian.mur.at/debian"
-  ubuntu: "http://ubuntu.uni-klu.ac.at/ubuntu"
