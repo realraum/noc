@@ -35,7 +35,7 @@
 **** TODO 1 if -> mgmt, 2 if -> lacp -> tagged VLANs
 **** TODO Basic services on hypervisor [2/3]
      Assigned: nicoo
-***** TODO OpenNTPd
+***** TODO NTPd
 ***** DONE Haveged
       CLOSED: [2018-06-08 Sun 21:24]
 ***** DONE Provide time & entropy to guests
