@@ -17,18 +17,30 @@
 ** TODO Bring gnocchi online [0/2]
 *** TODO Move gnocchis to the rack in W1
     Assigned: nicoo
-*** TODO Setup [0/7]
+*** TODO Setup [1/8]
+**** DONE Adapt vm/setup to be able to bring up Gnocci VMs
+     CLOSED: [2018-06-17 Sun 12:32]
+
+     vm/setup had implicit assumptions about network which might not have
+     held when installing core network VMs on gnocci
+
+     It now only needs connectivity on the VM's primary interface,
+     to the configured debian mirror.
+
 **** TODO Prepare preseed installs for gnocchis
      Assigned: nicoo
 
-Generate preseed in Ansible, concat to initramfs.
+     Generate preseed in Ansible, concat to initramfs.
 
 **** TODO 1 if -> mgmt, 2 if -> lacp -> tagged VLANs
-**** TODO Basic services on hypervisor [0/3]
+**** TODO Basic services on hypervisor [2/3]
      Assigned: nicoo
 ***** TODO OpenNTPd
-***** TODO Haveged
-***** TODO Provide time & entropy to guests
+***** DONE Haveged
+      CLOSED: [2018-06-08 Sun 21:24]
+***** DONE Provide time & entropy to guests
+      CLOSED: [2018-06-08 Sun 21:24]
+
 **** TODO Get the vm-host role working there
 **** TODO Move gw to a gnocchi VM
 Clone the VM, run with the legacy VLANs
