@@ -3,12 +3,14 @@
 *** DONE Get approval from mur.at
     CLOSED: [2018-06-01 Fri 20:29]
 *** DONE Set up tunnel
+    CLOSED: [2018-06-02 Sa 01:26]
     Assigned: equinox
     IPv4: 89.106.211.0/28
     IPv6: 2a02:3e0:4001::/48
     IPIP Tunnel Endpoint: 10.12.240.246
 ** TODO Create new VLANs [1/3]
 *** DONE mgmt VLAN 32 (aka new managemnt VLAN)
+    CLOSED: [2018-06-02 Sa 03:17]
     Assigned: equinox
 *** TODO Finish converting plan to diagram & push to ikiwiki
     Assigned: nicoo
@@ -17,7 +19,7 @@
 ** TODO Bring gnocchi online [0/2]
 *** TODO Move gnocchis to the rack in W1
     Assigned: nicoo
-*** TODO Setup [1/8]
+*** TODO Setup [2/9]
 **** DONE Adapt vm/setup to be able to bring up Gnocci VMs
      CLOSED: [2018-06-17 Sun 12:32]
 
@@ -42,12 +44,21 @@
       CLOSED: [2018-06-08 Sun 21:24]
 
 **** TODO Get the vm-host role working there
+**** DONE Figure out best way to virtualize OpenWRT
+     CLOSED: [2018-06-17 So 16:00]
+      Assigned: equinox
+
+      Openwrt x86_64 have everything built in to run inside KVM
+      I propose to store to have 2 disks for the VMs. The first will contain
+      the kernel as well as a sqashfs root filesystem. The second one will hold
+      the overlay. This is basically a ext-root setup:
+
+      https://openwrt.org/docs/guide-user/additional-software/extroot_configuration
+
 **** TODO Move gw to a gnocchi VM
 Clone the VM, run with the legacy VLANs
 **** TODO VMs for firewaling & basic net services (1/subnet)
 Sit directly on the service LAN (original /27)
-***** TODO Figure out best way to virtualize OpenWRT
-      Assigned: equinox
 **** TODO VMs for critical services [0/4]
 ***** TODO DNS resolver
 unbound or getdns
