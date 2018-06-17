@@ -1,6 +1,5 @@
 ---
 dependencies:
   - role: preseed
-    hostname: "{{ hostname }}"
     # TODO: Find a way to eliminate the duplicate defaults.
     ssh_keys: "{{ hostvars[hostname].ssh_keys | default(noc_ssh_keys) }}"
