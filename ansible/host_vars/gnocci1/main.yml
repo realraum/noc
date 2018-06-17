@@ -1,2 +1,16 @@
 ---
 root_password: "{{ vault_root_password }}"
+
+network:
+  nameservers:
+    - 10.12.0.10
+  domain: realraum.at
+  primary:
+    interface: eth0
+    ip: 192.168.32.251
+    mask: 255.255.255.0
+    gateway: 192.168.32.254
+
+install:
+  disks:
+    primary: sda
