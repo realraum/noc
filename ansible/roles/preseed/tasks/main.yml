@@ -21,6 +21,7 @@
     - name: Generate authorized_keys file
       authorized_key:
         user: root
+        manage_dir: no
         path: "{{ tmpdir }}/authorized_keys"
         key: "{{ ssh_keys | join('\n') }}"
 
