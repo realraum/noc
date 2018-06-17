@@ -12,8 +12,8 @@ shift
 codename=$1
 shift
 
-echo "installing vm: $name with $distro/$codename"
+echo "installing $name with $distro/$codename"
 echo ""
 
 echo "######## running the install playbook ########"
-exec ansible-playbook -e "hostname=$name" -e "distro=$distro" -e "distcodename=$codename" $@ vm-install.yml
+exec ansible-playbook -e "hostname=$name" -e "distro=$distro" -e "distcodename=$codename" $@ $(basename "$0" .sh).yml

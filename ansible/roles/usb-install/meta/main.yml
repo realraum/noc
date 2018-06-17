@@ -1,0 +1,8 @@
+dependencies:
+  - role: debian-installer
+    distros:
+      - distro: "{{ distro }}"
+        codename: "{{ distcodename }}"
+        arch: [ "{{ install.arch }}" ]
+
+  - role: preseed

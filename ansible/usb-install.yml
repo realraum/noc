@@ -1,0 +1,13 @@
+---
+- name: Fetch debian installer and bake initrd
+  hosts: "{{ hostname }}"
+  connection: local
+  pre_tasks:
+    - set_fact:
+        install_cooked: "{{ install }}"
+        network_cooked: "{{ network }}"
+  roles:
+    - usb-install
+  vars:
+    preseed_path: "{{ global_artifacts_dir }}"
+    debian_installer_path: "{{ global_cache_dir }}/debian-installer"
