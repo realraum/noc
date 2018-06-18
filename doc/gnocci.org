@@ -35,9 +35,10 @@
      Generate preseed in Ansible, concat to initramfs.
 
 **** TODO 1 if -> mgmt, 2 if -> lacp -> tagged VLANs
-**** TODO Basic services on hypervisor [2/3]
+**** TODO Basic services on hypervisor [3/3]
      Assigned: nicoo
-***** TODO NTPd
+***** DONE NTPd
+      CLOSED: [2018-06-17 Sun 16:31]
 ***** DONE Haveged
       CLOSED: [2018-06-08 Sun 21:24]
 ***** DONE Provide time & entropy to guests
