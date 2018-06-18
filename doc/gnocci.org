@@ -19,7 +19,7 @@
 ** TODO Bring gnocchi online [0/2]
 *** TODO Move gnocchis to the rack in W1
     Assigned: nicoo
-*** TODO Setup [2/9]
+*** TODO Setup [3/9]
 **** DONE Adapt vm/setup to be able to bring up Gnocci VMs
      CLOSED: [2018-06-17 Sun 12:32]
 
@@ -35,7 +35,7 @@
      Generate preseed in Ansible, concat to initramfs.
 
 **** TODO 1 if -> mgmt, 2 if -> lacp -> tagged VLANs
-**** TODO Basic services on hypervisor [3/3]
+**** DONE Basic services on hypervisor [3/3]
      Assigned: nicoo
 ***** DONE NTPd
       CLOSED: [2018-06-17 Sun 16:31]
