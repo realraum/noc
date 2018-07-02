@@ -18,9 +18,6 @@ Each location has a single AP, `ap{0,1}.mgmt.realraum.at`, which provides SSIDs
 for the management VLAN (`realstuff`) and the LAN (`realraum` and `realraum5`);
 we use Ubiquity hardware running OpenWRT.
 
-Moreover, realfunk has an Archer C7 acting as a VLAN-capable switch
-and as a Funkfeuer node; it does **not** provide the realraum SSIDs.
-
 
 ## Physical locations
 
@@ -42,12 +39,15 @@ In r1w2, we have a rack hosting a number of devices:
 **Note:** members setting up devices that only need power and network access
           should do so in this rack (or even better, run a VM or a container
           on `alfred`).
-          
+
 
 #### realfunk
 
 realfunk receives the `0xFF` and LAN VLANs trunked on a single fiber;
 the switch there, `sw2.mgmt.realraum.at`, provides untagged ports on either VLAN.
+
+Moreover, there is a Funkfeuer node there; it *does not* advertise the realraum
+SSIDs.
 
 
 ### Main room
