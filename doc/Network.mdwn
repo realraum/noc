@@ -8,6 +8,16 @@ NOC runs 2 core switches (one in each room), carrying a bunch of VLANs:
 - 255 (`0xFF`) is our Funkfeuer VLAN.
 
 
+### Conventions
+
+We use a number of conventions to make things more consistent:
+
+- The DNS zone for a given network is `NET.realraum.at`, with the exception
+  of the public services network (which has `realraum.at`);
+- Networks using RFC 1918 IP space use the 192.168.VID.0/24 subnet;
+- The gateway for a network is on the last IP for the subnet.
+
+
 
 ## WiFi
 
