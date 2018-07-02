@@ -7,9 +7,6 @@ NOC runs 2 core switches (one in each room), carrying a bunch of VLANs:
 - 127 is the LAN (192.168.127.0/24);
 - 255 (`0xFF`) is our Funkfeuer VLAN.
 
-The switches have hostnames `sw{0,1}.mgmt.realraum.at`, and the WiFi access
-points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
-`1` denotes Wöhnung 2.
 
 
 ## WiFi
@@ -20,6 +17,11 @@ we use Ubiquity hardware running OpenWRT.
 
 
 ## Physical locations
+
+The switches have hostnames `sw{0,1}.mgmt.realraum.at`, and the WiFi access
+points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
+`1` denotes Wöhnung 2.
+
 
 ### Wöhnung 2
 
