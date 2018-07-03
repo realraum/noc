@@ -50,12 +50,12 @@ we use Ubiquity hardware running OpenWRT.
 
 The switches have hostnames `sw{0,1}.mgmt.realraum.at`, and the WiFi access
 points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
-`1` denotes Wöhnung 2.
+`1` denotes the second appartment.
 
 
-### Wöhnung 2
+### W2
 
-#### Raum 1
+#### Room 1
 
 r1w2 has two fiber connections: one to the main room, and one to the radio room.
 (We use fiber to avoid creating a ground loop between the locations.)
