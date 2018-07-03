@@ -21,7 +21,8 @@ switches (one in each half of the hackerspace).  These networks are:
 We use a number of conventions to make things more consistent:
 
 - The DNS zone for a given network is `NET.realraum.at`, with the exception
-  of the public services network (which has `realraum.at`);
+  of the public services network (which uses `realraum.at`) and of the Funkfeuer
+  VLAN (which has no `realraum.at` zone).
 - Networks using RFC 1918 IP space use the 192.168.VID.0/24 subnet;
 - The gateway for a network is on the last IP for the subnet.
 
