@@ -5,11 +5,15 @@
 NOC operates a number of networks, available as tagged VLANs on the core
 switches (one in each half of the hackerspace).  These networks are:
 
-- the IoT network (33);
-- the services interconnect (34) and management (23) networks;
-- the guests (127) and members (128) LANs;
-- the public services network (36, 89.106.211.32/27);
-- the Funkfeuer VLAN (255, `0xFF`).
+| Network    | VLAN id | Extra subnets    |
+|------------|---------|------------------|
+| Management |      23 | --               |
+| IoT        |      33 | --               |
+| Services   |      34 | --               |
+| Public     |      36 | 89.106.211.32/27 |
+| Guests     |     127 | --               |
+| Members    |     128 | 89.106.211.64/27 |
+| `0xFF`     |     255 | --               |
 
 
 ### Conventions
