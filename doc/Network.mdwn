@@ -7,7 +7,7 @@ switches (one in each half of the hackerspace).  These networks are:
 
 | Network    | VLAN id | Extra subnets    |
 |------------|---------|------------------|
-| Management |      23 | --               |
+| Management |      32 | --               |
 | IoT        |      33 | --               |
 | Services   |      34 | --               |
 | Public     |      36 | 89.106.211.64/27 |

@@ -10,7 +10,7 @@ digraph network {
   inet    [ label="Internet" ]
   guests  [ label="Guests (127)" ]
   members [ label="Members (128)\n89.106.211.32/27" ]
-  mgmt    [ label="Management (23)" ]
+  mgmt    [ label="Management (32)" ]
   iot     [ label="IoT (33)" ]
   svc     [ label="Services (34)" ]
 
