@@ -1,7 +1,10 @@
 digraph network {
   label="r³ network overview";
-  node [ shape=none ];
-  edge [ lblstyle="above, sloped" ];
+  graph [ bgcolor="#ff000000" fontname="Liberation Sans" fontcolor="#c0c0c0" ];
+  node [ shape=none fontname="Liberation Sans" fontcolor="#c0c0c0" ];
+  edge [fontname="Liberation Sans"
+        fontcolor="#c0c0c0" color="#c0c0c0"
+  ];
 
   public  [ label="Public (36)\n89.106.211.64/27" ]
   inet    [ label="Internet" ]
