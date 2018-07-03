@@ -29,6 +29,7 @@ rcs: git
 add_plugins:
 - html
 - img
+- map
 - pagetemplate
 - sidebar
 
