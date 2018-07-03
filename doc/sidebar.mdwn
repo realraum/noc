@@ -1,2 +1,1 @@
-- [[Servers]]
-- [[Services]]
+[[!map pages="page(*) and !*/* and !sidebar" show=title]]

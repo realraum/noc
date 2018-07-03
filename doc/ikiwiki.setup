@@ -29,6 +29,7 @@ rcs: git
 add_plugins:
 - html
 - img
+- map
 - pagetemplate
 - sidebar
 
@@ -40,7 +41,7 @@ disable_plugins:
 templatedir: /usr/share/ikiwiki/templates
 
 # base wiki source location
-underlaydir: /usr/share/ikiwiki/basewiki
+underlaydir: /var/empty
 
 # use '!'-prefixed preprocessor directives?
 prefix_directives: '1'
