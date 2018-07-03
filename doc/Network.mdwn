@@ -60,6 +60,7 @@ r1w2 has two fiber connections: one to the main room, and one to the radio room.
 (We use fiber to avoid creating a ground loop between the locations.)
 
 In r1w2, we have a rack hosting a number of devices:
+
 - the patch panel and core switch (`sw1.mgmt.realraum.at`) for W2;
 - the `alfred` virtualization server;
 - miscelaneous devices:
@@ -88,6 +89,7 @@ Cx. The patch panel has a fiber link to r2w1, and a copper link to an external
 antenna for our link to Funkfeuer.
 
 The network shelf in Cx also houses some important devices:
+
 - `gw.realraum.at`;
 - `smsgw.mgmt.realraum.at`, plus its mobile phone;
 - the PoE injectors for `ap0.mgmt.realraum.at` and `sch24.r3.ffgraz.net`;
