@@ -26,6 +26,16 @@ We use a number of conventions to make things more consistent:
 - The gateway for a network is on the last IP for the subnet.
 
 
+### Routing and firewall rules
+
+This network diagram represents networks, and the connection flows between them:
+an arrow from A to B means that a connection can be opened from network A to
+network B.  In all cases, a subset of ICMP (ECHO, ...) is allowed.
+
+Note that any given system might have interfaces in several of these networks.
+
+[[!img Network/overview.svg alt="r³ network overview"]]
+
 
 ## WiFi
 

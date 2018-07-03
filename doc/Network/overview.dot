@@ -1,0 +1,21 @@
+digraph network {
+  label="r³ network overview";
+  node [ shape=none ];
+  edge [ lblstyle="above, sloped" ];
+
+  public  [ label="Public (36)\n89.106.211.32/27" ]
+  inet    [ label="Internet" ]
+  guests  [ label="Guests (127)" ]
+  members [ label="Members (128)\n89.106.211.64/27" ]
+  mgmt    [ label="Management (23)" ]
+  iot     [ label="IoT (33)" ]
+  svc     [ label="Services (34)" ]
+
+  public  -> inet [ dir=both ];
+
+  guests  -> inet [ label="NAT, tc" ];
+  members -> inet [ dir=both label="NAT || firewall" ];
+  guests  -> members [ dir=both label="firewall" ];
+
+  {svc mgmt iot guests members} -> public;
+}
