@@ -30,7 +30,7 @@ We use a number of conventions to make things more consistent:
 ## WiFi
 
 Each location has a single AP, `ap{0,1}.mgmt.realraum.at`, which provides SSIDs
-for the management VLAN (`realstuff`) and the LAN (`realraum` and `realraum5`);
+for the IoT network (`realstuff`) and the LAN (`realraum` and `realraum5`);
 we use Ubiquity hardware running OpenWRT.
 
 
