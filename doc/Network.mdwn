@@ -10,9 +10,9 @@ switches (one in each half of the hackerspace).  These networks are:
 | Management |      23 | --               |
 | IoT        |      33 | --               |
 | Services   |      34 | --               |
-| Public     |      36 | 89.106.211.32/27 |
+| Public     |      36 | 89.106.211.64/27 |
 | Guests     |     127 | --               |
-| Members    |     128 | 89.106.211.64/27 |
+| Members    |     128 | 89.106.211.32/27 |
 | `0xFF`     |     255 | --               |
 
 
