@@ -1,0 +1,25 @@
+- name: Install sudo
+  apt:
+    name: sudo
+    state: present
+  when: sudo in aux_groups
+
+- name: Create users
+  become: True
+  user:
+    name:     "{{ item }}"
+    shell:    "{{ users[item].shell }}"
+    groups:   "{{ aux_groups }}"
+  with_items: "{{ user_groups[group] }}"
+
+- name: Set SSH keys for users
+  become: True
+  authorized_key:
+    user: "{{ item }}"
+    key:  "{{ users[item].ssh | join("\n") }}"
+  with_items: "{{ user_groups[group] }}"
+
+# TODO:
+# - on user creation, generate a password and send it, along with useful info
+#   (hostname, IP, SSH host key, ...), by encrypted email;
+# - execute user-specific playbooks for deploying dotfiles?
