@@ -8,13 +8,15 @@
     IPv4: 89.106.211.0/28
     IPv6: 2a02:3e0:4001::/48
     IPIP Tunnel Endpoint: 10.12.240.246
-** TODO Create new VLANs [1/3]
+** DONE Create new VLANs [3/3]
 *** DONE mgmt VLAN 32 (aka new managemnt VLAN)
     CLOSED: [2018-06-02 Sa 03:17]
     Assigned: equinox
-*** TODO Finish converting plan to diagram & push to ikiwiki
+*** DONE Finish converting plan to diagram & push to ikiwiki
+    CLOSED: [2018-07-08 So 00:07]
     Assigned: nicoo
-*** TODO Remaining VLANs
+*** DONE Remaining VLANs
+    CLOSED: [2018-07-08 So 00:07]
     Assigned: equinox (waiting for nicoo to upload the diagram)
 ** TODO Bring gnocchi online [0/2]
 *** TODO Move gnocchis to the rack in W1
