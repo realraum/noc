@@ -33,6 +33,7 @@ add_plugins:
 - map
 - pagetemplate
 - sidebar
+- typography
 
 # plugins to disable
 disable_plugins:
