@@ -1,0 +1,22 @@
+---
+sudo: no
+addons:
+  apt:
+    packages:
+      - graphviz
+      - ikiwiki
+      - imagemagick
+      - libtext-markdown-discount-perl
+      - libtext-typography-perl
+
+script: make -C doc
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  local-dir: doc/dest
+  fqdn: noc.realraum.at
+  github-token: $GITHUB_TOKEN  # Set as a secure variable
+  keep-history: true
+  on:
+    branch: master
