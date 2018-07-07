@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 # IkiWiki::Setup::Yaml - YAML formatted setup file
 #
 # Setup file for ikiwiki.
