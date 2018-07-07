@@ -1,37 +1,88 @@
 # Network infrastructure
 
-## VLANs
+## Networks
 
-NOC runs 2 core switches (one in each room), carrying a bunch of VLANs:
-- 33 is the management VLAN (192.168.33.0/24);
-- 127 is the LAN (192.168.127.0/24);
-- 255 (`0xFF`) is our Funkfeuer VLAN.
+NOC operates a number of networks, available as tagged VLANs on the core
+switches (one in each half of the hackerspace).  These networks are:
 
-The switches have hostnames `sw{0,1}.mgmt.realraum.at`, and the WiFi access
-points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
-`1` denotes Wöhnung 2.
+| name     | VLAN id | DNS | CIDR                               | Comment                              |
+|----------|---------|-----|------------------------------------|--------------------------------------|
+| mgmt     |      32 | y   | 192.168.32.0/24                    | Management network                   |
+| iot      |      33 | y   | 192.168.33.0/24                    | IoT devices, room infrastructure     |
+| svc      |      34 | y   | 192.168.34.0/24                    | Services LAN, see below              |
+| pub      |      36 | y   | 89.106.211.64/27                   | Publicly-available services          |
+| [HAMNET] |      44 | n   | 44.0.0.0/8                         | Amateur Radio Digital Communications |
+| guests   |     127 | y   | 192.168.127.0/24                   | Exposed through the “realraum” SSIDs |
+| members  |     128 | y   | 89.106.211.32/27, 192.168.128.0/24 | Accessed with per-member credentials |
+| `0xFF`   |     255 | n   | 10.12.240.240/28                   | Funkfeuer VLAN                       |
+
+[HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
+
+
+### `svc` -- Services LAN
+
+This network is intended for services that aren't directly exposed to users
+(be they humans or machines); this includes services exposed through a frontend
+(like realraum web services) and services only meant to be consumed by another
+service (like a database server).
+
+
+### `pub` -- Publicly-available services
+
+This network is intended for services that can be consumed by non-NOC systems,
+including our HTTP(S) frontend -- `entrance`, `mqtt`, ...
+
+Services in this network can restrict availability, for instance by only
+allowing clients connecting from our LANs, or by requiring authentication.
+
+No RFC 1918 subnet is used on this network, only `89.106.211.64/27`.
+
+
+### Conventions
+
+We use a number of conventions to make things more consistent:
+
+- The DNS zone for a given network is `NET.realraum.at`, with the exception of
+  `pub` (which uses `realraum.at`) and VLANs which have no `realraum.at` zone.
+- When a network uses RFC 1918 IP space, it is the 192.168.VID.0/24 subnet;
+  for instance, the `iot` network has id 33 and uses the 192.168.33.0/24 subnet.
+- The gateway for a network is on the last IP for the subnet.
+
+
+### Routing and firewall rules
+
+This network diagram represents networks, and the connection flows between them:
+an arrow from A to B means that a connection can be opened from network A to
+network B.  In all cases, a subset of ICMP (ECHO, ...) is allowed.
+
+Note that any given system might have interfaces in several of these networks.
+
+[[!img Network/overview.svg alt="r³ network overview"]]
 
 
 ## WiFi
 
 Each location has a single AP, `ap{0,1}.mgmt.realraum.at`, which provides SSIDs
-for the management VLAN (`realstuff`) and the LAN (`realraum` and `realraum5`);
+for the IoT network (`realstuff`) and the LAN (`realraum` and `realraum5`);
 we use Ubiquity hardware running OpenWRT.
-
-Moreover, realfunk has an Archer C7 acting as a VLAN-capable switch
-and as a Funkfeuer node; it does **not** provide the realraum SSIDs.
 
 
 ## Physical locations
 
-### Wöhnung 2
+The switches have hostnames `sw{0,1}.mgmt.realraum.at`, and the WiFi access
+points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
+`1` denotes the second appartment.
 
-#### Raum 1
+
+### W2
+
+#### Room 1
 
 r1w2 has two fiber connections: one to the main room, and one to the radio room.
 (We use fiber to avoid creating a ground loop between the locations.)
 
 In r1w2, we have a rack hosting a number of devices:
+
 - the patch panel and core switch (`sw1.mgmt.realraum.at`) for W2;
 - the `alfred` virtualization server;
 - miscelaneous devices:
@@ -42,12 +93,15 @@ In r1w2, we have a rack hosting a number of devices:
 **Note:** members setting up devices that only need power and network access
           should do so in this rack (or even better, run a VM or a container
           on `alfred`).
-          
+
 
 #### realfunk
 
-realfunk receives the `0xFF` and LAN VLANs trunked on a single fiber;
+realfunk receives the `0xFF` and `guests` VLANs trunked on a single fiber;
 the switch there, `sw2.mgmt.realraum.at`, provides untagged ports on either VLAN.
+
+Moreover, there is a Funkfeuer node there; it *does not* advertise the realraum
+SSIDs.
 
 
 ### Main room
@@ -57,6 +111,7 @@ Cx. The patch panel has a fiber link to r2w1, and a copper link to an external
 antenna for our link to Funkfeuer.
 
 The network shelf in Cx also houses some important devices:
+
 - `gw.realraum.at`;
 - `smsgw.mgmt.realraum.at`, plus its mobile phone;
 - the PoE injectors for `ap0.mgmt.realraum.at` and `sch24.r3.ffgraz.net`;

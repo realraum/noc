@@ -257,10 +257,9 @@ p>code, dd>code, li>code {
 }
 
 #content table th {
-	background: #fafafa;
 	padding: 0.1em 0.5em;
 	border-bottom: solid 1px #aaaaaa;
-	color: #555555;
+	color: #d33682;
 }
 
 #content table td {

@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 # IkiWiki::Setup::Yaml - YAML formatted setup file
 #
 # Setup file for ikiwiki.
@@ -32,6 +33,7 @@ add_plugins:
 - map
 - pagetemplate
 - sidebar
+- typography
 
 # plugins to disable
 disable_plugins:
