@@ -17,8 +17,8 @@ vm_install:
   interfaces:
   - bridge: "{{ hostvars[vm_install_host].vm_host.network.interface }}"
     name: mgmt0
-  - bridge: "br-http"
-    name: http0
+  - bridge: "br-svc"
+    name: svc0
   autostart: True
 
 vm_network:
