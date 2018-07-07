@@ -9,7 +9,7 @@
 # Remember to re-run ikiwiki --setup any time you edit this file.
 #
 # name of the wiki
-wikiname: Realraum NOC -- documentation
+wikiname: Realraum NOC — documentation
 # contact email for wiki
 adminemail: noc@realraum.at
 # where the source of the wiki is located
