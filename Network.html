@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<title>Network</title>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+<link rel="stylesheet" href="local.css" type="text/css" />
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+<article class="page">
+
+<section class="pageheader">
+
+<header class="header">
+<a id="logo" href="">Realraum NOC -- documentation</a>
+<span>
+<span class="parentlinks">
+
+<a href="./index.html">Realraum NOC -- documentation</a> > 
+
+</span>
+<span class="title">
+Network
+
+</span>
+</span>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+
+</section>
+
+
+
+<aside class="sidebar">
+<div class='map'>
+<ul>
+<li>
+<span class="selflink">Network</span>
+</li>
+<li>
+<a href="./Servers.html" class="mapitem">Servers</a>
+</li>
+<li>
+<a href="./index.html" class="mapitem">Index</a>
+</li>
+<li>
+<a href="./recentchanges.html" class="mapitem">recentchanges</a>
+</li>
+</ul>
+</div>
+
+
+
+
+</aside>
+
+
+
+<div id="pagebody">
+
+<section id="content">
+<h1>Network infrastructure</h1>
+
+<h2>Networks</h2>
+
+<p>NOC operates a number of networks, available as tagged VLANs on the core
+switches (one in each half of the hackerspace).  These networks are:</p>
+
+<table>
+<thead>
+<tr>
+<th> name     </th>
+<th> VLAN id </th>
+<th> DNS </th>
+<th> CIDR                               </th>
+<th> Comment                              </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> mgmt     </td>
+<td>      32 </td>
+<td> y   </td>
+<td> 192.168.32.0/24                    </td>
+<td> Management network                   </td>
+</tr>
+<tr>
+<td> iot      </td>
+<td>      33 </td>
+<td> y   </td>
+<td> 192.168.33.0/24                    </td>
+<td> IoT devices, room infrastructure     </td>
+</tr>
+<tr>
+<td> svc      </td>
+<td>      34 </td>
+<td> y   </td>
+<td> 192.168.34.0/24                    </td>
+<td> Services LAN, see below              </td>
+</tr>
+<tr>
+<td> <a href="https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone">HAMNET</a> </td>
+<td>      44 </td>
+<td> n   </td>
+<td> 44.0.0.0/8                         </td>
+<td> Amateur Radio Digital Communications </td>
+</tr>
+<tr>
+<td> guests   </td>
+<td>     127 </td>
+<td> y   </td>
+<td> 192.168.127.0/24                   </td>
+<td> Exposed through the “realraum” SSIDs </td>
+</tr>
+<tr>
+<td> members  </td>
+<td>     128 </td>
+<td> y   </td>
+<td> 89.106.211.32/27, 192.168.128.0/24 </td>
+<td> Accessed with per-member credentials </td>
+</tr>
+<tr>
+<td> pub      </td>
+<td>     130 </td>
+<td> y   </td>
+<td> 89.106.211.64/27                   </td>
+<td> Publicly-available services          </td>
+</tr>
+<tr>
+<td> <code>0xFF</code>   </td>
+<td>     255 </td>
+<td> n   </td>
+<td> 10.12.240.240/28                   </td>
+<td> Funkfeuer VLAN                       </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3><code>svc</code> &#8212; Services LAN</h3>
+
+<p>This network is intended for services that aren&#8217;t directly exposed to users
+(be they humans or machines); this includes services exposed through a frontend
+(like realraum web services) and services only meant to be consumed by another
+service (like a database server).</p>
+
+<h3><code>pub</code> &#8212; Publicly-available services</h3>
+
+<p>This network is intended for services that can be consumed by non-NOC systems,
+including our HTTP(S) frontend &#8212; <code>entrance</code>, <code>mqtt</code>, &#8230;</p>
+
+<p>Services in this network can restrict availability, for instance by only
+allowing clients connecting from our LANs, or by requiring authentication.</p>
+
+<p>No RFC 1918 subnet is used on this network, only <code>89.106.211.64/27</code>.</p>
+
+<h3>Conventions</h3>
+
+<p>We use a number of conventions to make things more consistent:</p>
+
+<ul>
+<li>The DNS zone for a given network is <code>NET.realraum.at</code>, with the exception of
+<code>pub</code> (which uses <code>realraum.at</code>) and VLANs which have no <code>realraum.at</code> zone.</li>
+<li>When a network uses RFC 1918 IP space, it is the 192.168.VID.0/24 subnet;
+for instance, the <code>iot</code> network has id 33 and uses the 192.168.33.0/24 subnet.</li>
+<li>The gateway for a network is on the last IP for the subnet.</li>
+</ul>
+
+
+<h3>Routing and firewall rules</h3>
+
+<p>This network diagram represents networks, and the connection flows between them:
+an arrow from A to B means that a connection can be opened from network A to
+network B.  In all cases, a subset of ICMP (ECHO, &#8230;) is allowed.</p>
+
+<p>Note that any given system might have interfaces in several of these networks.</p>
+
+<p>[[!img <span class="error">Error: Image::Magick is not installed</span>]]</p>
+
+<h2>WiFi</h2>
+
+<p>Each location has a single AP, <code>ap{0,1}.mgmt.realraum.at</code>, which provides SSIDs
+for the IoT network (<code>realstuff</code>) and the LAN (<code>realraum</code> and <code>realraum5</code>);
+we use Ubiquity hardware running OpenWRT.</p>
+
+<h2>Physical locations</h2>
+
+<p>The switches have hostnames <code>sw{0,1}.mgmt.realraum.at</code>, and the WiFi access
+points are similarly <code>ap{0,1}.mgmt.realraum.at</code>. <code>0</code> denotes the main room, and
+<code>1</code> denotes the second appartment.</p>
+
+<h3>W2</h3>
+
+<h4>Room 1</h4>
+
+<p>r1w2 has two fiber connections: one to the main room, and one to the radio room.
+(We use fiber to avoid creating a ground loop between the locations.)</p>
+
+<p>In r1w2, we have a rack hosting a number of devices:</p>
+
+<ul>
+<li>the patch panel and core switch (<code>sw1.mgmt.realraum.at</code>) for W2;</li>
+<li>the <code>alfred</code> virtualization server;</li>
+<li>miscelaneous devices:
+
+<ul>
+<li>RIPE ATLAS probe;</li>
+<li>some Raspberry Pi belonging to members;</li>
+<li>&#8230;</li>
+</ul>
+</li>
+</ul>
+
+
+<p><strong>Note:</strong> members setting up devices that only need power and network access
+          should do so in this rack (or even better, run a VM or a container
+          on <code>alfred</code>).</p>
+
+<h4>realfunk</h4>
+
+<p>realfunk receives the <code>0xFF</code> and <code>guests</code> VLANs trunked on a single fiber;
+the switch there, <code>sw2.mgmt.realraum.at</code>, provides untagged ports on either VLAN.</p>
+
+<p>Moreover, there is a Funkfeuer node there; it <em>does not</em> advertise the realraum
+SSIDs.</p>
+
+<h3>Main room</h3>
+
+<p>The main room has its patch panel and core switch (<code>sw0.mgmt.realraum.at</code>) in
+Cx. The patch panel has a fiber link to r2w1, and a copper link to an external
+antenna for our link to Funkfeuer.</p>
+
+<p>The network shelf in Cx also houses some important devices:</p>
+
+<ul>
+<li><code>gw.realraum.at</code>;</li>
+<li><code>smsgw.mgmt.realraum.at</code>, plus its mobile phone;</li>
+<li>the PoE injectors for <code>ap0.mgmt.realraum.at</code> and <code>sch24.r3.ffgraz.net</code>;</li>
+<li><code>test.r3.ffgraz.net</code>, which is a test Funkfeuer node.</li>
+</ul>
+
+
+</section>
+
+
+
+
+
+
+
+</div>
+
+<footer id="footer" class="pagefooter">
+
+<nav id="pageinfo">
+
+
+
+
+
+
+
+
+
+
+
+<div class="pagedate">
+Last edited <time datetime="2018-07-07T20:45:50Z">Sat 07 Jul 2018 08:45:50 PM UTC</time>
+<!-- Created <time datetime="2018-04-24T19:31:16Z" pubdate="pubdate">Tue 24 Apr 2018 07:31:16 PM UTC</time> -->
+</div>
+
+</nav>
+
+
+<!-- from Realraum NOC -- documentation -->
+</footer>
+
+</article>
+
+</body>
+</html>
