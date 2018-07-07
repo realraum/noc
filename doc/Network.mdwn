@@ -5,15 +5,34 @@
 NOC operates a number of networks, available as tagged VLANs on the core
 switches (one in each half of the hackerspace).  These networks are:
 
-| Network    | VLAN id | Extra subnets    |
-|------------|---------|------------------|
-| Management |      32 | --               |
-| IoT        |      33 | --               |
-| Services   |      34 | --               |
-| Public     |      36 | 89.106.211.64/27 |
-| Guests     |     127 | --               |
-| Members    |     128 | 89.106.211.32/27 |
-| `0xFF`     |     255 | --               |
+| name       | VLAN id | Extra subnets    | Comment                              |
+|------------|---------|------------------|--------------------------------------|
+| Management |      32 | --               | Management network                   |
+| IoT        |      33 | --               | IoT devices, room infrastructure     |
+| Services   |      34 | --               | Services LAN, see below              |
+| Public     |      36 | 89.106.211.64/27 | Publicly-available services          |
+| Guests     |     127 | --               | Exposed through the “realraum” SSIDs |
+| Members    |     128 | 89.106.211.32/27 | Accessed with per-member credentials |
+| `0xFF`     |     255 | --               | Funkfeuer VLAN                       |
+
+
+### `svc` -- Services LAN
+
+This network is intended for services that aren't directly exposed to users
+(be they humans or machines); this includes services exposed through a frontend
+(like realraum web services) and services only meant to be consumed by another
+service (like a database server).
+
+
+### `pub` -- Publicly-available services
+
+This network is intended for services that can be consumed by non-NOC systems,
+including our HTTP(S) frontend -- `entrance`, `mqtt`, ...
+
+Services in this network can restrict availability, for instance by only
+allowing clients connecting from our LANs, or by requiring authentication.
+
+No RFC 1918 subnet is used on this network, only `89.106.211.64/27`.
 
 
 ### Conventions
