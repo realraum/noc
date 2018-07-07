@@ -2,8 +2,7 @@
 
 ## Networks
 
-NOC operates a number of networks, available as tagged VLANs on the core
-switches (one in each half of the hackerspace).  These networks are:
+NOC operates a number of networks, available as tagged VLANs on the core switches:
 
 | name     | VLAN id | DNS | CIDR                               | Comment                              |
 |----------|---------|-----|------------------------------------|--------------------------------------|
@@ -40,8 +39,6 @@ No RFC 1918 subnet is used on this network, only `89.106.211.64/27`.
 
 ### Conventions
 
-We use a number of conventions to make things more consistent:
-
 - The DNS zone for a given network is `NET.realraum.at`, with the exception of
   `pub` (which uses `realraum.at`) and VLANs which have no `realraum.at` zone.
 - When a network uses RFC 1918 IP space, it is the 192.168.VID.0/24 subnet;
@@ -74,9 +71,7 @@ points are similarly `ap{0,1}.mgmt.realraum.at`. `0` denotes the main room, and
 `1` denotes the second appartment.
 
 
-### W2
-
-#### Room 1
+### W2 -- Room 1
 
 r1w2 has two fiber connections: one to the main room, and one to the radio room.
 (We use fiber to avoid creating a ground loop between the locations.)
@@ -95,7 +90,7 @@ In r1w2, we have a rack hosting a number of devices:
           on `alfred`).
 
 
-#### realfunk
+### W2 -- realfunk
 
 realfunk receives the `0xFF` and `guests` VLANs trunked on a single fiber;
 the switch there, `sw2.mgmt.realraum.at`, provides untagged ports on either VLAN.
