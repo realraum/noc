@@ -6,6 +6,7 @@ addons:
       - graphviz
       - ikiwiki
       - imagemagick
+      - libimage-magick-perl
       - libtext-markdown-discount-perl
       - libtext-typography-perl
 
