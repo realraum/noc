@@ -17,11 +17,11 @@ vm_host:
       - i386
   network:
     interface: br-mgmt
-    ip: 192.168.33.65
+    ip: 192.168.32.65
     mask: 255.255.255.0
-    gateway: 192.168.33.1
+    gateway: 192.168.32.254
     nameservers:
-    - 192.168.33.1
+    - 192.168.32.254
     - 10.12.0.10
     indices:
-      testvm: 200
+      testvm: 99
