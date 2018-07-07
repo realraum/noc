@@ -14,7 +14,7 @@ switches (one in each half of the hackerspace).  These networks are:
 | [HAMNET] |      44 | n       | 44.0.0.0/8       | Amateur Radio Digital Communications |
 | guests   |     127 | y       | --               | Exposed through the “realraum” SSIDs |
 | members  |     128 | y       | 89.106.211.32/27 | Accessed with per-member credentials |
-| `0xFF`   |     255 | n       | --               | Funkfeuer VLAN                       |
+| `0xFF`   |     255 | n       | 10.12.240.240/28 | Funkfeuer VLAN                       |
 
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
 
