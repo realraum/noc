@@ -5,16 +5,16 @@
 NOC operates a number of networks, available as tagged VLANs on the core
 switches (one in each half of the hackerspace).  These networks are:
 
-| name     | VLAN id | RFC1918 | Extra subnets    | Comment                              |
-|----------|---------|---------|------------------|--------------------------------------|
-| mgmt     |      32 | y       | --               | Management network                   |
-| iot      |      33 | y       | --               | IoT devices, room infrastructure     |
-| svc      |      34 | y       | --               | Services LAN, see below              |
-| pub      |      36 | n       | 89.106.211.64/27 | Publicly-available services          |
-| [HAMNET] |      44 | n       | 44.0.0.0/8       | Amateur Radio Digital Communications |
-| guests   |     127 | y       | --               | Exposed through the “realraum” SSIDs |
-| members  |     128 | y       | 89.106.211.32/27 | Accessed with per-member credentials |
-| `0xFF`   |     255 | n       | 10.12.240.240/28 | Funkfeuer VLAN                       |
+| name     | VLAN id | DNS | CIDR                               | Comment                              |
+|----------|---------|-----|------------------------------------|--------------------------------------|
+| mgmt     |      32 | y   | 192.168.32.0/24                    | Management network                   |
+| iot      |      33 | y   | 192.168.33.0/24                    | IoT devices, room infrastructure     |
+| svc      |      34 | y   | 192.168.34.0/24                    | Services LAN, see below              |
+| pub      |      36 | y   | 89.106.211.64/27                   | Publicly-available services          |
+| [HAMNET] |      44 | n   | 44.0.0.0/8                         | Amateur Radio Digital Communications |
+| guests   |     127 | y   | 192.168.127.0/24                   | Exposed through the “realraum” SSIDs |
+| members  |     128 | y   | 89.106.211.32/27, 192.168.128.0/24 | Accessed with per-member credentials |
+| `0xFF`   |     255 | n   | 10.12.240.240/28                   | Funkfeuer VLAN                       |
 
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
 
@@ -42,9 +42,8 @@ No RFC 1918 subnet is used on this network, only `89.106.211.64/27`.
 
 We use a number of conventions to make things more consistent:
 
-- The DNS zone for a given network is `NET.realraum.at`, with the exception
-  of `pub` (which uses `realraum.at`) and of the Funkfeuer VLAN (which has no
-  `realraum.at` zone).
+- The DNS zone for a given network is `NET.realraum.at`, with the exception of
+  `pub` (which uses `realraum.at`) and VLANs which have no `realraum.at` zone.
 - When a network uses RFC 1918 IP space, it is the 192.168.VID.0/24 subnet;
   for instance, the `iot` network has id 33 and uses the 192.168.33.0/24 subnet.
 - The gateway for a network is on the last IP for the subnet.
