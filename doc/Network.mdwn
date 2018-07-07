@@ -5,15 +5,15 @@
 NOC operates a number of networks, available as tagged VLANs on the core
 switches (one in each half of the hackerspace).  These networks are:
 
-| name       | VLAN id | Extra subnets    | Comment                              |
-|------------|---------|------------------|--------------------------------------|
-| Management |      32 | --               | Management network                   |
-| IoT        |      33 | --               | IoT devices, room infrastructure     |
-| Services   |      34 | --               | Services LAN, see below              |
-| Public     |      36 | 89.106.211.64/27 | Publicly-available services          |
-| Guests     |     127 | --               | Exposed through the “realraum” SSIDs |
-| Members    |     128 | 89.106.211.32/27 | Accessed with per-member credentials |
-| `0xFF`     |     255 | --               | Funkfeuer VLAN                       |
+| name    | VLAN id | Extra subnets    | Comment                              |
+|---------|---------|------------------|--------------------------------------|
+| mgmt    |      32 | --               | Management network                   |
+| iot     |      33 | --               | IoT devices, room infrastructure     |
+| svc     |      34 | --               | Services LAN, see below              |
+| pub     |      36 | 89.106.211.64/27 | Publicly-available services          |
+| guests  |     127 | --               | Exposed through the “realraum” SSIDs |
+| members |     128 | 89.106.211.32/27 | Accessed with per-member credentials |
+| `0xFF`  |     255 | --               | Funkfeuer VLAN                       |
 
 
 ### `svc` -- Services LAN
@@ -40,10 +40,10 @@ No RFC 1918 subnet is used on this network, only `89.106.211.64/27`.
 We use a number of conventions to make things more consistent:
 
 - The DNS zone for a given network is `NET.realraum.at`, with the exception
-  of the public services network (which uses `realraum.at`) and of the Funkfeuer
-  VLAN (which has no `realraum.at` zone).
+  of `pub` (which uses `realraum.at`) and of the Funkfeuer VLAN (which has no
+  `realraum.at` zone).
 - Networks using RFC 1918 IP space use the 192.168.VID.0/24 subnet;
-  for instance, the IoT network has id 33 and uses the 192.168.33.0/24 subnet.
+  for instance, the `iot` network has id 33 and uses the 192.168.33.0/24 subnet.
 - The gateway for a network is on the last IP for the subnet.
 
 
@@ -95,7 +95,7 @@ In r1w2, we have a rack hosting a number of devices:
 
 #### realfunk
 
-realfunk receives the `0xFF` and LAN VLANs trunked on a single fiber;
+realfunk receives the `0xFF` and `guests` VLANs trunked on a single fiber;
 the switch there, `sw2.mgmt.realraum.at`, provides untagged ports on either VLAN.
 
 Moreover, there is a Funkfeuer node there; it *does not* advertise the realraum
