@@ -92,8 +92,10 @@ In r1w2, we have a rack hosting a number of devices:
 
 ### W2 -- realfunk
 
-realfunk receives the `0xFF` and `guests` VLANs trunked on a single fiber;
-the switch there, `sw2.mgmt.realraum.at`, provides untagged ports on either VLAN.
+realfunk receives the VLANs trunked on a single fiber; the switch there, `sw2`,
+provides untagged ports on guests, `0xFF`, and HAMNET, which are labelled on the
+device. Moreover, a single port (5) has the untagged guests LAN, along with
+tagged HAMNET packets, used by the desktop computer there.
 
 Moreover, there is a Funkfeuer node there; it *does not* advertise the realraum
 SSIDs.
