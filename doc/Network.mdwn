@@ -13,6 +13,7 @@ NOC operates a number of networks, available as tagged VLANs on the core switche
 | guests   | 127 | y   | 192.168.127.0/24                   | Exposed through the “realraum” SSIDs |
 | members  | 128 | y   | 89.106.211.32/27, 192.168.128.0/24 | Accessed with per-member credentials |
 | pub      | 130 | y   | 89.106.211.64/27                   | Publicly-available services          |
+| UPC      | 168 | n   | <dynamically assigned>             | UPC DOCSIS Internet                  |
 | `0xFF`   | 255 | n   | 10.12.240.240/28                   | Funkfeuer VLAN                       |
 
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
