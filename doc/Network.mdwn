@@ -6,7 +6,8 @@ NOC operates a number of networks, available as tagged VLANs on the core switche
 
 | Name     |  ID | DNS | CIDR                               | Comment                              |
 |----------|-----|-----|------------------------------------|--------------------------------------|
-| mgmt     |  32 | y   | 192.168.32.0/24                    | Management network                   |
+| realfunk |   6 | n   | 192.168.6.0/24                     | realfunk management network          |
+| mgmt     |  32 | y   | 192.168.32.0/24                    | management network                   |
 | iot      |  33 | y   | 192.168.33.0/24                    | IoT devices, room infrastructure     |
 | svc      |  34 | y   | 192.168.34.0/24                    | Services LAN, see below              |
 | [HAMNET] |  44 | n   | 44.0.0.0/8                         | Amateur Radio Digital Communications |
@@ -17,6 +18,15 @@ NOC operates a number of networks, available as tagged VLANs on the core switche
 | `0xFF`   | 255 | n   | 10.12.240.240/28                   | Funkfeuer VLAN                       |
 
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
+
+
+### `realfunk` -- realfunk management netork
+
+This network will be used by realfunk to communicate between the ground station
+and things like SDR or similiar stuff mounted on the roof. For now this network
+does not need DNS or connection to any other network. There also won't be any
+network services such as DHCP or recursive DNS. realfunk will probly run their
+own DHCP server.
 
 
 ### `svc` -- Services LAN
