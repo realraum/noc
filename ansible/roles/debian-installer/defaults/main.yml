@@ -1,5 +1,3 @@
-arch: amd64
-
 distros:
   - distro: debian
     codename: stretch
