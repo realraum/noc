@@ -3,3 +3,8 @@
 global_cache_dir: "{{ inventory_dir }}/.cache/"
 global_artifacts_dir: "{{ inventory_dir }}/files/"
 
+# Default credentials
+## Root password; by default, undefined
+root_password: "{{ vault_root_password }}"
+## SSH keys for root, default to NOC's
+ssh_keys: "{{ noc_ssh_keys }}"

@@ -1,6 +1,4 @@
 ---
-root_password: "{{ vault_root_password }}"
-
 network:
   nameservers:
     - 10.12.0.10
