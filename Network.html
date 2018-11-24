@@ -102,11 +102,18 @@ Network
 </thead>
 <tbody>
 <tr>
+<td> realfunk </td>
+<td>   6 </td>
+<td> n   </td>
+<td> 192.168.6.0/24                     </td>
+<td> realfunk management network          </td>
+</tr>
+<tr>
 <td> mgmt     </td>
 <td>  32 </td>
 <td> y   </td>
 <td> 192.168.32.0/24                    </td>
-<td> Management network                   </td>
+<td> management network                   </td>
 </tr>
 <tr>
 <td> iot      </td>
@@ -167,6 +174,14 @@ Network
 </tbody>
 </table>
 
+
+<h3><code>realfunk</code> &#8212; realfunk management network</h3>
+
+<p>This network will be used by realfunk to communicate between the ground station
+and things like SDR or similar stuff mounted on the roof. For now this network
+does not need DNS or connection to any other network. There also won&#8217;t be any
+network services such as DHCP or recursive DNS. realfunk will probably run their
+own DHCP server.</p>
 
 <h3><code>svc</code> &#8212; Services LAN</h3>
 
@@ -294,7 +309,7 @@ antenna for our link to Funkfeuer.</p>
 
 
 <div class="pagedate">
-Last edited <time datetime="2018-08-17T17:52:11Z">Fri 17 Aug 2018 05:52:11 PM UTC</time>
+Last edited <time datetime="2018-11-24T15:11:19Z">Sat 24 Nov 2018 03:11:19 PM UTC</time>
 <!-- Created <time datetime="2018-03-22T22:08:52Z" pubdate="pubdate">Thu 22 Mar 2018 10:08:52 PM UTC</time> -->
 </div>
 
