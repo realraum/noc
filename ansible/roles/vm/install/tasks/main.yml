@@ -99,7 +99,7 @@
   wait_for_virt:
     name: "{{ vmname }}"
     states: shutdown,crashed
-    timeout: 900
+    timeout: 1800
   register: installer_result
   failed_when: installer_result.failed or installer_result.state == "crashed"
 

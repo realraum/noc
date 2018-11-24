@@ -7,7 +7,7 @@
   lineinfile:
     path: /etc/default/rng-tools
     line: '{{ item.key }}={{ item.value }}'
-    regexp: '^#?{{ item.key }}={{ item.value }}'
+    regexp: '^#?{{ item.key }}='
   with_dict: '{{ rngd_config }}'
   loop_control:
     label: "{{ item.key }}"
