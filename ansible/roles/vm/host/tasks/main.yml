@@ -3,7 +3,8 @@
   apt:
     name:
       - qemu-kvm
-      - libvirt-bin
+      - # configuration package, pulls in libvirt-clients and libvirt-daemon
+        libvirt-daemon-system
       - python-libvirt
       - haveged
     state: present
