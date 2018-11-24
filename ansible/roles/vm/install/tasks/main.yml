@@ -31,15 +31,13 @@
 
   when: hostname in vmhost_info
 
-- name: enable installer in VM config
-  set_fact:
-    run_installer: True
-
 - name: define new installer vm
   virt:
     name: "{{ hostname }}"
     command: define
     xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+  vars:
+    run_installer: yes
 
 - name: start vm
   virt:
@@ -68,15 +66,13 @@
     name: "{{ hostname }}"
     command: undefine
 
-- name: disable installer in VM config
-  set_fact:
-    run_installer: False
-
 - name: define new production vm
   virt:
     name: "{{ hostname }}"
     command: define
     xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+  vars:
+    run_installer: no
 
 - name: start vm
   virt:
