@@ -6,8 +6,9 @@ distros:
     arch:
       - amd64
       - i386
+
   - distro: ubuntu
-    codename: xenial
+    codename: bionic
     arch:
       - amd64
       - i386
@@ -16,4 +17,4 @@ debian_installer_force_download: no
 
 debian_installer_url:
   debian: "https://debian.ffgraz.net/debian"
-  ubuntu: "http://ubuntu.uni-klu.ac.at/ubuntu"
+  ubuntu: "https://debian.ffgraz.net/ubuntu"
