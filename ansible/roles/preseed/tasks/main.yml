@@ -5,17 +5,17 @@
 
     - set_fact:
         tmpdir: "{{ tmpdir.stdout }}"
-        initramfs: "{{ preseed_path | mandatory }}/{{ hostname }}-{{ distro }}-{{ distcodename }}.initrd.gz"
+        initramfs: "{{ preseed_path | mandatory }}/{{ hostname }}-{{ install_distro }}-{{ install_codename }}.initrd.gz"
 
     - name: Copy initramfs into position
       copy:
         remote_src: yes
-        src: "{{ debian_installer_path | mandatory }}/{{ distro }}-{{ distcodename }}/{{ hostvars[hostname].install_cooked.arch | default('amd64') }}/initrd.gz"
+        src: "{{ debian_installer_path | mandatory }}/{{ install_distro }}-{{ install_codename }}/{{ hostvars[hostname].install_cooked.arch | default('amd64') }}/initrd.gz"
         dest: "{{ initramfs }}"
 
     - name: Generate preseed file
       template:
-        src: "preseed_{{ distro }}-{{ distcodename }}.cfg.j2"
+        src: "preseed_{{ install_distro }}-{{ install_codename }}.cfg.j2"
         dest: "{{ tmpdir }}/preseed.cfg"
 
     - name: Generate authorized_keys file
