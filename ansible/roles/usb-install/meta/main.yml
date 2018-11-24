@@ -3,6 +3,6 @@ dependencies:
     distros:
       - distro: "{{ install_distro }}"
         codename: "{{ install_codename }}"
-        arch: [ "{{ install.arch }}" ]
+        arch: [ "{{ install.arch | default('amd64') }}" ]
 
   - role: preseed
