@@ -14,13 +14,11 @@
         install_cooked: "{{ install }}"
         network_cooked: "{{ network }}"
         artifacts_dir:  "{{ global_artifacts_dir }}/{{ hostname }}"
+        debian_installer_path: "{{ global_cache_dir }}/debian-installer"
 
     - file:
         state: directory
-        name: "{{ item }}"
-      with_items:
-        - "{{ artifacts_dir }}"
-        - "{{ debian_installer_path }}"
+        name: "{{ artifacts_dir }}"
 
   roles:
     - usb-install
@@ -34,11 +32,13 @@
       block:
         - name: Copy generated files to the USB drive
           copy:
-            src: "{{ item.value }}"
-            dest: "{{ usbdrive_path }}/{{ item.key }}"
-          with_dict:
-            initrd.gz: "{{ artifacts_dir }}/initrd.preseed.gz"
-            linux: "{{ global_cache_dir }}/debian-installer/{{ install_distro }}-{{ install_codename }}/{{ install.arch | default('amd64') }}/linux"
+            src: "{{ item }}"
+            dest: "{{ usbdrive_path }}/"
+          with_items:
+            - "{{ artifacts_dir }}/initrd.preseed.gz"
+            - "{{ global_cache_dir }}/debian-installer/{{ install_distro }}-{{ install_codename }}/{{ install.arch | default('amd64') }}/linux"
+          loop_control:
+            label: "{{ item | basename }}"
 
         - name: Generate syslinux configuration
           copy:
@@ -48,7 +48,7 @@
                SAY SYSLINUX booting an automated installer for {{ hostname }}...
               LABEL linux
                KERNEL linux
-               INITRD initrd.gz
+               INITRD initrd.preseed.gz
                APPEND install vga=off console=ttyS0,115200n8
 
         - name: Make the USB disk bootable
