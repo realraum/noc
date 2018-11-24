@@ -1,5 +1,9 @@
 ---
 net:
+  realfunk:
+    vlan: 6
+    prefix: 192.168.6.0/24
+
   mgmt:
     vlan: 32
     prefix: 192.168.32.0/24
@@ -48,6 +52,10 @@ net:
     gw: 89.106.211.94
     dns:
       - 192.168.211.94
+
+  upc:
+    vlan: 168
+    prefix: 192.168.0.0/24
 
   ff:
     vlan: 255
