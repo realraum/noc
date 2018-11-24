@@ -78,6 +78,9 @@
       - nano
       - zsh
       - python-apt
+      - command-not-found
+      - man-db
+      - lshw
     state: present
 
 - when: base_managed_ntpd
