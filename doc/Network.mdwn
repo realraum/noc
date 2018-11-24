@@ -20,12 +20,12 @@ NOC operates a number of networks, available as tagged VLANs on the core switche
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
 
 
-### `realfunk` -- realfunk management netork
+### `realfunk` -- realfunk management network
 
 This network will be used by realfunk to communicate between the ground station
-and things like SDR or similiar stuff mounted on the roof. For now this network
+and things like SDR or similar stuff mounted on the roof. For now this network
 does not need DNS or connection to any other network. There also won't be any
-network services such as DHCP or recursive DNS. realfunk will probly run their
+network services such as DHCP or recursive DNS. realfunk will probably run their
 own DHCP server.
 
 
