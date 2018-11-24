@@ -31,40 +31,67 @@
 
   when: hostname in vmhost_info
 
-- name: define new installer vm
-  virt:
-    name: "{{ hostname }}"
-    command: define
-    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
-  vars:
-    run_installer: yes
+- block:
+    - name: create a temporary workdir
+      command: mktemp -d
+      register: tmpdir
 
-- name: start vm
-  virt:
-    name: "{{ hostname }}"
-    state: running
+    - import_role:
+        name: preseed
+      vars:
+        ssh_keys: "{{ hostvars[hostname].ssh_keys }}"
+        install_interface: enp1s1
+        preseed_tmpdir: "{{ tmpdir.stdout }}"
 
-- name: wait for installer to start
-  wait_for_virt:
-    name: "{{ hostname }}"
-    states: running
-    timeout: 10
+    - name: Make preseed workdir readable by qemu
+      acl:
+        path: "{{ tmpdir.stdout }}"
+        state: present
+        entity: libvirt-qemu
+        etype: user
+        permissions: rx
 
-- debug:
-    msg: "you can check on the status of the installer running this command 'virsh console {{ hostname }}' on host {{ inventory_hostname }}."
+    - name: define new installer vm
+      virt:
+        name: "{{ hostname }}"
+        command: define
+        xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+      vars:
+        run_installer: yes
+        preseed_tmpdir: "{{ tmpdir.stdout }}"
 
-- name: wait for installer to finish or crash
-  wait_for_virt:
-    name: "{{ hostname }}"
-    states: shutdown,crashed
-    timeout: 1800
-  register: installer_result
-  failed_when: installer_result.failed or installer_result.state == "crashed"
+    - name: start vm
+      virt:
+        name: "{{ hostname }}"
+        state: running
 
-- name: undefining installer vm
-  virt:
-    name: "{{ hostname }}"
-    command: undefine
+    - name: wait for installer to start
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: running
+        timeout: 10
+
+    - debug:
+        msg: "you can check on the status of the installer running this command 'virsh console {{ hostname }}' on host {{ inventory_hostname }}."
+
+    - name: wait for installer to finish or crash
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: shutdown,crashed
+        timeout: 900
+      register: installer_result
+      failed_when: installer_result.failed or installer_result.state == "crashed"
+
+    - name: undefining installer vm
+      virt:
+        name: "{{ hostname }}"
+        command: undefine
+
+  always:
+    - name: cleanup temporary workdir
+      file:
+        path: "{{ tmpdir.stdout }}"
+        state: absent
 
 - name: define new production vm
   virt:

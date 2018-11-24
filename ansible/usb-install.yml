@@ -9,20 +9,17 @@
       default: ""
       private: no
 
-  vars:
-    preseed_path: "{{ global_artifacts_dir }}/{{ hostname }}"
-    debian_installer_path: "{{ global_cache_dir }}/debian-installer"
-
   pre_tasks:
     - set_fact:
         install_cooked: "{{ install }}"
         network_cooked: "{{ network }}"
+        artifacts_dir:  "{{ global_artifacts_dir }}/{{ hostname }}"
 
     - file:
         state: directory
         name: "{{ item }}"
       with_items:
-        - "{{ preseed_path }}"
+        - "{{ artifacts_dir }}"
         - "{{ debian_installer_path }}"
 
   roles:
@@ -40,7 +37,7 @@
             src: "{{ item.value }}"
             dest: "{{ usbdrive_path }}/{{ item.key }}"
           with_dict:
-            initrd.gz: "{{ global_artifacts_dir }}/{{ hostname }}/{{ hostname }}-{{ install_distro }}-{{ install_codename }}.initrd.gz"
+            initrd.gz: "{{ artifacts_dir }}/initrd.preseed.gz"
             linux: "{{ global_cache_dir }}/debian-installer/{{ install_distro }}-{{ install_codename }}/{{ install.arch | default('amd64') }}/linux"
 
         - name: Generate syslinux configuration

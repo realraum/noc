@@ -1,0 +1,22 @@
+---
+- block:
+    - name: Create temporary workdir
+      command: mktemp -d
+      register: tmpdir
+
+    - import_role:
+        name: preseed
+      vars:
+        preseed_tmpdir: "{{ tmpdir.stdout }}"
+
+    - name: Copy the preseed initramfs to the artifacts directory
+      copy:
+        src: "{{ tmpdir.stdout }}/initrd.preseed.gz"
+        dest: "{{ artifacts_dir }}/"
+
+
+  always:
+    - name: Cleanup temporary workdir
+      file:
+        path: "{{ tmpdir.stdout }}"
+        state: absent
