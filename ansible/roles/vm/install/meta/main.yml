@@ -1,5 +1,10 @@
 ---
 dependencies:
+  - role: debian-installer
+    distros:
+      - distro: "{{ install_distro }}"
+        codename: "{{ install_codename }}"
+        arch: [ "{{ hostvars[hostname].install_cooked.arch | default('amd64') }}" ]
   - role: preseed
     ssh_keys: "{{ hostvars[hostname].ssh_keys }}"
     install_interface: enp1s1
