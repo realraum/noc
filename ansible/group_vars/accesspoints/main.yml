@@ -11,17 +11,17 @@ accesspoint_wifi_channels:
 
 accesspoint_zones:
   iot:
-    ssid: "realstuff"
+    ssid: "TEST realstuff"
     encryption: "psk2"
-    key: "this-should-come-from-vault"
+    key: "{{ vault_accesspoint_zones.iot.key }}"
   guests:
-    ssid: "realraum"
+    ssid: "TEST realraum"
     encryption: "psk2"
-    key: "same-here"
-  members:
-    ssid: "r3members"
-    encryption: "psk2"
-    key: "this-will-probably-use-radius-and-not-even-have-a-key"
+    key: "{{ vault_accesspoint_zones.guests.key }}"
+  # members:
+  #   ssid: "TEST r3members"
+  #   encryption: "psk2"
+  #   key: "{{ vault_accesspoint_zones.members.key }}"
 
 
 
@@ -60,19 +60,20 @@ accesspoint_network_base:
       dns: "{{ net.mgmt.dns | join(' ') }}"
       dns_search: realraum.at
 
-accesspoint_network_zones: []
-# accesspoint_network_zone_template:
-#   - name: interface '{{ item }}'
-#     options:
-#       type: bridge
-#       ifname: "{{ accesspoint_wired_interface }}.{{ net[item].vlan }}"
-#       accept_ra: 0
-#       proto: none
-
+accesspoint_network_zones: "{{ accesspoint_network_zones_yaml | from_yaml }}"
+accesspoint_network_zones_yaml: |
+  {% for item in accesspoint_zones.keys() %}
+  - name: interface "{{ item }}"
+    options:
+      type: bridge
+      ifname: "{{ accesspoint_wired_interface }}.{{ net[item].vlan }}"
+      accept_ra: 0
+      proto: none
+  {% endfor %}
 
 
 accesspoint_wireless_devices:
-  - name: wifi-device 'radio5'
+  - name: wifi-device 'radio5g'
     options:
       type: 'mac80211'
       channel: "{{ accesspoint_wifi_channels['5g'][inventory_hostname] }}"
@@ -81,7 +82,7 @@ accesspoint_wireless_devices:
       path: "{{ accesspoint_wireless_device_paths['5g'] }}"
       htmode: 'VHT80'
 
-  - name: wifi-device 'radio24'
+  - name: wifi-device 'radio2g4'
     options:
       type: 'mac80211'
       channel: "{{ accesspoint_wifi_channels['2.4g'][inventory_hostname] }}"
@@ -90,45 +91,45 @@ accesspoint_wireless_devices:
       path: "{{ accesspoint_wireless_device_paths['2.4g'] }}"
       htmode: 'HT20'
 
-accesspoint_wireless_ifaces: []
-# accesspoint_wireless_iface_template:
-#   - name: wifi-iface '{{ item }}24s'
-#     options:
-#       device: 'radio24'
-#       network: '{{ item }}'
-#       mode: 'ap'
-#       ssid: '{{ accesspoint_zones[item].ssid }}24'
-#       encryption: '{{ accesspoint_zones[item].encryption }}'
-#       key: '{{ accesspoint_zones[item].key }}'
+accesspoint_wireless_ifaces: "{{ accesspoint_wireless_ifaces_yaml | from_yaml }}"
+accesspoint_wireless_ifaces_yaml: |
+  {% for item in accesspoint_zones.keys() %}
+  - name: wifi-iface '{{ item }}2g4only'
+    options:
+      device: 'radio2g4'
+      network: '{{ item }}'
+      mode: 'ap'
+      ssid: '{{ accesspoint_zones[item].ssid }}2.4'
+      encryption: '{{ accesspoint_zones[item].encryption }}'
+      key: '{{ accesspoint_zones[item].key }}'
 
-#   - name: wifi-iface '{{ item }}5s'
-#     options:
-#       device: 'radio5'
-#       network: '{{ item }}'
-#       mode: 'ap'
-#       ssid: '{{ accesspoint_zones[item].ssid }}5'
-#       encryption: '{{ accesspoint_zones[item].encryption }}'
-#       key: '{{ accesspoint_zones[item].key }}'
+  - name: wifi-iface '{{ item }}5gonly'
+    options:
+      device: 'radio5g'
+      network: '{{ item }}'
+      mode: 'ap'
+      ssid: '{{ accesspoint_zones[item].ssid }}5'
+      encryption: '{{ accesspoint_zones[item].encryption }}'
+      key: '{{ accesspoint_zones[item].key }}'
 
-#   - name: wifi-iface '{{ item }}24'
-#     options:
-#       device: 'radio24'
-#       network: '{{ item }}'
-#       mode: 'ap'
-#       ssid: '{{ accesspoint_zones[item].ssid }}'
-#       encryption: '{{ accesspoint_zones[item].encryption }}'
-#       key: '{{ accesspoint_zones[item].key }}'
+  - name: wifi-iface '{{ item }}2g4'
+    options:
+      device: 'radio2g4'
+      network: '{{ item }}'
+      mode: 'ap'
+      ssid: '{{ accesspoint_zones[item].ssid }}'
+      encryption: '{{ accesspoint_zones[item].encryption }}'
+      key: '{{ accesspoint_zones[item].key }}'
 
-#   - name: wifi-iface '{{ item }}5'
-#     options:
-#       device: 'radio5'
-#       network: '{{ item }}'
-#       mode: 'ap'
-#       ssid: '{{ accesspoint_zones[item].ssid }}'
-#       encryption: '{{ accesspoint_zones[item].encryption }}'
-#       key: '{{ accesspoint_zones[item].key }}'
-
-
+  - name: wifi-iface '{{ item }}5g'
+    options:
+      device: 'radio5g'
+      network: '{{ item }}'
+      mode: 'ap'
+      ssid: '{{ accesspoint_zones[item].ssid }}'
+      encryption: '{{ accesspoint_zones[item].encryption }}'
+      key: '{{ accesspoint_zones[item].key }}'
+  {% endfor %}
 
 
 
