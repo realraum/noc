@@ -1,13 +1,12 @@
 ---
 network:
-  nameservers:
-    - 10.12.0.10
+  nameservers: "{{ net.mgmt.dns }}"
   domain: realraum.at
   primary:
     interface: enp1s0
-    ip: 192.168.32.251
-    mask: 255.255.255.0
-    gateway: 192.168.32.254
+    ip: "{{ net.mgmt.prefix | ipaddr(251) | ipaddr('address') }}"
+    mask: "{{ net.mgmt.prefix | ipaddr('netmask') }}"
+    gateway: "{{ net.mgmt.gw }}"
 
 install:
   disks:
