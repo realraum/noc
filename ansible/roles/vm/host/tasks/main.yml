@@ -3,7 +3,8 @@
   apt:
     name:
       - qemu-kvm
-      - libvirt-bin
+      - # configuration package, pulls in libvirt-clients and libvirt-daemon
+        libvirt-daemon-system
       - python-libvirt
       - haveged
     state: present
@@ -17,36 +18,8 @@
 
 - name: make sure installer directories exists
   with_items:
-    - "{{ vm_host.installer.path }}"
-    - "{{ vm_host.installer.preseed_path }}"
+    - "{{ debian_installer_path }}"
+    - "{{ preseed_path }}"
   file:
     name: "{{ item }}"
     state: directory
-
-- name: prepare directories for installer images
-  with_subelements:
-    - "{{ vm_host.installer.distros }}"
-    - arch
-  file:
-    name: "{{ vm_host.installer.path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}"
-    state: directory
-
-- name: download installer kernel images
-  with_subelements:
-    - "{{ vm_host.installer.distros }}"
-    - arch
-  get_url:
-    url: "{{ vm_host_installer_url[item.0.distro] }}/dists/{{ item.0.codename }}/main/installer-{{ item.1 }}/current/images/netboot/{{ item.0.distro }}-installer/{{ item.1 }}/linux"
-    dest: "{{ vm_host.installer.path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}/linux"
-    mode: 0644
-    force: "{{ vm_host_force_download_installer }}"
-
-- name: download installer initrd.gz
-  with_subelements:
-    - "{{ vm_host.installer.distros }}"
-    - arch
-  get_url:
-    url: "{{ vm_host_installer_url[item.0.distro] }}/dists/{{ item.0.codename }}/main/installer-{{ item.1 }}/current/images/netboot/{{ item.0.distro }}-installer/{{ item.1 }}/initrd.gz"
-    dest: "{{ vm_host.installer.path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}/initrd.gz"
-    mode: 0644
-    force: "{{ vm_host_force_download_installer }}"

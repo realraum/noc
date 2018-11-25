@@ -9,7 +9,7 @@
         state: absent
 
     - name: install systemd network link units
-      with_items: "{{ vm_network.systemd_link.interfaces }}"
+      with_items: "{{ network.systemd_link.interfaces }}"
       loop_control:
         index_var: interface_index
       template:
@@ -17,7 +17,7 @@
         dest: "/etc/systemd/network/{{ '%02d' | format(interface_index + 11) }}-{{ item.name }}.link"
       notify: rebuild initramfs
 
-  when: vm_network.systemd_link is defined
+  when: network.systemd_link is defined
 
 - name: install basic interface config
   template:

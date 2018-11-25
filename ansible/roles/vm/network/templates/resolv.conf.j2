@@ -1,4 +1,4 @@
-{% for nsrv in vm_network.nameservers %}
+{% for nsrv in network.nameservers %}
 nameserver {{ nsrv }}
 {% endfor %}
-search {{ vm_network.domain }}
+search {{ network.domain }}

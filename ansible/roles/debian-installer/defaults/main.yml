@@ -1,0 +1,18 @@
+distros:
+  - distro: debian
+    codename: stretch
+    arch:
+      - amd64
+      - i386
+
+  - distro: ubuntu
+    codename: bionic
+    arch:
+      - amd64
+      - i386
+
+debian_installer_force_download: no
+
+debian_installer_url:
+  debian: "https://debian.ffgraz.net/debian"
+  ubuntu: "https://debian.ffgraz.net/ubuntu"

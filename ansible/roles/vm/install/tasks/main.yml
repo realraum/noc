@@ -1,46 +1,6 @@
 ---
-- block:
-    - name: Make a temporary directory
-      command: mktemp -d
-      register: tmpdir
-
-    - set_fact:
-        tmpdir: "{{ tmpdir.stdout }}"
-        initramfs: "{{ vm_host.installer.preseed_path }}/vm-{{ vmname }}-{{ vmdistro }}-{{ vmdistcodename }}.initrd.gz"
-
-    - name: Copy initramfs into position
-      copy:
-        remote_src: yes
-        src: "{{ vm_host.installer.path }}/{{ vmdistro }}-{{ vmdistcodename }}/{{ hostvars[vmname].vm_install_cooked.arch | default('amd64') }}/initrd.gz"
-        dest: "{{ initramfs }}"
-
-    - name: generate preseed file
-      template:
-        src: "preseed_{{ vmdistro }}-{{ vmdistcodename }}.cfg.j2"
-        dest: "{{ tmpdir }}/preseed.cfg"
-
-    - name: generate authorized_keys file
-      authorized_key:
-        user: root
-        path: "{{ tmpdir }}/authorized_keys"
-        key: "{{ hostvars[vmname].ssh_keys | default(noc_ssh_keys) | join('\n') }}"
-
-    - name: Inject files into initramfs
-      shell: cpio -H newc -o | gzip -9 >> {{ initramfs }}
-      args:
-        chdir: "{{ tmpdir }}"
-        stdin: |
-          preseed.cfg
-          authorized_keys
-
-  always:
-    - name: Delete temporary directory
-      file:
-        path: "{{ tmpdir }}"
-        state: absent
-
 - name: create disks for vm
-  with_dict: "{{ hostvars[vmname].vm_install_cooked.disks.virtio | default({}) | combine(hostvars[vmname].vm_install_cooked.disks.scsi | default({})) }}"
+  with_dict: "{{ hostvars[hostname].install_cooked.disks.virtio | default({}) | combine(hostvars[hostname].install_cooked.disks.scsi | default({})) }}"
   lvol:
     vg: "{{ item.value.vg }}"
     lv: "{{ item.value.lv }}"
@@ -48,84 +8,107 @@
 
 - name: check if vm already exists
   virt:
-    name: "{{ vmname }}"
+    name: "{{ hostname }}"
     command: info
   register: vmhost_info
 
 - block:
     - name: destroy exisiting vm
       virt:
-        name: "{{ vmname }}"
+        name: "{{ hostname }}"
         state: destroyed
 
     - name: wait for vm to be destroyed
       wait_for_virt:
-        name: "{{ vmname }}"
+        name: "{{ hostname }}"
         states: shutdown,crashed
         timeout: 5
 
     - name: undefining exisiting vm
       virt:
-        name: "{{ vmname }}"
+        name: "{{ hostname }}"
         command: undefine
 
-  when: vmname in vmhost_info
+  when: hostname in vmhost_info
 
-- name: enable installer in VM config
-  set_fact:
-    run_installer: True
+- block:
+    - name: create a temporary workdir
+      command: mktemp -d
+      register: tmpdir
 
-- name: define new installer vm
-  virt:
-    name: "{{ vmname }}"
-    command: define
-    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+    - import_role:
+        name: preseed
+      vars:
+        ssh_keys: "{{ hostvars[hostname].ssh_keys }}"
+        install_interface: enp1s1
+        preseed_tmpdir: "{{ tmpdir.stdout }}"
 
-- name: start vm
-  virt:
-    name: "{{ vmname }}"
-    state: running
+    - name: Make preseed workdir readable by qemu
+      acl:
+        path: "{{ tmpdir.stdout }}"
+        state: present
+        entity: libvirt-qemu
+        etype: user
+        permissions: rx
 
-- name: wait for installer to start
-  wait_for_virt:
-    name: "{{ vmname }}"
-    states: running
-    timeout: 10
+    - name: define new installer vm
+      virt:
+        name: "{{ hostname }}"
+        command: define
+        xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+      vars:
+        run_installer: yes
+        preseed_tmpdir: "{{ tmpdir.stdout }}"
 
-- debug:
-    msg: "you can check on the status of the installer running this command 'virsh console {{ vmname }}' on host {{ inventory_hostname }}."
+    - name: start vm
+      virt:
+        name: "{{ hostname }}"
+        state: running
 
-- name: wait for installer to finish or crash
-  wait_for_virt:
-    name: "{{ vmname }}"
-    states: shutdown,crashed
-    timeout: 1800
-  register: installer_result
-  failed_when: installer_result.failed or installer_result.state == "crashed"
+    - name: wait for installer to start
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: running
+        timeout: 10
 
-- name: undefining installer vm
-  virt:
-    name: "{{ vmname }}"
-    command: undefine
+    - debug:
+        msg: "you can check on the status of the installer running this command 'virsh console {{ hostname }}' on host {{ inventory_hostname }}."
 
-- name: disable installer in VM config
-  set_fact:
-    run_installer: False
+    - name: wait for installer to finish or crash
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: shutdown,crashed
+        timeout: 900
+      register: installer_result
+      failed_when: installer_result.failed or installer_result.state == "crashed"
+
+    - name: undefining installer vm
+      virt:
+        name: "{{ hostname }}"
+        command: undefine
+
+  always:
+    - name: cleanup temporary workdir
+      file:
+        path: "{{ tmpdir.stdout }}"
+        state: absent
 
 - name: define new production vm
   virt:
-    name: "{{ vmname }}"
+    name: "{{ hostname }}"
     command: define
     xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+  vars:
+    run_installer: no
 
 - name: start vm
   virt:
-    name: "{{ vmname }}"
+    name: "{{ hostname }}"
     state: running
 
 - name: mark vm as autostarted
   virt:
-    name: "{{ vmname }}"
-    autostart: "{{ hostvars[vmname].vm_install_cooked.autostart }}"
+    name: "{{ hostname }}"
+    autostart: "{{ hostvars[hostname].install_cooked.autostart }}"
     command: info ## virt module needs either command or state
-  when: hostvars[vmname].vm_install_cooked.autostart is defined
+  when: hostvars[hostname].install_cooked.autostart is defined

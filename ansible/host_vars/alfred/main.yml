@@ -2,19 +2,6 @@
 vm_host:
   installer:
     net_if: br-mgmt
-    preseed_path: /srv/preseed
-    path: /srv/installer
-    distros:
-    - distro: debian
-      codename: stretch
-      arch:
-      - amd64
-      - i386
-    - distro: ubuntu
-      codename: xenial
-      arch:
-      - amd64
-      - i386
   network:
     interface: br-mgmt
     ip: "{{ net.mgmt.prefix | ipaddr(65) | ipaddr('address') }}"

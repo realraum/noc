@@ -1,15 +1,15 @@
 ---
 - name: preperations and sanity checks
-  hosts: "{{ vmname }}"
+  hosts: "{{ hostname }}"
   gather_facts: no
   tasks:
   - name: setup variables
     set_fact:
-      vm_network_cooked: "{{ vm_network }}"
-      vm_install_cooked: "{{ vm_install }}"
+      network_cooked: "{{ network }}"
+      install_cooked: "{{ install }}"
   - name: create temporary host group for vm host
     add_host:
-      name: "{{ vm_install.host }}"
+      name: "{{ vm_host }}"
       inventory_dir: "{{inventory_dir}}"
       group: _vmhost_
   # TODO: add some sanity checks
@@ -22,7 +22,7 @@
   - role: vm/install
 
 - name: wait for new vm to start up
-  hosts: "{{ vmname }}"
+  hosts: "{{ hostname }}"
   gather_facts: no
   tasks:
     ## TODO: find a better way to fetch host key of new VMs
@@ -38,16 +38,16 @@
       ansible_ssh_extra_args: ""
 
 - name: Apply VM configuration roles
-  hosts: "{{ vmname }}"
+  hosts: "{{ hostname }}"
   roles:
   - role: vm/grub
   - role: vm/network
   - role: vm/guest
 
-- import_playbook: "host_playbooks/{{ vmname }}.yml"
+- import_playbook: "host_playbooks/{{ hostname }}.yml"
 
 - name: reboot and wait for VM come back
-  hosts: "{{ vmname }}"
+  hosts: "{{ hostname }}"
   gather_facts: no
   roles:
   - role: reboot-and-wait

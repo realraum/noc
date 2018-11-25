@@ -1,0 +1,25 @@
+- name: Copy initramfs into position
+  copy:
+    remote_src: yes
+    src: "{{ debian_installer_path | mandatory }}/{{ install_distro }}-{{ install_codename }}/{{ hostvars[hostname].install_cooked.arch | default('amd64') }}/initrd.gz"
+    dest: "{{ preseed_tmpdir }}/initrd.preseed.gz"
+
+- name: Generate preseed file
+  template:
+    src: "preseed_{{ install_distro }}-{{ install_codename }}.cfg.j2"
+    dest: "{{ preseed_tmpdir }}/preseed.cfg"
+
+- name: Generate authorized_keys file
+  authorized_key:
+    user: root
+    manage_dir: no
+    path: "{{ preseed_tmpdir }}/authorized_keys"
+    key: "{{ ssh_keys | join('\n') }}"
+
+- name: Inject files into initramfs
+  shell: cpio -H newc -o | gzip -9 >> 'initrd.preseed.gz'
+  args:
+    chdir: "{{ preseed_tmpdir }}"
+    stdin: |
+      preseed.cfg
+      authorized_keys

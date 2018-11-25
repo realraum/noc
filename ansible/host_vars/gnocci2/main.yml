@@ -1,2 +1,0 @@
----
-root_password: "{{ vault_root_password }}"

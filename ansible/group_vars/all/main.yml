@@ -1,41 +1,10 @@
 ---
+# Build-related directories
 global_cache_dir: "{{ inventory_dir }}/.cache/"
 global_artifacts_dir: "{{ inventory_dir }}/files/"
 
-user_groups:
-  noc:
-    - equinox
-    - gebi
-    - nicoo
-    - bernhard
-
-users:
-  equinox:
-    email: equinox@realraum.at
-    gpg: 0xD74907C9E64E6CED8FE3
-    ssh:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDj7AcnQZCRihToOI7/L5YslP4bkZlZwR2dg6hV8EfQ+37z1p0imhoqc2Oz/zIEgOVARBHkn5XmfR9Bu6e3YfKpXpJXC9O3jpRSw34Xac/8qXzWZsqVAXbtzvBlYA/G4j0NQM9XIVBa1ZzBZu87xeE4KUWzO80fnQ+G3GSBp28BM4TUiSOmX9y58chPZfUp2DE80fInoXv11ikLLCBDXfMkzFCZ4Gcexhr0TYcBUgLV7ufL0xqLg4yE+Z21PLtttvVYgZIers2nWetLPoREi5yDGKeCjJVyT00X2rp6h3eFkc/VaHfb5c2MY9/4BOt+cbFCx73sG0C1SnSzWd624K/8CEoJTsX4MazLLrxwi3hIwiYX1mCCfq4+S4PpSFvMUGdMWB52PkBRXulQislCVBA/lzma93xJr1jWVFSikjkvAUt8Zt33vHMRd7RMYDfsDVIEKpUT49cBj0v7zs6IVE858J33sUZoVXaiA2sjsap8RguNtjJMSYx8+nwkQAjxwlTiV2J6pHGQHJDyeVsqGlnMpEk32ZeSs/BQ7XWPG62FT3SN6E4C/fa8dawvs7RgY0cbZkhucECBu9Zto/KakIhzLtFzgDighPmK5SlAPoNEJLJYPo5ry2SBTysc4uV7xYZSQ6OVofeQeFXKL8oPe/ZAvKafn3Zk0mQcCtH0Z8q8iQ== equinox@realraum.at
-
-  gebi:
-    email: michael@mgeb.org
-    gpg: 0x6E302CF4D98B9702
-    ssh:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAgEAvjmZbqEQ9EpTcyTFoxqCJileq4dF//ye0JiPBP0kPvtoW33V3TUNon5btd28DzLnFeiU/3NEjTqkaHFRM+t8EoIj4kc/6lozjIlsZN7xoz6CnNrbbHPsgi3FvelyBcsi0sbunFEV2Qw1q1tTC93UcaPqL3hx01Cxfw0Dycs/6lyljvR4eW5O5nFnvtDAoDQYwq5i4U/VZs0Gz1XAOuAb4JQ0KzLeBhfdzvmhANSWIvybmb1V6UPtdK9pCxdo9FL5NwB8nkGloIa3kC4JAINC/Pvk0czZ80rXfIckBgZKxQVUCDVUKZUZ4GZYPI6azglQmZuslziAmiTmhiUkhSZ/m2m9EN1TnMEYEmcoscvrd97l0v2BzBZPkzqL7cSAoehpQsrIe/ceBNjZP1eotS3/fFY70GabW0o2+QFx1ZXGUqRVIwOZ2ZWRp4SoqMl+UtRZx6EMGO20H17etB1b5gF6xO1e8723FFXiS3oY9oUfS+lMX5BDgGUc5wJQ696jPK/pRYrasf6piKuyFpoF+nh/rOvIGSbwHSOOApxKZoj5R+fwfVyoD2uoxd0g5meKEfqB6RDGz+W4cLgS9Th6uEAXo+LLcinjMAJNr50rJFuXYRF1zpa7p4LG/97doq2hk8LXZuTqjB3WCnTUrLy59sHrmwdkRSs6bj7mLEdRRrI1TxU= secure key of gebi
-
-  nicoo:
-    email: nicolas@braud-santoni.eu
-    gpg: 0x3F41B0739AAD91B7CDC0
-    ssh:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDirhW/XNWCDMBy9TAEZgrahGSMlYdddyc9bNAOBbLJ8TVDe0M7YAZ4kU5EYGZBmd4NGZ4Z2Vb+sc0xlJE1MYprL0hFoOSMmU17pa6uzXwAfWtiYAsm/Z8QssOVvyte629gCPUgw1oJM19N7/i8yZh+5j+iEpffbv66USpatLJqJgeM67VjcHPLHf75dEBwkqsWMvpIk3+8gtwXDR8t8YUuxJgHOLFUEWQ6wiXxBoIJTAvdzAzykIs/yJbsMpKjDNLfF0guaRDC5GnjwHqTkGegxBS3l/MzkOpXtWbbbhYX8yIvFkryBFbyB0oa/rnE2HnYbaq2riyZpcsKRXqIvvFFa80FqGE+8sQnMlHn2IaOlkmkBMBytL+6rP3feFWq+vGZLRMs7ezMs+o0ofe0svMhLjy79AJnRBfaFn350AnmqNGZ8HbS0A1vOpPJsJVMhcqx+0cPHfxIedNGs7BJZypmBiw6vZ0rzxm1YX7CZcpiIe2Ob9o/+ypwWVXlT1zcLMC6u5/2YXDCXea0QtiOnM9h4ahkRaBb8CUTMtDurOf9uPtwE8wzmq34baAOQMfY3Tb9uGvAlCcLbke5RDCLfvBx3C2g2KkaboFL/7V9YQ1DCpj+zpOEdr/Jr1wKoWBzgCfZcfXn954J2z2BjbHZRTpCW6EmaYXj4J2bRIX7FalKkw== nicoo@harbard
-
-  bernhard:
-    email: xro@realraum.at
-    gpg: 0xE3468B9CE81EB4F91486
-    ssh:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDsT6W8Yz9iQ9FXuyrBmLC3o1j26ugzKfJDjvYAOehtjbYj+JjNrLoob1Evg5wWbDI9w+GiaBRKpfMw/66rMty8UXnYvpr28AsMdsxmvCp7k6eW55WcWNC26Nw3cWJo8MBxDaWDfjPdVzhKU7iFTCEVz/mUqUrbyg+Y6R1psqY84zXwelyPNPUVNBSaWMORmWR397v8UaEx2jsO4Nxaw1w4RnJSyq5feXResLigh6yelCNDWu3ISQrmZtjKRCPWlVzIDAT5m0UZzHjfGtixei8QNo3Y1sNUyFmrR0jcy6Uvkcl2ryGsUApCqaIGHz9zNvVJo7lGFH7yDVnaFx2XHnbDrZqhcvtvKK9kJkXwpTwASnSg7CB4VUFxdfzOlwnGUqMrePYqN5CaFKLNNQ5vIharK+iikvgkibrCSH69Tdb26IvBpXojuoIHDpBNcAAy5d66P+EoUXv7xWVmWiDLyJd66GvNzAzwel16KrjlgYZoKaj5rAB04qafSi6gRKJMuxQTBGGBc45JojDDZUEQht0/0N9GEWZDAO2z3eyB0lsODNvJBh9jAvwEOMcNnm59GYnYrk4bKLS1GEvq6a0aQvAxJDj0OxENNsx3SloYnP+ufHUZvWI9Ccu+9PMcoNqsFomiFg5nraL7NVaaOegVVYVGr4xZm9Yl/fnfnkH/lccsPw== xro@realraum.at
-
-noc_groups:
-  - adm
-  - sudo
-
-noc_ssh_keys: "{{ user_groups.noc | map('extract', users) | map(attribute='ssh') | flatten | list }}"
+# Default credentials
+## Root password; by default, undefined
+root_password: "{{ vault_root_password }}"
+## SSH keys for root, default to NOC's
+ssh_keys: "{{ noc_ssh_keys }}"

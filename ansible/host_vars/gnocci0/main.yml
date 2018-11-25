@@ -4,7 +4,7 @@ network:
   domain: realraum.at
   primary:
     interface: enp1s0
-    ip: "{{ net.mgmt.prefix | ipaddr(251) | ipaddr('address') }}"
+    ip: "{{ net.mgmt.prefix | ipaddr(250) | ipaddr('address') }}"
     mask: "{{ net.mgmt.prefix | ipaddr('netmask') }}"
     gateway: "{{ net.mgmt.gw }}"
 
