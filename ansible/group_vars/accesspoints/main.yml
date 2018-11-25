@@ -91,6 +91,10 @@ accesspoint_wireless_devices:
       path: "{{ accesspoint_wireless_device_paths['2.4g'] }}"
       htmode: 'HT20'
 
+
+## TODO: set up 802.11r see:
+##        * https://www.reddit.com/r/openwrt/comments/515oea/finally_got_80211r_roaming_working/
+##        * https://gist.github.com/lg/998d3e908d547bd9972a6bb604df377b
 accesspoint_wireless_ifaces: "{{ accesspoint_wireless_ifaces_yaml | from_yaml }}"
 accesspoint_wireless_ifaces_yaml: |
   {% for item in accesspoint_zones.keys() %}
@@ -99,6 +103,8 @@ accesspoint_wireless_ifaces_yaml: |
       device: 'radio2g4'
       network: '{{ item }}'
       mode: 'ap'
+      disassoc_low_ack: '1'
+      rsn_preauth: '1'
       ssid: '{{ accesspoint_zones[item].ssid }}2.4'
       encryption: '{{ accesspoint_zones[item].encryption }}'
       key: '{{ accesspoint_zones[item].key }}'
@@ -108,6 +114,8 @@ accesspoint_wireless_ifaces_yaml: |
       device: 'radio5g'
       network: '{{ item }}'
       mode: 'ap'
+      disassoc_low_ack: '1'
+      rsn_preauth: '1'
       ssid: '{{ accesspoint_zones[item].ssid }}5'
       encryption: '{{ accesspoint_zones[item].encryption }}'
       key: '{{ accesspoint_zones[item].key }}'
@@ -117,6 +125,8 @@ accesspoint_wireless_ifaces_yaml: |
       device: 'radio2g4'
       network: '{{ item }}'
       mode: 'ap'
+      disassoc_low_ack: '1'
+      rsn_preauth: '1'
       ssid: '{{ accesspoint_zones[item].ssid }}'
       encryption: '{{ accesspoint_zones[item].encryption }}'
       key: '{{ accesspoint_zones[item].key }}'
@@ -126,6 +136,8 @@ accesspoint_wireless_ifaces_yaml: |
       device: 'radio5g'
       network: '{{ item }}'
       mode: 'ap'
+      disassoc_low_ack: '1'
+      rsn_preauth: '1'
       ssid: '{{ accesspoint_zones[item].ssid }}'
       encryption: '{{ accesspoint_zones[item].encryption }}'
       key: '{{ accesspoint_zones[item].key }}'
