@@ -39,6 +39,10 @@ d-i clock-setup/ntp boolean false
 
 d-i partman-auto/disk string /dev/{{ hostvars[hostname].install_cooked.disks.primary }}
 d-i partman-auto/method string lvm
+d-i partman-auto/purge_lvm_from_device boolean true
+d-i partman-auto-lvm/new_vg_name string {{ hostname }}
+d-i partman-auto-lvm/guided_size string max
+
 d-i partman-lvm/device_remove_lvm boolean true
 d-i partman-md/device_remove_md boolean true
 
@@ -103,6 +107,7 @@ d-i preseed/late_command string \
     lvremove -f {{ hostname }}/dummy; \
     in-target bash -c "apt-get update -q && apt-get full-upgrade -y -q"; \
     in-target bash -c "passwd -d root && passwd -l root"; \
+    in-target bash -c "sed -e 's/^allow-hotplug/auto/' -i /etc/network/interfaces"; \
     mkdir -p -m 0700 /target/root/.ssh; \
     cp /authorized_keys /target/root/.ssh/; \
 {% if hostvars[hostname].ansible_port is defined %}
