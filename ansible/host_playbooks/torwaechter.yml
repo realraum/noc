@@ -38,5 +38,5 @@
       with_items: [ door_client, door_daemon, update-keys ]
 
   roles:
-    - role: openwrt-image
+    - role: openwrt/image
       delegate_to: localhost

@@ -2,5 +2,5 @@
 - hosts: accesspoints
   connection: local
   roles:
-    - role: openwrt-image
+    - role: openwrt/image
       delegate_to: localhost
