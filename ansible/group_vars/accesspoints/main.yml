@@ -96,51 +96,25 @@ accesspoint_wireless_devices:
 ##        * https://www.reddit.com/r/openwrt/comments/515oea/finally_got_80211r_roaming_working/
 ##        * https://gist.github.com/lg/998d3e908d547bd9972a6bb604df377b
 accesspoint_wireless_ifaces: "{{ accesspoint_wireless_ifaces_yaml | from_yaml }}"
+accesspoint_wireless_types:
+  - { name: only, ssid: 2.4, freq: 2g4 }
+  - { name: only, ssid: 5, freq: 5g }
+  - { name: '', ssid: '', freq: 2g4 }
+  - { name: '', ssid: '', freq: 5g }
 accesspoint_wireless_ifaces_yaml: |
-  {% for item in accesspoint_zones.keys() %}
-  - name: wifi-iface '{{ item }}2g4only'
+  {% for zone in accesspoint_zones.keys() %}
+  {%   for item in accesspoint_wireless_types %}
+  - name: wifi-iface '{{ zone }}{{ item.freq }}{{ item.name }}'
     options:
-      device: 'radio2g4'
-      network: '{{ item }}'
+      device: 'radio{{ item.freq }}'
+      network: '{{ zone }}'
       mode: 'ap'
       disassoc_low_ack: '1'
       rsn_preauth: '1'
-      ssid: '{{ accesspoint_zones[item].ssid }}2.4'
-      encryption: '{{ accesspoint_zones[item].encryption }}'
-      key: '{{ accesspoint_zones[item].key }}'
-
-  - name: wifi-iface '{{ item }}5gonly'
-    options:
-      device: 'radio5g'
-      network: '{{ item }}'
-      mode: 'ap'
-      disassoc_low_ack: '1'
-      rsn_preauth: '1'
-      ssid: '{{ accesspoint_zones[item].ssid }}5'
-      encryption: '{{ accesspoint_zones[item].encryption }}'
-      key: '{{ accesspoint_zones[item].key }}'
-
-  - name: wifi-iface '{{ item }}2g4'
-    options:
-      device: 'radio2g4'
-      network: '{{ item }}'
-      mode: 'ap'
-      disassoc_low_ack: '1'
-      rsn_preauth: '1'
-      ssid: '{{ accesspoint_zones[item].ssid }}'
-      encryption: '{{ accesspoint_zones[item].encryption }}'
-      key: '{{ accesspoint_zones[item].key }}'
-
-  - name: wifi-iface '{{ item }}5g'
-    options:
-      device: 'radio5g'
-      network: '{{ item }}'
-      mode: 'ap'
-      disassoc_low_ack: '1'
-      rsn_preauth: '1'
-      ssid: '{{ accesspoint_zones[item].ssid }}'
-      encryption: '{{ accesspoint_zones[item].encryption }}'
-      key: '{{ accesspoint_zones[item].key }}'
+      ssid: '{{ accesspoint_zones[zone].ssid }}{{ item.ssid }}'
+      encryption: '{{ accesspoint_zones[zone].encryption }}'
+      key: '{{ accesspoint_zones[zone].key }}'
+  {%   endfor %}
   {% endfor %}
 
 
