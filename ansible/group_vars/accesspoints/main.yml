@@ -146,7 +146,7 @@ openwrt_mixin:
       {{ key }}
       {% endfor %}
 
-  /root/.config/htop/htoprc:
+  /etc/htoprc:
     file: "{{ global_files_dir }}/common/htoprc"
 
 

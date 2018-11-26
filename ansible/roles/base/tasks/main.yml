@@ -163,6 +163,8 @@
 
 - name: Deploy default configuration for tools
   with_dict:
+    /etc/htoprc: "{{ global_files_dir }}/common/htoprc"
+
     /etc/zsh/zprofile: zprofile
     /etc/zsh/zshrc: zshrc
     /etc/skel/.zshrc: zshrc.skel
