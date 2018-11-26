@@ -5,10 +5,10 @@ openwrt_packages_remove:
   - dnsmasq
   - firewall
   - odhcpd
+  - odhcpd-ipv6only
 openwrt_packages_add:
   - haveged
   - htop
-  - hwclock
   - ip
   - less
   - nano

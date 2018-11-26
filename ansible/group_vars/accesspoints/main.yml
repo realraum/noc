@@ -1,0 +1,207 @@
+---
+accesspoint_wifi_channels:
+  2.4g:
+    ap0: 3
+    ap1: 8
+    ap2: 13
+  5g:
+    ap0: 36
+    ap1: 48
+    ap2: 40
+
+accesspoint_zones:
+  iot:
+    ssid: "TEST realstuff"
+    encryption: "psk2"
+    key: "{{ vault_accesspoint_zones.iot.key }}"
+  guests:
+    ssid: "TEST realraum"
+    encryption: "psk2"
+    key: "{{ vault_accesspoint_zones.guests.key }}"
+  # members:
+  #   ssid: "TEST r3members"
+  #   encryption: "psk2"
+  #   key: "{{ vault_accesspoint_zones.members.key }}"
+
+
+
+accesspoint_wired_interface: eth0
+accesspoint_wireless_device_paths:
+  2.4g: "platform/qca956x_wmac"
+  5g: "pci0000:00/0000:00:00.0"
+
+accesspoint_network_base:
+  - name: globals 'globals'
+    options:
+      ula_prefix: "fc{{ '%02x:%04x:%04x' | format((255 | random(seed=inventory_hostname + '0')), (65535 | random(seed=inventory_hostname + '1')), (65535 | random(seed=inventory_hostname + '2'))) }}::/48"
+
+  - name: interface 'loopback'
+    options:
+      ifname: lo
+      proto: static
+      ipaddr: 127.0.0.1
+      netmask: 255.0.0.0
+
+  - name: interface 'raw'
+    options:
+      ifname: "{{ accesspoint_wired_interface }}"
+      proto: none
+      accept_ra: 0
+
+  - name: interface 'mgmt'
+    options:
+      type: bridge
+      ifname: "{{ accesspoint_wired_interface }}.{{ net.mgmt.vlan }}"
+      accept_ra: 0
+      proto: static
+      ipaddr: "{{ net.mgmt.prefix | ipaddr(net.mgmt.offsets.accesspoints + groups.accesspoints.index(inventory_hostname)) | ipaddr('address') }}"
+      netmask: "{{ net.mgmt.prefix | ipaddr('netmask') }}"
+      gateway: "{{ net.mgmt.gw }}"
+      dns: "{{ net.mgmt.dns | join(' ') }}"
+      dns_search: realraum.at
+
+accesspoint_network_zones: "{{ accesspoint_network_zones_yaml | from_yaml }}"
+accesspoint_network_zones_yaml: |
+  {% for item in accesspoint_zones.keys() %}
+  - name: interface "{{ item }}"
+    options:
+      type: bridge
+      ifname: "{{ accesspoint_wired_interface }}.{{ net[item].vlan }}"
+      accept_ra: 0
+      proto: none
+  {% endfor %}
+
+
+accesspoint_wireless_devices:
+  - name: wifi-device 'radio5g'
+    options:
+      type: 'mac80211'
+      channel: "{{ accesspoint_wifi_channels['5g'][inventory_hostname] }}"
+      hwmode: '11a'
+      country: AT
+      path: "{{ accesspoint_wireless_device_paths['5g'] }}"
+      htmode: 'VHT80'
+
+  - name: wifi-device 'radio2g4'
+    options:
+      type: 'mac80211'
+      channel: "{{ accesspoint_wifi_channels['2.4g'][inventory_hostname] }}"
+      hwmode: '11g'
+      country: AT
+      path: "{{ accesspoint_wireless_device_paths['2.4g'] }}"
+      htmode: 'HT20'
+
+
+## TODO: set up 802.11r see:
+##        * https://www.reddit.com/r/openwrt/comments/515oea/finally_got_80211r_roaming_working/
+##        * https://gist.github.com/lg/998d3e908d547bd9972a6bb604df377b
+accesspoint_wireless_ifaces: "{{ accesspoint_wireless_ifaces_yaml | from_yaml }}"
+accesspoint_wireless_types:
+  - { name: only, ssid: 2.4, freq: 2g4 }
+  - { name: only, ssid: 5, freq: 5g }
+  - { name: '', ssid: '', freq: 2g4 }
+  - { name: '', ssid: '', freq: 5g }
+accesspoint_wireless_ifaces_yaml: |
+  {% for zone in accesspoint_zones.keys() %}
+  {%   for item in accesspoint_wireless_types %}
+  - name: wifi-iface '{{ zone }}{{ item.freq }}{{ item.name }}'
+    options:
+      device: 'radio{{ item.freq }}'
+      network: '{{ zone }}'
+      mode: 'ap'
+      disassoc_low_ack: '1'
+      rsn_preauth: '1'
+      ssid: '{{ accesspoint_zones[zone].ssid }}{{ item.ssid }}'
+      encryption: '{{ accesspoint_zones[zone].encryption }}'
+      key: '{{ accesspoint_zones[zone].key }}'
+  {%   endfor %}
+  {% endfor %}
+
+
+
+openwrt_variant: openwrt
+openwrt_release: 18.06.1
+openwrt_arch: ar71xx
+openwrt_target: generic
+openwrt_profile: ubnt-unifiac-lite
+openwrt_output_image_suffixes:
+  - "generic-{{ openwrt_profile }}-squashfs-sysupgrade.bin"
+
+openwrt_mixin:
+  /etc/sysctl.conf:
+    content: |
+      # Defaults are configured in /etc/sysctl.d/* and can be customized in this file
+      #
+      # disable IP forwarding, we don't need it since we are
+      # only an AP that bridges VLANs to Wifi SSIDs
+      net.ipv4.conf.default.forwarding=0
+      net.ipv4.conf.all.forwarding=0
+      net.ipv4.ip_forward=0
+      net.ipv6.conf.default.forwarding=0
+      net.ipv6.conf.all.forwarding=0
+
+  /etc/dropbear/authorized_keys:
+    content: |-
+      {% for key in noc_ssh_keys %}
+      {{ key }}
+      {% endfor %}
+
+  /root/.config/htop/htoprc:
+    content: |
+      # Beware! This file is rewritten by htop when settings are changed in the interface.
+      # The parser is also very primitive, and not human-friendly.
+      fields=0 48 17 18 38 39 40 2 46 47 49 1
+      sort_key=46
+      sort_direction=1
+      hide_threads=0
+      hide_kernel_threads=1
+      hide_userland_threads=0
+      shadow_other_users=0
+      show_thread_names=0
+      show_program_path=1
+      highlight_base_name=1
+      highlight_megabytes=1
+      highlight_threads=1
+      tree_view=1
+      header_margin=1
+      detailed_cpu_time=0
+      cpu_count_from_zero=0
+      update_process_names=0
+      account_guest_in_cpu_meter=0
+      color_scheme=0
+      delay=15
+      left_meters=AllCPUs Memory Swap
+      left_meter_modes=1 1 1
+      right_meters=Tasks LoadAverage Uptime
+      right_meter_modes=2 2 2
+
+
+openwrt_uci:
+  system:
+    - name: system
+      options:
+        hostname: '{{ inventory_hostname }}'
+        timezone: 'CET-1CEST,M3.5.0,M10.5.0/3'
+        ttylogin: '0'
+        log_size: '64'
+        urandom_seed: '0'
+
+    - name: timeserver 'ntp'
+      options:
+        enabled: '1'
+        enable_server: '0'
+        server:
+          - '0.lede.pool.ntp.org'
+          - '1.lede.pool.ntp.org'
+          - '2.lede.pool.ntp.org'
+          - '3.lede.pool.ntp.org'
+
+  dropbear:
+    - name: dropbear
+      options:
+        PasswordAuth: 'off'
+        RootPasswordAuth: 'off'
+        Port: '22000'
+
+  network: "{{ accesspoint_network_base + accesspoint_network_zones }}"
+  wireless: "{{ accesspoint_wireless_devices + accesspoint_wireless_ifaces }}"
