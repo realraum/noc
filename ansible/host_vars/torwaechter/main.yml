@@ -31,11 +31,11 @@ openwrt_mixin:
 
   /usr/local/bin/authorized_keys.sh:
     mode: '0755'
-    file: "{{ global_artifacts_dir }}/{{ inventory_hostname }}/authorized_keys.sh"
+    file: "{{ global_files_dir }}/{{ inventory_hostname }}/authorized_keys.sh"
 
   /usr/local/bin/update-keys-from-stdin.sh:
     mode: '0755'
-    file: "{{ global_artifacts_dir }}/{{ inventory_hostname }}/update-keys-from-stdin.sh"
+    file: "{{ global_files_dir }}/{{ inventory_hostname }}/update-keys-from-stdin.sh"
 
   /etc/ssh/sshd_config:
     content: |
