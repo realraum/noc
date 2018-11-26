@@ -148,19 +148,6 @@
 
   when: ansible_distribution == "Ubuntu"
 
-- name: install zshrc
-  with_items:
-    - src: "zprofile"
-      dest: "/etc/zsh/zprofile"
-    - src: "zshrc"
-      dest: "/etc/zsh/zshrc"
-    - src: "zshrc.skel"
-      dest: "/etc/skel/.zshrc"
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: 0644
-
 - name: set root default shell to zsh
   user:
     name: root
@@ -173,3 +160,18 @@
     dest: /etc/adduser.conf
     regexp: "^#?{{ item.key }}="
     line: "{{ item.key }}={{ item.value }}"
+
+- name: Deploy default configuration for tools
+  with_dict:
+    /etc/htoprc: "{{ global_files_dir }}/common/htoprc"
+
+    /etc/zsh/zprofile: zprofile
+    /etc/zsh/zshrc: zshrc
+    /etc/skel/.zshrc: zshrc.skel
+
+  loop_control:
+    label: "{{ item.key }}"
+  copy:
+    mode: 0644
+    src: "{{ item.value }}"
+    dest: "{{ item.key }}"
