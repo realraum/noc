@@ -22,11 +22,11 @@
 *** TODO Move gnocchis to the rack in W1
     Assigned: nicoo
 *** TODO Setup [3/9]
-**** DONE Adapt vm/setup to be able to bring up Gnocci VMs
+**** DONE Adapt vm/setup to be able to bring up Gnocchi VMs
      CLOSED: [2018-06-17 Sun 12:32]
 
      vm/setup had implicit assumptions about network which might not have
-     held when installing core network VMs on gnocci
+     held when installing core network VMs on gnocchi
 
      It now only needs connectivity on the VM's primary interface,
      to the configured debian mirror.
