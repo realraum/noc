@@ -1,10 +1,43 @@
 ---
-- name: install classic network config
-  import_tasks: classic.yml
+- block:
+    - name: remove legacy systemd.link units
+      with_items:
+        - 50-virtio-kernel-names.link
+        - 99-default.link
+      file:
+        name: "/etc/systemd/network/{{ item }}"
+        state: absent
+
+    - name: install systemd network link units
+      with_items: "{{ network.systemd_link.interfaces }}"
+      loop_control:
+        index_var: interface_index
+      template:
+        src: systemd.link.j2
+        dest: "/etc/systemd/network/{{ '%02d' | format(interface_index + 11) }}-{{ item.name }}.link"
+      notify: rebuild initramfs
+
+  when: network.systemd_link is defined
+
+- name: install basic interface config
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+    mode: 0644
   when: ansible_distribution == "Debian" or (ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int) < 18)
 
-- name: install basic netplan config
-  import_tasks: netplan.yml
+- block:
+    - name: remove default netplan config
+      file:
+        path: /etc/netplan/01-netcfg.yaml
+        state: absent
+
+    - name: install basic netplan config
+      template:
+        src: netplan.yaml.j2
+        dest: "/etc/netplan/01-{{ network.primary.interface }}.yaml"
+        mode: 0644
+
   when:  ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int) >= 18
 
 - name: remove resolvconf package
