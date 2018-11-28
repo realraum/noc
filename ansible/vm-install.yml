@@ -39,6 +39,9 @@
 
 - name: Apply VM configuration roles
   hosts: "{{ hostname }}"
+  pre_tasks:
+  - name: make sure to update cached facts
+    setup:
   roles:
   - role: vm/grub
   - role: vm/network
