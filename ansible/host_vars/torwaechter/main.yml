@@ -60,16 +60,10 @@ openwrt_mixin:
         AuthorizedKeysCommandUser tuergit
 
   /etc/ssh/authorized_keys.d/root:
-    content: |-
-      {% for key in ssh_users_root | user_ssh_keys(users) %}
-      {{ key }}
-      {% endfor %}
+    content: "{{ ssh_users_root | user_ssh_keys(users) | join('\n') }}\n"
 
   /etc/ssh/authorized_keys.d/tuergit:
-    content: |-
-      {% for key in ssh_users_tuergit | user_ssh_keys(users) %}
-      {{ key }}
-      {% endfor %}
+    content: "{{ ssh_users_tuergit | user_ssh_keys(users) | join('\n') }}\n"
 
 openwrt_uci:
   system:

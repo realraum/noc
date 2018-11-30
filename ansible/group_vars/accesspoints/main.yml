@@ -145,10 +145,7 @@ openwrt_mixin:
       net.ipv6.conf.all.forwarding=0
 
   /etc/dropbear/authorized_keys:
-    content: |-
-      {% for key in ssh_users_root | user_ssh_keys(users) %}
-      {{ key }}
-      {% endfor %}
+    content: "{{ ssh_users_root | user_ssh_keys(users) | join('\n') }}\n"
 
   /etc/htoprc:
     file: "{{ global_files_dir }}/common/htoprc"
