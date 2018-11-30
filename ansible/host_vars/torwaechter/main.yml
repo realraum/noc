@@ -1,4 +1,6 @@
 ---
+ssh_keys_tuergit: "{{ ssh_keys_root }}"
+
 openwrt_arch: x86
 openwrt_target: geode
 openwrt_output_image_suffixes:
@@ -59,13 +61,13 @@ openwrt_mixin:
 
   /etc/ssh/authorized_keys.d/root:
     content: |-
-      {% for key in noc_ssh_keys %}
+      {% for key in ssh_keys_root %}
       {{ key }}
       {% endfor %}
 
   /etc/ssh/authorized_keys.d/tuergit:
     content: |-
-      {% for key in noc_ssh_keys %}
+      {% for key in ssh_keys_tuergit %}
       {{ key }}
       {% endfor %}
 

@@ -14,7 +14,7 @@
     user: root
     manage_dir: no
     path: "{{ preseed_tmpdir }}/authorized_keys"
-    key: "{{ ssh_keys | join('\n') }}"
+    key: "{{ ssh_keys_root | join('\n') }}"
 
 - name: Inject files into initramfs
   shell: cpio -H newc -o | gzip -9 >> 'initrd.preseed.gz'

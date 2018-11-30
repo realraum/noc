@@ -1,4 +1,8 @@
 ---
+ssh_root_users:
+  - equinox
+  - nicoo
+
 accesspoint_wifi_channels:
   2.4g:
     ap0: 3
@@ -142,7 +146,7 @@ openwrt_mixin:
 
   /etc/dropbear/authorized_keys:
     content: |-
-      {% for key in noc_ssh_keys %}
+      {% for key in ssh_keys_root %}
       {{ key }}
       {% endfor %}
 
