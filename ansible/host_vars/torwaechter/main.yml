@@ -1,4 +1,6 @@
 ---
+ssh_users_tuergit: "{{ user_groups.noc }}"
+
 openwrt_arch: x86
 openwrt_target: geode
 openwrt_output_image_suffixes:
@@ -58,16 +60,10 @@ openwrt_mixin:
         AuthorizedKeysCommandUser tuergit
 
   /etc/ssh/authorized_keys.d/root:
-    content: |-
-      {% for key in noc_ssh_keys %}
-      {{ key }}
-      {% endfor %}
+    content: "{{ ssh_users_root | user_ssh_keys(users) | join('\n') }}\n"
 
   /etc/ssh/authorized_keys.d/tuergit:
-    content: |-
-      {% for key in noc_ssh_keys %}
-      {{ key }}
-      {% endfor %}
+    content: "{{ ssh_users_tuergit | user_ssh_keys(users) | join('\n') }}\n"
 
 openwrt_uci:
   system:

@@ -47,7 +47,7 @@
 - name: Set authorized keys for root user
   authorized_key:
     user: root
-    key: "{{ ssh_keys | join('\n') }}"
+    key: "{{ ssh_users_root | user_ssh_keys(users) | join('\n') }}"
     exclusive: yes
 
 - name: disable apt suggests and recommends

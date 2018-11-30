@@ -10,4 +10,5 @@ global_files_dir: "{{ inventory_dir }}/files"
 ## Root password; by default, undefined
 root_password: "{{ vault_root_password }}"
 ## SSH keys for root, default to NOC's
-ssh_keys: "{{ noc_ssh_keys }}"
+
+ssh_users_root: "{{ user_groups.noc }}"
