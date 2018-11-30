@@ -24,6 +24,21 @@
     src: interfaces.j2
     dest: /etc/network/interfaces
     mode: 0644
+  when: ansible_distribution == "Debian" or (ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int) < 18)
+
+- block:
+    - name: remove default netplan config
+      file:
+        path: /etc/netplan/01-netcfg.yaml
+        state: absent
+
+    - name: install basic netplan config
+      template:
+        src: netplan.yaml.j2
+        dest: "/etc/netplan/01-{{ network.primary.interface }}.yaml"
+        mode: 0644
+
+  when:  ansible_distribution == "Ubuntu" and (ansible_distribution_major_version | int) >= 18
 
 - name: remove resolvconf package
   apt:

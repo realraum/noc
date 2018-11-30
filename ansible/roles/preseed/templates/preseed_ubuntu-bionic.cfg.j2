@@ -1,5 +1,5 @@
 #########################################################################
-#  realraum preseed file for Ubuntu xenial based VMs
+#  realraum preseed file for Ubuntu bionic based VMs
 #########################################################################
 
 d-i debian-installer/language string en
@@ -111,6 +111,7 @@ d-i finish-install/reboot_in_progress note
 
 d-i preseed/late_command string \
     lvremove -f {{ hostname }}/dummy; \
+    in-target bash -c "swapoff -a; sed -e '/^\/swapfile/d' -i /etc/fstab; rm -f /swapfile"; \
     in-target bash -c "apt-get update -q && apt-get full-upgrade -y -q"; \
     in-target bash -c "passwd -d root && passwd -l root"; \
     in-target bash -c "sed -e 's/^allow-hotplug/auto/' -i /etc/network/interfaces"; \
