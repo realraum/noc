@@ -12,10 +12,3 @@ root_password: "{{ vault_root_password }}"
 ## SSH keys for root, default to NOC's
 
 ssh_users_root: "{{ user_groups.noc }}"
-## TODO: make this a filter_plugin...
-ssh_keys_root: "{{ ssh_users_root | map('extract', users) | map(attribute='ssh') | flatten | list }}"
-
-## TODO: not used at the moment?
-noc_groups:
-  - adm
-  - sudo

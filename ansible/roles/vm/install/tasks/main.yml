@@ -39,7 +39,7 @@
     - import_role:
         name: preseed
       vars:
-        ssh_keys_root: "{{ hostvars[hostname].ssh_keys_root }}"
+        ssh_users_root: "{{ hostvars[hostname].ssh_users_root }}"
         install_interface: enp1s1
         preseed_tmpdir: "{{ tmpdir.stdout }}"
 

@@ -1,5 +1,5 @@
 ---
-ssh_root_users:
+ssh_users_root:
   - equinox
   - nicoo
 
@@ -146,7 +146,7 @@ openwrt_mixin:
 
   /etc/dropbear/authorized_keys:
     content: |-
-      {% for key in ssh_keys_root %}
+      {% for key in ssh_users_root | user_ssh_keys(users) %}
       {{ key }}
       {% endfor %}
 
