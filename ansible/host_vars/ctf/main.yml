@@ -1,4 +1,40 @@
 ---
+ssh_users_root:
+  - verr
+  - equinox
+  - nicoo
+
 sshd_allowusers_host:
   - f0rki
   - verr
+
+
+vm_host: alfred
+
+install:
+  host: "{{ vm_host }}"
+  mem: 2048
+  numcpu: 2
+  disks:
+    primary: vda
+    virtio:
+      vda:
+        vg: "{{ vm_host }}"
+        lv: "{{ inventory_hostname }}"
+        size: 20g
+  interfaces:
+  - bridge: br-lan ## this will be br-pub once the network renumbering is done
+    name: pub0
+  autostart: True
+
+network:
+  nameservers: "{{ hostvars[vm_host].vm_host.network.nameservers }}"
+  domain: realraum.at
+  systemd_link:
+    interfaces: "{{ install.interfaces }}"
+  primary:
+    ## TODO: this should come from {{ net.pub.* }} once the network renumbering is done
+    interface: pub0
+    ip: 89.106.211.47
+    mask: 255.255.255.224
+    gateway: 89.106.211.33
