@@ -7,6 +7,8 @@ d-i debian-installer/country string AT
 d-i debian-installer/locale string en_US.UTF-8
 d-i keyboard-configuration/xkb-keymap select us
 
+d-i hw-detect/load_firmware boolean false
+
 d-i netcfg/disable_dhcp boolean true
 d-i netcfg/choose_interface select {{ install_interface | default(hostvars[hostname].network_cooked.primary.interface) }}
 d-i netcfg/disable_autoconfig boolean false
