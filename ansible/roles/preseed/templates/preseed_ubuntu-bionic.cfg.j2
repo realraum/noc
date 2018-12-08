@@ -22,7 +22,9 @@ d-i netcfg/get_gateway string {{ hostvars[hostname].network_cooked.primary.gatew
 d-i netcfg/get_nameservers string {{ hostvars[hostname].network_cooked.nameservers | join(' ') }}
 d-i netcfg/confirm_static boolean true
 
+d-i netcfg/hostname string {{ hostname }}
 d-i netcfg/get_hostname string {{ hostname }}
+d-i netcfg/domain string {{ hostvars[hostname].network_cooked.domain }}
 d-i netcfg/get_domain string {{ hostvars[hostname].network_cooked.domain }}
 d-i netcfg/wireless_wep string
 
