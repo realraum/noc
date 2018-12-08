@@ -15,15 +15,15 @@ accesspoint_wifi_channels:
 
 accesspoint_zones:
   iot:
-    ssid: "TEST realstuff"
+    ssid: "realstuff"
     encryption: "psk2"
     key: "{{ vault_accesspoint_zones.iot.key }}"
   guests:
-    ssid: "TEST realraum"
+    ssid: "realraum"
     encryption: "psk2"
     key: "{{ vault_accesspoint_zones.guests.key }}"
   # members:
-  #   ssid: "TEST r3members"
+  #   ssid: "r3members"
   #   encryption: "psk2"
   #   key: "{{ vault_accesspoint_zones.members.key }}"
 
