@@ -8,7 +8,13 @@ sshd_allowusers_host:
   - f0rki
   - verr
 
+# SSH configuration
+## There are no individual user accounts
+localconfig_ssh_config_user: root
+## ctf.realraum.at doesn't resolve to the new VM (yet)
+ansible_host: 89.106.211.47
 
+# VM installation
 vm_host: alfred
 
 install:
