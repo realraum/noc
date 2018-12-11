@@ -1,0 +1,5 @@
+---
+- name: Basic Setup for ctf
+  hosts: ctf
+  roles:
+  - role: base
