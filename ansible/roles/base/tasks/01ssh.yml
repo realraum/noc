@@ -1,0 +1,51 @@
+---
+- set_fact:
+    sshd_allowusers: >-
+      {{ [ 'root' ] | union(user_groups.noc)
+                    | union(sshd_allowusers_group | default([]))
+                    | union(sshd_allowusers_host  | default([])) }}
+
+- name: only allow pubkey auth for root
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin without-password"
+  notify: restart ssh
+
+- name: limit allowed users (1/2)
+  when: sshd_allowgroup is not defined
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?AllowUsers"
+    line: "AllowUsers {{ ' '.join(sshd_allowusers) }}"
+  notify: restart ssh
+
+- block:
+    - name: "limit allowed users (2/2): Make sure AllowUsers is not in sshd_config"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^AllowUsers"
+        state: absent
+      notify: restart ssh
+
+    - name: "limit allowed users (2/2): Set AllowGroups in sshd_config"
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#?AllowGroups"
+        line: AllowGroups {{ sshd_allowgroup }}
+      notify: restart ssh
+
+    - name: "limit allowed users (2/2): Add allowed users to ssh group"
+      user:
+        name: "{{ item }}"
+        groups: "{{ sshd_allowgroup }}"
+        append: True
+      with_items: "{{ sshd_allowusers }}"
+
+  when: sshd_allowgroup is defined
+
+- name: Set authorized keys for root user
+  authorized_key:
+    user: root
+    key: "{{ ssh_users_root | user_ssh_keys(users) | join('\n') }}"
+    exclusive: yes

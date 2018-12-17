@@ -1,0 +1,30 @@
+---
+- name: install systemd specific packages
+  apt:
+    state: present
+    name:
+      - dbus
+      - libpam-systemd
+
+- name: set systemd-related environment variables
+  copy:
+    src: xdg_runtime_dir.sh
+    dest: /etc/profile.d/xdg_runtime_dir.sh
+    mode: 0644
+
+
+- when: ansible_distribution == "Ubuntu"
+  block:
+    - name: workaround console-setup race condition (1/2)
+      file:
+        path: /etc/systemd/system/console-setup.service.d/
+        state: directory
+
+    - name: workaround console-setup race condition (2/2)
+      copy:
+        dest: /etc/systemd/system/console-setup.service.d/override.conf
+        mode: 0644
+        content: |
+          [Unit]
+          After=systemd-tmpfiles-setup.service
+        # no need to reload systemd, it is only there to fix a boot-time race-condition
