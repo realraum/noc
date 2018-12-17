@@ -1,0 +1,29 @@
+---
+- name: Configure to load network-related kernel modules
+  copy:
+    dest: /etc/modules-load.d/local-network.conf
+    content: '{{ network_modules | join("\n") }}'
+
+- name: Load network-related kernel modules
+  modprobe:
+    name: "{{ item }}"
+  with_items: "{{ network_modules }}"
+    
+- name: Set network-related sysctl options
+  sysctl:
+    sysctl_file: /etc/sysctl.d/local-network.conf
+    sysctl_set: yes
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+
+  with_dict:
+    # CoDel (controlled delay) with Fair Queuing as the default queue scheduler
+    #  mitigates bufferbloat and helps share bandwidth equitably across flows.
+    net.core.default_qdisc: fq_codel
+
+    # BBR is currently the best TCP congestion control algorithm.
+    # C.f. https://queue.acm.org/detail.cfm?id=3022184
+    net.ipv4.tcp_congestion_control: bbr
+
+  loop_control:
+    label: "{{ item.key }}"

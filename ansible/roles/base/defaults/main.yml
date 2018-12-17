@@ -1,1 +1,4 @@
 base_managed_ntpd: yes
+
+network_modules:
+  - tcp_bbr
