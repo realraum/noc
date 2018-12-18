@@ -1,14 +1,13 @@
 ---
-- name: Configure to load network-related kernel modules
+- name: Load the tcp_bbr kernel module
+  modprobe:
+    name: tcp_bbr
+
+- name: Persist the tcp_bbr module to configuration
   copy:
     dest: /etc/modules-load.d/local-network.conf
-    content: '{{ network_modules | join("\n") }}'
+    content: tcp_bbr
 
-- name: Load network-related kernel modules
-  modprobe:
-    name: "{{ item }}"
-  with_items: "{{ network_modules }}"
-    
 - name: Set network-related sysctl options
   sysctl:
     sysctl_file: /etc/sysctl.d/local-network.conf
