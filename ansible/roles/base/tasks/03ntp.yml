@@ -1,0 +1,25 @@
+---
+- when: base_managed_ntpd
+  block:
+    - name: check that ISC ntpd is not installed
+      apt:
+        name: ntp
+        state: absent
+        purge: yes
+
+    - name: install openntpd
+      apt:
+        name: openntpd
+
+    - name: configure openntpd
+      copy:
+        dest: /etc/openntpd/ntpd.conf
+        content: |
+          # Use the ffgraz.net NTP server
+          servers ntp.ffgraz.net weight 3
+
+          # Use some servers announced from the NTP Pool
+          servers 0.debian.pool.ntp.org
+          servers 1.debian.pool.ntp.org
+
+      notify: restart openntpd
