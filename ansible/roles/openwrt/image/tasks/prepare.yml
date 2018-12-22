@@ -1,11 +1,12 @@
 ---
 - name: Create temporary build directory
-  command: mktemp --tmpdir -d openwrt-{{ inventory_hostname }}.XXXXXX
+  tempfile:
+    state: directory
   register: tmpdir
 
 - set_fact:
-    openwrt_imgbuilder_dir:   "{{ tmpdir.stdout }}"
-    openwrt_imgbuilder_files: "{{ tmpdir.stdout }}/files"
+    openwrt_imgbuilder_dir:   "{{ tmpdir.path }}"
+    openwrt_imgbuilder_files: "{{ tmpdir.path }}/files"
 
 - name: Create the directories for mixins
   file:

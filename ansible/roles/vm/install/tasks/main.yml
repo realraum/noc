@@ -33,7 +33,8 @@
 
 - block:
     - name: create a temporary workdir
-      command: mktemp -d
+      tempfile:
+        state: directory
       register: tmpdir
 
     - import_role:
@@ -41,11 +42,11 @@
       vars:
         ssh_users_root: "{{ hostvars[hostname].ssh_users_root }}"
         install_interface: enp1s1
-        preseed_tmpdir: "{{ tmpdir.stdout }}"
+        preseed_tmpdir: "{{ tmpdir.path }}"
 
     - name: Make preseed workdir readable by qemu
       acl:
-        path: "{{ tmpdir.stdout }}"
+        path: "{{ tmpdir.path }}"
         state: present
         entity: libvirt-qemu
         etype: user
@@ -58,7 +59,7 @@
         xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
       vars:
         run_installer: yes
-        preseed_tmpdir: "{{ tmpdir.stdout }}"
+        preseed_tmpdir: "{{ tmpdir.path }}"
 
     - name: start vm
       virt:
@@ -90,7 +91,7 @@
   always:
     - name: cleanup temporary workdir
       file:
-        path: "{{ tmpdir.stdout }}"
+        path: "{{ tmpdir.path }}"
         state: absent
 
 - name: define new production vm
