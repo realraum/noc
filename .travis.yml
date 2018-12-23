@@ -1,5 +1,6 @@
 ---
 sudo: no
+language: python
 addons:
   apt:
     packages:
@@ -9,8 +10,6 @@ addons:
       - libimage-magick-perl
       - libtext-markdown-discount-perl
       - libtext-typography-perl
-      - python
-      - python-pip
 
 install:
   - pip install ansible
