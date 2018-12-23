@@ -1,0 +1,15 @@
+skip_list:
+  # These default rules (https://docs.ansible.com/ansible-lint/rules/default_rules.html) are deactivated:
+  #
+  # This list must contain only strings, so put the rule numbers in quotes
+  #
+  # Lines can be big and beautiful and don't need no linter!
+  - "204"
+  # Currently buggy in 4.0.0: https://github.com/ansible/ansible-lint/issues/443
+  - "404"
+  # Not a concern for us (internet is either stable or down, retries won't change that):
+  - "405"
+  # Our roles are generally not intended to go on Ansible Galaxy
+  - "701"
+  - "703"
+  - "704"
