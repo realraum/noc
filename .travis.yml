@@ -9,8 +9,16 @@ addons:
       - libimage-magick-perl
       - libtext-markdown-discount-perl
       - libtext-typography-perl
+      - python
+      - python-pip
 
-script: make -C doc
+install:
+  - pip install ansible
+  - pip install ansible-lint
+
+script:
+  - cd ansible; ansible-lint _lint_roles.yml
+  - make -C doc
 
 deploy:
   provider: pages
