@@ -53,10 +53,11 @@ a specific task you can disable it by adding the following to the task:
   - skip_ansible_lint
 ```
 
-For now only roles are checked and every role must be manually added to the
-generic playbook [_lint_roles.yml](/ansible/_lint_roles.yml) in order to be checked.
+For now only roles and now playbooks are checked. Every role must be manually added
+to the generic playbook [_lint_roles.yml](/ansible/_lint_roles.yml) in order to be
+checked.
 If an entire role should be skipped please add it to the playbook commented out
-and supply a reason why this roles must be skipped.
+and supply a reason why this role must be skipped.
 
 
 Local ssh config
