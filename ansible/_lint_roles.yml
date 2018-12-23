@@ -2,8 +2,8 @@
 ##
 ## This playbook is only used by ansible-lint to test all roles
 ##
-## TODO: uncomment roles once the syntax check runs through or document a reason
-##       why they are not included in this list
+##  If a role shouldn't be checked, add it commented-out and document a
+##  reason why it is not included in this list
 ##
 - hosts: invalid_host_name_by_design
   roles:
