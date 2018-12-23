@@ -3,6 +3,8 @@
   async: 1
   poll: 0
   ignore_errors: true
+  tags:
+  - skip_ansible_lint
 
 - name: waiting for host to come back
   wait_for_connection:

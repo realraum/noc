@@ -8,6 +8,7 @@
   template:
     src: "preseed_{{ install_distro }}-{{ install_codename }}.cfg.j2"
     dest: "{{ preseed_tmpdir }}/preseed.cfg"
+  register
 
 - name: Generate authorized_keys file
   authorized_key:
@@ -23,3 +24,5 @@
     stdin: |
       preseed.cfg
       authorized_keys
+  tags:
+  - skip_ansible_lint

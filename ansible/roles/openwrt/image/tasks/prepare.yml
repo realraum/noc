@@ -4,7 +4,8 @@
     state: directory
   register: tmpdir
 
-- set_fact:
+- name: set variables needed to build images
+  set_fact:
     openwrt_imgbuilder_dir:   "{{ tmpdir.path }}"
     openwrt_imgbuilder_files: "{{ tmpdir.path }}/files"
 
@@ -83,7 +84,8 @@
     trim_blocks: yes
   when: openwrt_groups is defined or openwrt_users is defined
 
-- unarchive:
+- name: extract image builder tarball
+  unarchive:
     copy: False
     src:  "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
     dest: "{{ openwrt_imgbuilder_dir }}"

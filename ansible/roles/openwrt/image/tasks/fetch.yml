@@ -48,5 +48,7 @@
         - "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256"
         - "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
         - "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
-    - fail:
+
+    - name: the download has failed...
+      fail:
         msg: Something borked
