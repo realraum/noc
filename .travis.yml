@@ -18,9 +18,7 @@ install:
   - ansible-lint --version
 
 script:
-  - pushd ./ansible
-  - ansible-lint _lint_roles.yml
-  - popd
+  - ansible/lint.sh
   - make -C doc
 
 deploy:
