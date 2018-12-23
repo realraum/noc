@@ -8,14 +8,14 @@
 - hosts: invalid_host_name_by_design
   roles:
     - base
-#    - debian-installer
-#    - localconfig
-#    - openwrt/image
-#    - preseed
-#    - reboot-and-wait
-#    - usb-install
-#    - vm/grub
-#    - vm/guest
-#    - vm/host
-#    - vm/install
-#    - vm/network
+    - debian-installer
+    - localconfig
+    - openwrt/image
+    - preseed
+    - reboot-and-wait
+    - usb-install
+    - vm/grub
+    - vm/guest
+    - vm/host
+    - vm/install
+    - vm/network
