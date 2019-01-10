@@ -6,3 +6,4 @@
   import_tasks: 04systemd.yml
 - import_tasks: 05tools.yml
 - import_tasks: 06net.yml
+- import_tasks: 07grub.yml

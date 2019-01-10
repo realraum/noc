@@ -1,0 +1,7 @@
+---
+- name: set kernel command line options
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^#?GRUB_CMDLINE_LINUX='
+    line: 'GRUB_CMDLINE_LINUX="{% for opt,val in (install.kernel_cmdline | default({})).items() %}{{ opt }}={{ val }}{% if not loop.last %} {% endif %}{% endfor %}"'
+  when: install is defined and install.kernel_cmdline is defined
