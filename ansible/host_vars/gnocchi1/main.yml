@@ -12,5 +12,4 @@ install:
   disks:
     primary: /dev/disk/by-id/ata-KINGSTON_SMS200S360G_50026B726A00DFF4
   kernel_cmdline:
-    vga: "off"
     console: "ttyS0,115200n8"
