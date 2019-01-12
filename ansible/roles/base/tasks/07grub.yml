@@ -3,6 +3,6 @@
   lineinfile:
     path: /etc/default/grub
     regexp: '^#?GRUB_CMDLINE_LINUX='
-    line: 'GRUB_CMDLINE_LINUX="{{ map(lambda opt, val: opt + "=" + val, (install.kernel_cmdline or {}).items()).join(" ") }}"'
+    line: 'GRUB_CMDLINE_LINUX="{{ (install.kernel_cmdline or []).join(" ") }}"'
   when: install is defined and install.kernel_cmdline is defined
   notify: update grub

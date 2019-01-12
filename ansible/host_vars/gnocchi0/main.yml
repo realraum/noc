@@ -12,4 +12,4 @@ install:
   disks:
     primary: /dev/disk/by-id/ata-KINGSTON_SMS200S360G_50026B726A0002A2
   kernel_cmdline:
-    console: "ttyS0,115200n8"
+    - console=ttyS0,115200n8
