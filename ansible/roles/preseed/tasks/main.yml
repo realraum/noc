@@ -23,3 +23,5 @@
     stdin: |
       preseed.cfg
       authorized_keys
+  tags:
+  - skip_ansible_lint

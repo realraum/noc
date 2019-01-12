@@ -40,6 +40,25 @@ ansible-playbook foo.yml
 ./apply-role.sh servers base -C -D
 ```
 
+ansible-lint
+------------
+
+We use ansible-lint to check all roles when changes are pushed to Github.
+Some rules have been globally disabled. See [.ansible-lint](/ansible/.ansible-lint)
+for a list of all disabled rules. If ansible-lint produces a false positive for
+a specific task you can disable it by adding the following to the task:
+
+```
+  tags:
+  - skip_ansible_lint
+```
+
+For now only roles and no playbooks are checked. Every role must be manually added
+to the generic playbook [_lint_roles.yml](/ansible/_lint_roles.yml) in order to be
+included.
+If an entire role should be skipped please add it to the playbook commented out
+and supply a reason why this role must be skipped.
+
 
 Local ssh config
 ----------------

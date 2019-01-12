@@ -1,5 +1,6 @@
 ---
-- set_fact:
+- name: generate list of users allowed to login via ssh
+  set_fact:
     sshd_allowusers: >-
       {{ [ 'root' ] | union(user_groups.noc)
                     | union(sshd_allowusers_group | default([]))

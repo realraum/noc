@@ -11,7 +11,8 @@
         path: "{{ openwrt_output_dir }}"
         state: directory
 
-    - set_fact:
+    - name: generate list of packages to add or remove
+      set_fact:
         openwrt_packages: >-
           {{ openwrt_packages_remove | map('regex_replace', '^', '-') | join(' ') }}
           {{ openwrt_packages_add   | join(' ') }}

@@ -1,0 +1,21 @@
+---
+##
+## This playbook is only used by ansible-lint to test all roles
+##
+##  If a role shouldn't be checked, add it commented-out and document a
+##  reason why it is not included in this list
+##
+- hosts: invalid_host_name_by_design
+  roles:
+    - base
+    - debian-installer
+    - localconfig
+    - openwrt/image
+    - preseed
+    - reboot-and-wait
+    - usb-install
+    - vm/grub
+    - vm/guest
+    - vm/host
+    - vm/install
+    - vm/network
