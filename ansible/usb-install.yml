@@ -49,7 +49,7 @@
               LABEL linux
                KERNEL linux
                INITRD initrd.preseed.gz
-               APPEND install {{ (install.kernel_cmdline or []).join(' ') }}
+               APPEND install {{ (install.kernel_cmdline | default([])) | join(' ') }}
 
         - name: Make the USB disk bootable
           pause:
