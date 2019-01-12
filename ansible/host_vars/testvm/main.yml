@@ -8,7 +8,7 @@ install:
   mem: 1024
   numcpu: 2
   disks:
-    primary: vda
+    primary: /dev/vda
     virtio:
       vda:
         vg: "{{ vm_host }}"

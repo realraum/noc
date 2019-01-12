@@ -41,7 +41,14 @@ d-i time/zone string Europe/Vienna
 d-i clock-setup/ntp boolean false
 
 
-d-i partman-auto/disk string /dev/{{ hostvars[hostname].install_cooked.disks.primary }}
+d-i partman/early_command string \
+    debconf-set partman-auto/disk "$(readlink -f {{ hostvars[hostname].install_cooked.disks.primary }})"; \
+    debconf-set grub-installer/bootdev "$(readlink -f {{ hostvars[hostname].install_cooked.disks.primary }})"; \
+    umount -l /media || true
+
+d-i grub-installer/choose_bootdev string manual
+d-i grub-installer/bootdev seen true
+
 d-i partman-auto/method string lvm
 d-i partman-auto/purge_lvm_from_device boolean true
 d-i partman-auto-lvm/new_vg_name string {{ hostname }}
@@ -100,7 +107,6 @@ d-i pkgsel/include string openssh-server python
 d-i pkgsel/upgrade select safe-upgrade
 popularity-contest popularity-contest/participate boolean false
 
-d-i grub-installer/choose_bootdev string /dev/{{ hostvars[hostname].install_cooked.disks.primary }}
 d-i grub-installer/only_debian boolean true
 d-i grub-installer/with_other_os boolean false
 
