@@ -17,6 +17,8 @@
     dest: /etc/adduser.conf
     regexp: "^#?{{ item.key }}="
     line: "{{ item.key }}={{ item.value }}"
+  loop_control:
+    label: "{{ item.key }}"
 
 - name: Deploy default configuration for tools
   with_dict:
