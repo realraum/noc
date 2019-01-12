@@ -20,7 +20,19 @@
     - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
 
 
-- name: Copy mixins in place [1/2]
+- name: Copy mixins in place [1/3]
+  file:
+    dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
+    src: "{{ item.value.link }}"
+    force: yes
+    follow: no
+    state: link
+  with_dict: "{{ openwrt_mixin }}"
+  when: '"link" in item.value'
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Copy mixins in place [2/3]
   copy:
     src: "{{ item.value.file }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
@@ -30,7 +42,7 @@
   loop_control:
     label: "{{ item.key }}"
 
-- name: Copy mixins in place [2/2]
+- name: Copy mixins in place [3/3]
   copy:
     content: "{{ item.value.content }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
