@@ -1,0 +1,8 @@
+---
+- name: set kernel command line options
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^#?GRUB_CMDLINE_LINUX='
+    line: 'GRUB_CMDLINE_LINUX="{{ install.kernel_cmdline | join(" ") }}"'
+  when: install is defined and install.kernel_cmdline is defined
+  notify: update grub

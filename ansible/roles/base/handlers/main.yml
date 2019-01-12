@@ -8,3 +8,6 @@
   service:
     name: openntpd
     state: restarted
+
+- name: update grub
+  command: update-grub
