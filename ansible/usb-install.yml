@@ -2,6 +2,7 @@
 - name: Fetch debian installer and bake initrd
   hosts: "{{ hostname }}"
   connection: local
+  gather_facts: no
 
   vars_prompt:
     - name: usbdrive_path
