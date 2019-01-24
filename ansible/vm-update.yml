@@ -1,0 +1,77 @@
+---
+- name: preperations and sanity checks
+  hosts: "{{ hostname }}"
+  gather_facts: no
+  tasks:
+  - name: setup variables
+    set_fact:
+      network_cooked: "{{ network }}"
+      install_cooked: "{{ install }}"
+
+  - name: create temporary host group for vm host
+    changed_when: no
+    add_host:
+      name: "{{ install_cooked.host }}"
+      inventory_dir: "{{inventory_dir}}"
+      group: _vmhost_
+  # TODO: add some sanity checks
+
+- name: Update network configuration & shutdown VM
+  hosts: "{{ hostname }}"
+  gather_facts: no
+  roles:
+    - vm/network
+
+  tasks:
+    - meta: flush_handlers
+
+    - name: Shutdown VM
+      async: 1
+      poll: 0
+      ignore_errors: true
+      shell: sleep 2 && poweroff
+
+- name: Update VM definition
+  hosts: _vmhost_
+  vars:
+    run_installer: no
+
+  tasks:
+    - name: Wait for VM to shut down
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: shutdown
+        timeout: 30
+ 
+    - name: Undefine VM
+      virt:
+        name: "{{ hostname }}"
+        command: undefine
+
+    - name: Redefine VM
+      virt:
+        name: "{{ hostname }}"
+        command: define
+        xml: "{{ lookup('template', 'roles/vm/install/templates/libvirt-domain.xml.j2') }}"
+
+    - name: Restart VM
+      virt:
+        name: "{{ hostname }}"
+        state: running
+
+    - name: mark vm as autostarted
+      when: hostvars[hostname].install_cooked.autostart is defined
+      virt:
+        name: "{{ hostname }}"
+        autostart: "{{ hostvars[hostname].install_cooked.autostart }}"
+        command: info ## virt module needs either command or state
+
+- name: Apply the base vm/guest role
+  hosts: "{{ hostname }}"
+  pre_tasks:
+    - name: Wait for the VM to be up and running
+      wait_for_connection:
+        timeout: 120
+
+  roles:
+    - vm/guest
