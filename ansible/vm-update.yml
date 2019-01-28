@@ -33,9 +33,6 @@
 
 - name: Update VM definition
   hosts: _vmhost_
-  vars:
-    run_installer: no
-
   tasks:
     - name: Wait for VM to shut down
       wait_for_virt:
