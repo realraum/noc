@@ -22,9 +22,7 @@
   roles:
     - vm/network
 
-  tasks:
-    - meta: flush_handlers
-
+  post_tasks:
     - name: Shutdown VM
       async: 1
       poll: 0
