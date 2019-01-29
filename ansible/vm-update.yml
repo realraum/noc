@@ -18,7 +18,6 @@
 
 - name: Update network configuration & shutdown VM
   hosts: "{{ hostname }}"
-  gather_facts: no
   roles:
     - vm/network
 
