@@ -31,35 +31,15 @@
 
 - name: Update VM definition
   hosts: _vmhost_
-  tasks:
+  pre_tasks:
     - name: Wait for VM to shut down
       wait_for_virt:
         name: "{{ hostname }}"
         states: shutdown
         timeout: 30
- 
-    - name: Undefine VM
-      virt:
-        name: "{{ hostname }}"
-        command: undefine
 
-    - name: Redefine VM
-      virt:
-        name: "{{ hostname }}"
-        command: define
-        xml: "{{ lookup('template', 'roles/vm/install/templates/libvirt-domain.xml.j2') }}"
-
-    - name: Restart VM
-      virt:
-        name: "{{ hostname }}"
-        state: running
-
-    - name: mark vm as autostarted
-      when: hostvars[hostname].install_cooked.autostart is defined
-      virt:
-        name: "{{ hostname }}"
-        autostart: "{{ hostvars[hostname].install_cooked.autostart }}"
-        command: info ## virt module needs either command or state
+  roles:
+    - vm/define
 
 - name: Apply the base vm/guest role
   hosts: "{{ hostname }}"

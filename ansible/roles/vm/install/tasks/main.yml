@@ -6,30 +6,6 @@
     lv: "{{ item.value.lv }}"
     size: "{{ item.value.size }}"
 
-- name: check if vm already exists
-  virt:
-    name: "{{ hostname }}"
-    command: info
-  register: vmhost_info
-
-- block:
-    - name: destroy exisiting vm
-      virt:
-        name: "{{ hostname }}"
-        state: destroyed
-
-    - name: wait for vm to be destroyed
-      wait_for_virt:
-        name: "{{ hostname }}"
-        states: shutdown,crashed
-        timeout: 5
-
-    - name: undefining exisiting vm
-      virt:
-        name: "{{ hostname }}"
-        command: undefine
-
-  when: hostname in vmhost_info
 
 - block:
     - name: create a temporary workdir
@@ -52,25 +28,11 @@
         etype: user
         permissions: rx
 
-    - name: define new installer vm
-      virt:
-        name: "{{ hostname }}"
-        command: define
-        xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+    - import_role:
+        name: vm/define
       vars:
-        run_installer: yes
+        vm_define_installer: yes
         preseed_tmpdir: "{{ tmpdir.path }}"
-
-    - name: start vm
-      virt:
-        name: "{{ hostname }}"
-        state: running
-
-    - name: wait for installer to start
-      wait_for_virt:
-        name: "{{ hostname }}"
-        states: running
-        timeout: 10
 
     - debug:
         msg: "you can check on the status of the installer running this command 'virsh console {{ hostname }}' on host {{ inventory_hostname }}."
@@ -83,33 +45,13 @@
       register: installer_result
       failed_when: installer_result.failed or installer_result.state == "crashed"
 
-    - name: undefining installer vm
-      virt:
-        name: "{{ hostname }}"
-        command: undefine
-
   always:
     - name: cleanup temporary workdir
       file:
         path: "{{ tmpdir.path }}"
         state: absent
 
-- name: define new production vm
-  virt:
-    name: "{{ hostname }}"
-    command: define
-    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+- import_role:
+    name: vm/define
   vars:
-    run_installer: no
-
-- name: start vm
-  virt:
-    name: "{{ hostname }}"
-    state: running
-
-- name: mark vm as autostarted
-  virt:
-    name: "{{ hostname }}"
-    autostart: "{{ hostvars[hostname].install_cooked.autostart }}"
-    command: info ## virt module needs either command or state
-  when: hostvars[hostname].install_cooked.autostart is defined
+    vm_define_installer: no
