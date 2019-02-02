@@ -1,0 +1,51 @@
+---
+- name: check if vm already exists
+  virt:
+    name: "{{ hostname }}"
+    command: info
+  register: vmhost_info
+
+- when: hostname in vmhost_info
+  block:
+    - name: destroy exisiting vm
+      virt:
+        name: "{{ hostname }}"
+        state: destroyed
+
+    - name: wait for vm to be destroyed
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: shutdown,crashed
+        timeout: 5
+
+    - name: undefining exisiting vm
+      virt:
+        name: "{{ hostname }}"
+        command: undefine
+
+
+- name: redefine vm
+  virt:
+    name: "{{ hostname }}"
+    command: define
+    xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
+
+- when: vm_define_start
+  block:
+    - name: start vm
+      virt:
+        name: "{{ hostname }}"
+        state: running
+
+    - name: wait for VM to start
+      wait_for_virt:
+        name: "{{ hostname }}"
+        states: running
+        timeout: 10
+
+- name: mark vm as autostarted
+  when: vm_define_autostart
+  virt:
+    name: "{{ hostname }}"
+    autostart: yes
+    command: info ## virt module needs either command or state

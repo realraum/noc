@@ -9,4 +9,5 @@ vm_host:
     gateway: "{{ net.mgmt.gw }}"
     nameservers: "{{ net.mgmt.dns }}"
     indices:
+      metrics: 74
       testvm: 99

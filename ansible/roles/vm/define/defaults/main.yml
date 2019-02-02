@@ -1,0 +1,4 @@
+vm_define_autostart: "{{ not vm_define_installer and hostvars[hostname].install_cooked.autostart | default(False) }}"
+vm_define_start: yes
+
+vm_define_installer: no
