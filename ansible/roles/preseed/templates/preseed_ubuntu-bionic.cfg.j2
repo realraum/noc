@@ -65,35 +65,34 @@ d-i partman-md/device_remove_md boolean true
 d-i partman-lvm/confirm boolean true
 d-i partman-lvm/confirm_nooverwrite boolean true
 
-d-i partman-auto/expert_recipe string                                   \
-      boot-root ::                                                      \
-              1000 10000 -1 ext4                                        \
-                      $defaultignore{ } $primary{ } $bootable{ }        \
-                      method{ lvm } vg_name{ {{ hostname }} }           \
-              .                                                         \
-              2048 10000 2560 ext4                                      \
-                      $lvmok{ } in_vg{ {{ hostname }} }                 \
-                      method{ format } format{ }                        \
-                      use_filesystem{ } filesystem{ ext4 }              \
-                      mountpoint{ / }                                   \
-              .                                                         \
-              1024 11000 1280 ext4                                      \
-                      $lvmok{ } in_vg{ {{ hostname }} }                 \
-                      method{ format } format{ }                        \
-                      use_filesystem{ } filesystem{ ext4 }              \
-                      mountpoint{ /var }                                \
-              .                                                         \
-              768 10000 768 ext4                                        \
-                      $lvmok{ } in_vg{ {{ hostname }} }                 \
-                      method{ format } format{ }                        \
-                      use_filesystem{ } filesystem{ ext4 }              \
-                      mountpoint{ /var/log }                            \
-                      options/nodev{ nodev } options/noatime{ noatime } \
-                      options/noexec{ noexec }                          \
-              .                                                         \
-              16 20000 -1 ext4                                          \
-                      $lvmok{ } in_vg{ {{ hostname }} }                 \
-                      method( keep } lv_name{ dummy }                   \
+d-i partman-auto/expert_recipe string                                    \
+      boot-root ::                                                       \
+              1000 10000 -1 ext4                                         \
+                      $defaultignore{ } $primary{ } $bootable{ }         \
+                      method{ lvm } vg_name{ {{ hostname }} }            \
+              .                                                          \
+              2048 10000 2560 ext4                                       \
+                      $lvmok{ } in_vg{ {{ hostname }} }                  \
+                      method{ format } format{ }                         \
+                      use_filesystem{ } filesystem{ ext4 }               \
+                      mountpoint{ / }                                    \
+              .                                                          \
+              1024 11000 1280 ext4                                       \
+                      $lvmok{ } in_vg{ {{ hostname }} }                  \
+                      method{ format } format{ }                         \
+                      use_filesystem{ } filesystem{ ext4 }               \
+                      mountpoint{ /var }                                 \
+              .                                                          \
+              768 10000 768 ext4                                         \
+                      $lvmok{ } in_vg{ {{ hostname }} }                  \
+                      method{ format } format{ }                         \
+                      use_filesystem{ } filesystem{ ext4 }               \
+                      mountpoint{ /var/log }                             \
+                      options/nodev{ nodev } options/noatime{ noatime }  \
+                      options/noexec{ noexec }                           \
+              .                                                          \
+              16 20000 -1 ext4                                           \
+                      $lvmok{ } in_vg{ {{ hostname }} } lv_name{ dummy } \
               .
 
 d-i partman-auto-lvm/no_boot boolean true
