@@ -22,10 +22,16 @@ accesspoint_zones:
     ssid: "realraum"
     encryption: "psk2"
     key: "{{ vault_accesspoint_zones.guests.key }}"
+    extra_options:
+      disassoc_low_ack: '1'
+      rsn_preauth: '1'
   # members:
   #   ssid: "r3members"
   #   encryption: "psk2"
   #   key: "{{ vault_accesspoint_zones.members.key }}"
+  #   extra_options:
+  #     disassoc_low_ack: '1'
+  #     rsn_preauth: '1'
 
 
 
@@ -113,11 +119,12 @@ accesspoint_wireless_ifaces_yaml: |
       device: 'radio{{ item.freq }}'
       network: '{{ zone }}'
       mode: 'ap'
-      disassoc_low_ack: '1'
-      rsn_preauth: '1'
       ssid: '{{ accesspoint_zones[zone].ssid }}{{ item.ssid }}'
       encryption: '{{ accesspoint_zones[zone].encryption }}'
       key: '{{ accesspoint_zones[zone].key }}'
+  {%     for opt, val in (accesspoint_zones[zone].extra_options | default({}) ).items() %}
+      {{ opt }}: '{{ val }}'
+  {%     endfor %}
   {%   endfor %}
   {% endfor %}
 
