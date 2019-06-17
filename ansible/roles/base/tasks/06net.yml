@@ -24,5 +24,10 @@
     # C.f. https://queue.acm.org/detail.cfm?id=3022184
     net.ipv4.tcp_congestion_control: bbr
 
+    # Disable Selective Acknowledgement (SACK)
+    # Workaround CVE-2019-11477, CVE-2019-11478, CVE-2019-11479
+    # See https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-001.md
+    net.ipv4.tcp_sack: 0
+
   loop_control:
     label: "{{ item.key }}"
