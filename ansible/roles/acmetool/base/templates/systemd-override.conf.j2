@@ -1,0 +1,10 @@
+[Service]
+{% if acmetool_http_proxy is defined %}
+Environment=http_proxy={{ acmetool_http_proxy }}
+{% endif %}
+{% if acmetool_https_proxy is defined %}
+Environment=https_proxy={{ acmetool_https_proxy }}
+{% endif %}
+{% if acmetool_challenge_webroot_path is defined %}
+ReadWritePaths={{ acmetool_challenge_webroot_path }}
+{% endif %}

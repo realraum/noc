@@ -1,0 +1,7 @@
+# This should contain a space-seperated list of services to be
+# reloaded after new certificates are generated. An empty list
+# disables reloading of any service
+#
+# example: SERVICES="apache2 nginx postfix"
+
+SERVICES="{{ acmetool_reload_services | join(' ') }}"

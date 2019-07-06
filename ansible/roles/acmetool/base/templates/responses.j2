@@ -1,0 +1,12 @@
+"acme-enter-email": "{{ acmetool_account_email }}"
+"acme-agreement:https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf": true
+"acmetool-quickstart-choose-server": {{ acmetool_directory_server }}
+"acmetool-quickstart-choose-method": webroot
+"acmetool-quickstart-webroot-path": "{{ acmetool_challenge_webroot_path | default('/var/run/acme/acme-challenge') }}"
+"acmetool-quickstart-complete": true
+"acmetool-quickstart-install-cronjob": false
+"acmetool-quickstart-install-haproxy-script": true
+"acmetool-quickstart-install-redirector-systemd": false
+"acmetool-quickstart-key-type": {{ acmetool_default_key_type }}
+"acmetool-quickstart-rsa-key-size": {{ acmetool_default_rsa_key_size }}
+"acmetool-quickstart-ecdsa-curve": {{ acmetool_default_ecdsa_curve }}

@@ -1,0 +1,10 @@
+- name: add acmetool desired file
+  loop:
+    - satisfy:
+        names: "{{ acmetool_cert_hostnames | default([acmetool_cert_name]) }}"
+  loop_control:
+    label: "{{ item.satisfy.names | join(', ') }}"
+  copy:
+    content: "{{ item | to_nice_yaml }}"
+    dest: "/var/lib/acme/desired/{{ acmetool_cert_name }}"
+  notify: reconcile acmetool

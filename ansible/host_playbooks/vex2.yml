@@ -3,3 +3,4 @@
   hosts: vex2
   roles:
   - role: base
+  - role: acmetool/base

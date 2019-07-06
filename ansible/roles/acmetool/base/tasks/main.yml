@@ -1,0 +1,65 @@
+---
+- name: check if acmetool package is new enough
+  debug:
+    msg: "Check distribution_release"
+  failed_when: (ansible_distribution == 'Debian' and ansible_distribution_major_version < 9) or (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < 17) or (ansible_distribution != 'Debian' and ansible_distribution != 'Ubuntu')
+
+- name: install needed packages
+  apt:
+    name:
+      - acmetool
+      - python-openssl
+    state: present
+
+- name: create initial directory structure
+  command: acmetool --batch
+  args:
+    creates: /var/lib/acme/conf
+
+- name: create acmetool response file
+  template:
+    src: responses.j2
+    dest: /var/lib/acme/conf/responses
+
+- name: create non-standard acmetool webroot path
+  file:
+    name: "{{ acmetool_challenge_webroot_path }}"
+    state: directory
+  when: acmetool_challenge_webroot_path is defined
+
+- name: run quickstart to create account and default target configuration
+  command: acmetool --batch quickstart
+  environment:
+    http_proxy: "{{ acmetool_http_proxy | default('') }}"
+    https_proxy: "{{ acmetool_https_proxy | default('') }}"
+  args:
+    creates: /var/lib/acme/conf/target
+
+- name: generate selfsigned interim certificate
+  include_tasks: selfsigned.yml
+
+- name: install service reload configuration
+  template:
+    src: acme-reload.j2
+    dest: /etc/default/acme-reload
+    owner: root
+    group: root
+    mode: 0644
+  when: acmetool_reload_services is defined
+
+- name: create system unit snippet directory
+  file:
+    path: /etc/systemd/system/acmetool.service.d/
+    state: directory
+
+- name: install systemd unit snippet
+  template:
+    src: systemd-override.conf.j2
+    dest: /etc/systemd/system/acmetool.service.d/override.conf
+
+- name: enable/start systemd timer for acmetool
+  systemd:
+    name: acmetool.timer
+    state: started
+    enabled: yes
+    daemon_reload: yes
