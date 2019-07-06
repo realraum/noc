@@ -1,0 +1,23 @@
+---
+acmetool_directory_server_le_live: "https://acme-v01.api.letsencrypt.org/directory"
+acmetool_directory_server_le_staging: "https://acme-staging.api.letsencrypt.org/directory"
+
+## this can't be changed after the account as been created (aka after the first run)
+## and it's not recommended to keep this empty so we don't define it here which will lead to an error
+# acmetool_account_email:
+acmetool_directory_server: "{{ acmetool_directory_server_le_staging }}"
+
+#### optionally set http(s)_proxy
+# acmetool_http_proxy:
+# acmetool_https_proxy:
+
+acmetool_default_key_type: rsa
+acmetool_default_rsa_key_size: 4096
+acmetool_default_ecdsa_curve: nistp256
+
+### this defaults to '/var/run/acme/acme-challenge'
+# acmetool_challenge_webroot_path: "/path/to/acme-challenge"
+
+### by default a number of daemons are tried to be reloaded
+### an empty list disables reloading of any service
+# acmetool_reload_services: []

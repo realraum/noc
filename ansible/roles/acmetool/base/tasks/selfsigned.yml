@@ -1,0 +1,145 @@
+---
+- name: get id of existing selfsigned interim certificate
+  shell: cat /var/lib/acme/.selfsigned-interim-cert || true
+  changed_when: false
+  check_mode: false
+  register: existing_selfsigned_interim_cert_id
+
+- name: set existing_selfsigned_interim_cert_id variable
+  set_fact:
+    existing_selfsigned_interim_cert_id: "{{ existing_selfsigned_interim_cert_id.stdout }}"
+
+- name: check if selfsigned interim certificate does exist
+  stat:
+    path: "/var/lib/acme/certs/{{ existing_selfsigned_interim_cert_id }}"
+  register: existing_selfsigned_interim_cert_stat
+
+- name: create selfsigned interim certificate
+  when: not existing_selfsigned_interim_cert_id or not existing_selfsigned_interim_cert_stat.stat.exists
+  block:
+    - name: create temporary directory
+      tempfile:
+        path: /var/lib/acme/tmp
+        prefix: selfsigned-interim-cert-
+        state: directory
+      register: tmpdir
+
+    - name: set tmpdir variable
+      set_fact:
+        tmpdir: "{{ tmpdir.path }}"
+
+    - name: generate private key for selfsigned interim certificate
+      openssl_privatekey:
+        path: "{{ tmpdir }}/privkey"
+        mode: 0600
+
+    - name: generate csr for selfsigned interim certificate
+      openssl_csr:
+        path: "{{ tmpdir }}/csr"
+        privatekey_path: "{{ tmpdir }}/privkey"
+        common_name: "{{ ansible_fqdn }}"
+
+
+    ### this is needed because strftime filter in ansible is exceptionally stupid
+    ### see: https://github.com/ansible/ansible/issues/39835
+    - name: get remote date-time 10s ago
+      command: date -d '10 seconds ago' -u '+%Y%m%d%H%M%SZ'
+      register: remote_datetime_10sago
+
+    - name: get remote date-time now
+      command: date -u '+%Y%m%d%H%M%SZ'
+      register: remote_datetime_now
+
+    - name: generate selfsigned interim certificate
+      openssl_certificate:
+        path: "{{ tmpdir }}/cert"
+        privatekey_path: "{{ tmpdir }}/privkey"
+        csr_path: "{{ tmpdir }}/csr"
+        provider: selfsigned
+        ## make sure the certificate is not valid anymore to force acmetool to create a new cert
+        selfsigned_not_before: "{{ remote_datetime_10sago.stdout }}"
+        selfsigned_not_after: "{{ remote_datetime_now.stdout }}"
+
+    - name: remove csr for selfsigned interim certificate
+      file:
+        path: "{{ tmpdir }}/csr"
+        state: absent
+
+    - name: copy selfsigned interim certificate for fullchain
+      command: "cp '{{ tmpdir }}/cert' '{{ tmpdir }}/fullchain'"
+
+    - name: create additional empty files
+      loop:
+        - chain
+        - selfsigned
+      copy:
+        content: ""
+        dest: "{{ tmpdir }}/{{ item }}"
+
+    ### TODO: remove this once acmetool respects it's own storage layout
+    ###       see: https://github.com/hlandau/acme/blob/master/_doc/SCHEMA.md#temporary-use-of-self-signed-certificates
+    - name: generate fake url file
+      copy:
+        content: "https://acme.example.com/acme/cert/self-signed\n"
+        dest: "{{ tmpdir }}/url"
+
+    - name: get key id
+      shell: "openssl x509 -in '{{ tmpdir }}/cert' -noout -pubkey | openssl enc -base64 -d | openssl sha256 -binary | base32 | tr -d '=' | tr '[:upper:]' '[:lower:]'"
+      register: selfsigned_interim_key_id
+
+    - name: set selfsigned_interim_key_id variable
+      set_fact:
+        selfsigned_interim_key_id: "{{ selfsigned_interim_key_id.stdout }}"
+
+    - name: create directory for private key of selfsigned interim certificate
+      file:
+        path: "/var/lib/acme/keys/{{ selfsigned_interim_key_id }}"
+        state: directory
+        mode: 0700
+
+    - name: move private key to its directory
+      command: "mv '{{ tmpdir }}/privkey' '/var/lib/acme/keys/{{ selfsigned_interim_key_id }}/privkey'"
+
+    - name: create symlink to privkey
+      file:
+        src: "../../keys/{{ selfsigned_interim_key_id }}/privkey"
+        dest: "{{ tmpdir }}/privkey"
+        state: link
+
+    # - name: get certificate id
+    #   shell: "openssl x509 -in '{{ tmpdir }}/cert' -outform der | openssl sha256 -binary | base32 | tr -d '=' | tr '[:upper:]' '[:lower:]'"
+    #   register: selfsigned_interim_cert_id
+
+    # - name: set selfsigned_interim_cert_id variable
+    #   set_fact:
+    #     selfsigned_interim_cert_id: "selfsigned-{{ selfsigned_interim_cert_id.stdout }}"
+
+    ### TODO: replace with the above once acmetool respects it's own storage layout
+    ###       see: https://github.com/hlandau/acme/blob/master/_doc/SCHEMA.md#temporary-use-of-self-signed-certificates
+    - name: get certificate id
+      shell: "cat '{{ tmpdir }}/url' | tr -d '\n' | openssl sha256 -binary | base32 | tr -d '=' | tr '[:upper:]' '[:lower:]'"
+      register: selfsigned_interim_cert_id
+
+    - name: set selfsigned_interim_cert_id variable
+      set_fact:
+        selfsigned_interim_cert_id: "{{ selfsigned_interim_cert_id.stdout }}"
+
+    - name: set permissions for selfsigned interim certificate directory
+      file:
+        path: "{{ tmpdir }}"
+        mode: 0755
+        state: directory
+
+    - name: move selfsigned interim certificate directory into place
+      command: "mv '{{ tmpdir }}' '/var/lib/acme/certs/{{ selfsigned_interim_cert_id }}'"
+
+    - name: write cert-id of selfsigned interim certificate to state directory
+      copy:
+        content: "{{ selfsigned_interim_cert_id }}"
+        dest: /var/lib/acme/.selfsigned-interim-cert
+
+  rescue:
+    - name: remove temporary directory for selfsigned interim certificate
+      file:
+        path: "{{ tmpdir }}"
+        state: absent

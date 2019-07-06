@@ -1,0 +1,5 @@
+---
+- name: reconcile acmetool
+  systemd:
+    name: acmetool.service
+    state: started

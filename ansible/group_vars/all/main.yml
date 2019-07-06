@@ -12,3 +12,5 @@ root_password: "{{ vault_root_password }}"
 ## SSH keys for root, default to NOC's
 
 ssh_users_root: "{{ user_groups.noc }}"
+
+acmetool_account_email: noc@realraum.at
