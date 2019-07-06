@@ -1,0 +1,41 @@
+---
+## TODO: remove superflous plugins
+
+- name: create plugin directories
+  with_dict: "{{ dokuwiki_plugins }}"
+  loop_control:
+    label: "{{ item.key }}"
+  file:
+    path: "/var/lib/dokuwiki/.ansible-managed-plugins/{{ item.key }}/extracted"
+    state: directory
+
+- name: download dokuwiki plugins
+  with_dict: "{{ dokuwiki_plugins }}"
+  loop_control:
+    label: "{{ item.key }}"
+  get_url:
+    url: "{{ item.value.url }}"
+    dest: "/var/lib/dokuwiki/.ansible-managed-plugins/{{ item.key }}"
+    checksum: "sha256:{{ item.value.sha256 }}"
+  register: dokuwiki_plugins_downloaded
+
+## TODO: fix update!!!
+- name: extract dokuwiki plugins
+  with_list: "{{ dokuwiki_plugins_downloaded.results }}"
+  loop_control:
+    label: "{{ item.item.key }}"
+  unarchive:
+    remote_src: yes
+    src: "{{ item.dest }}"
+    dest: "{{ item.dest | dirname }}/extracted"
+    extra_opts:
+      - '--strip-components=1'
+
+- name: activate dokuwiki plugins
+  with_dict: "{{ dokuwiki_plugins }}"
+  loop_control:
+    label: "{{ item.key }}"
+  file:
+    state: link
+    src: "/var/lib/dokuwiki/.ansible-managed-plugins/{{ item.key }}/extracted"
+    dest: "/var/lib/dokuwiki/lib/plugins/{{ item.key }}"
