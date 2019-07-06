@@ -1,0 +1,11 @@
+---
+dokuwiki_templates: {}
+dokuwiki_plugins: {}
+
+## example, mind that only tar.gz archives are allowed here!
+## (dokuwiki_templates uses the same format)
+# dokuwiki_plugins:
+#   pluginname:
+#     url: https://example.com/dokuwiki-pluginname.tar.gz
+#     sha256: 129192409230902134091230940230940932
+#

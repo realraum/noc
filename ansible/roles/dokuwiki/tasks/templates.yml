@@ -1,0 +1,41 @@
+---
+## TODO: remove superflous templates
+
+- name: create plugin directories
+  with_dict: "{{ dokuwiki_templates }}"
+  loop_control:
+    label: "{{ item.key }}"
+  file:
+    path: "/var/lib/dokuwiki/.ansible-managed-templates/{{ item.key }}/extracted"
+    state: directory
+
+- name: download dokuwiki templates
+  with_dict: "{{ dokuwiki_templates }}"
+  loop_control:
+    label: "{{ item.key }}"
+  get_url:
+    url: "{{ item.value.url }}"
+    dest: "/var/lib/dokuwiki/.ansible-managed-templates/{{ item.key }}"
+    checksum: "sha256:{{ item.value.sha256 }}"
+  register: dokuwiki_templates_downloaded
+
+## TODO: fix update!!!
+- name: extract dokuwiki templates
+  with_list: "{{ dokuwiki_templates_downloaded.results }}"
+  loop_control:
+    label: "{{ item.item.key }}"
+  unarchive:
+    remote_src: yes
+    src: "{{ item.dest }}"
+    dest: "{{ item.dest | dirname }}/extracted"
+    extra_opts:
+      - '--strip-components=1'
+
+- name: activate dokuwiki templates
+  with_dict: "{{ dokuwiki_templates }}"
+  loop_control:
+    label: "{{ item.key }}"
+  file:
+    state: link
+    src: "/var/lib/dokuwiki/.ansible-managed-templates/{{ item.key }}/extracted"
+    dest: "/var/lib/dokuwiki/lib/tpl/{{ item.key }}"

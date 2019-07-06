@@ -64,3 +64,9 @@
   vars:
     acmetool_cert_name: "{{ dokuwiki_urls[0] }}"
     acmetool_cert_hostnames: "{{ dokuwiki_urls }}"
+
+- name: install dokuwiki plugins
+  import_tasks: plugins.yml
+
+- name: install dokuwiki templates
+  import_tasks: templates.yml
