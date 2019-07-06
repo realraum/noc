@@ -13,6 +13,13 @@
     dest: "/etc/nginx/snippets/{{ item | basename | splitext | first }}"
   notify: reload nginx
 
+- name: set server_names_hash_bucket_size to a reasonable value
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    backrefs: yes
+    regexp: '^(\s*)#?\s*server_names_hash_bucket_size'
+    line: '\1server_names_hash_bucket_size 64;'
+
 - name: install default vhost
   template:
     src: vhosts/default.j2

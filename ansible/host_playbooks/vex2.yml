@@ -5,3 +5,4 @@
   - role: base
   - role: acmetool/base
   - role: nginx
+  - role: dokuwiki
