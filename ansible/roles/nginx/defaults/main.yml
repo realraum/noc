@@ -1,0 +1,3 @@
+---
+## nginx-full, nginx-light, ...
+nginx_package_variant: nginx
