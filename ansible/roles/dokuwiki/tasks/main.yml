@@ -1,0 +1,66 @@
+---
+- name: install dokuwiki packages
+  apt:
+    name:
+      - dokuwiki
+      - php-fpm
+    state: present
+
+- name: install nginx vhost config
+  template:
+    src: nginx.j2
+    dest: "/etc/nginx/sites-available/{{ dokuwiki_urls[0] }}"
+  notify: reload nginx
+
+- name: eanble nginx vhost config
+  file:
+    src: "../sites-available/{{ dokuwiki_urls[0] }}"
+    dest: "/etc/nginx/sites-enabled/{{ dokuwiki_urls[0] }}"
+    state: link
+  notify: reload nginx
+
+- name: check if acme certs already exists
+  stat:
+    path: "/var/lib/acme/live/{{ item }}"
+  with_items: "{{ dokuwiki_urls }}"
+  register: acme_cert_stat
+
+- name: set acmecert_missing_hostnames variable
+  set_fact:
+    acmecert_missing_hostnames: "{{ acme_cert_stat.results | acme_cert_nonexistent(dokuwiki_urls) }}"
+
+- name: link nonexistent hostnames to self-signed interim cert
+  when: acmecert_missing_hostnames | length > 0
+  block:
+    - name: get id of existing selfsigned interim certificate
+      command: cat /var/lib/acme/.selfsigned-interim-cert
+      changed_when: false
+      check_mode: false
+      register: selfsigned_interim_cert_id
+
+    - name: set selfsigned_interim_cert_id variable
+      set_fact:
+        selfsigned_interim_cert_id: "{{ selfsigned_interim_cert_id.stdout }}"
+
+    - name: link to snakeoil cert for nonexistent hostnames
+      file:
+        src: "../certs/{{ selfsigned_interim_cert_id }}"
+        dest: "/var/lib/acme/live/{{ item }}"
+        state: link
+      with_items: "{{ acmecert_missing_hostnames }}"
+
+- name: enable vhost config using acme cert
+  file:
+    src: "../sites-available/{{ dokuwiki_urls[0] }}"
+    dest: "/etc/nginx/sites-enabled/{{ dokuwiki_urls[0] }}"
+    state: link
+
+- name: make sure nginx config has been loaded
+  meta: flush_handlers
+
+- name: get certificate using acmetool
+  import_role:
+    name: acmetool/cert
+  vars:
+    acmetool_cert_name: "{{ dokuwiki_urls[0] }}"
+    acmetool_cert_hostnames: "{{ dokuwiki_urls }}"
