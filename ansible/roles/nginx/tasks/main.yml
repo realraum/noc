@@ -23,7 +23,14 @@
 - name: install default vhost
   template:
     src: vhosts/default.j2
+    dest: /etc/nginx/sites-available/default
+  notify: reload nginx
+
+- name: eanble nginx default vhost
+  file:
+    src: ../sites-available/default
     dest: /etc/nginx/sites-enabled/default
+    state: link
   notify: reload nginx
 
 - name: generate Diffie-Hellman parameters
