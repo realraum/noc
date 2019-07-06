@@ -1,0 +1,5 @@
+---
+- name: Basic Setup for vex2
+  hosts: vex2
+  roles:
+  - role: base
