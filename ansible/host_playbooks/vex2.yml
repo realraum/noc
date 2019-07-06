@@ -3,6 +3,7 @@
   hosts: vex2
   roles:
   - role: base
+  - role: dirty-hacks/vex2-base
   - role: acmetool/base
   - role: nginx
   - role: web/dokuwiki

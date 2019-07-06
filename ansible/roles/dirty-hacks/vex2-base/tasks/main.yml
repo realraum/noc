@@ -1,0 +1,19 @@
+---
+- name: create logical volume for /srv
+  lvol:
+    vg: vex2
+    lv: srv
+    size: 5g
+    state: present
+
+- name: create filesystem for /srv
+  filesystem:
+    fstype: ext4
+    dev: /dev/mapper/vex2-srv
+
+- name: mount /srv
+  mount:
+    src: /dev/mapper/vex2-srv
+    path: /srv
+    fstype: ext4
+    state: mounted
