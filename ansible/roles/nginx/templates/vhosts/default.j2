@@ -1,32 +1,32 @@
 server {
-	listen 80 default_server;
-	listen [::]:80 default_server;
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-  server_name _;
+    server_name _;
 
-	include snippets/acmetool.conf;
+    include snippets/acmetool.conf;
 
-	location / {
-    return 301 https://$host$request_uri;
-	}
+    location / {
+        return 301 https://$host$request_uri;
+    }
 }
 
 server {
-	listen 443 ssl default_server;
-	listen [::]:443 ssl default_server;
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
 
-	server_name _;
+    server_name _;
 
-	include snippets/acmetool.conf;
-	include snippets/ssl.conf;
-	ssl_certificate /var/lib/acme/live/{{ ansible_host }}/fullchain;
-	ssl_certificate_key /var/lib/acme/live/{{ ansible_host }}/privkey;
-	include snippets/hsts.conf;
+    include snippets/acmetool.conf;
+    include snippets/ssl.conf;
+    ssl_certificate /var/lib/acme/live/{{ ansible_host }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ ansible_host }}/privkey;
+    include snippets/hsts.conf;
 
-	include snippets/security-headers.conf;
+    include snippets/security-headers.conf;
 
-	location / {
-    default_type text/plain;
-    return 200 "Welcome to {{ ansible_host }}!";
-	}
+    location / {
+        default_type text/plain;
+        return 200 "Welcome to {{ ansible_host }}!";
+    }
 }
