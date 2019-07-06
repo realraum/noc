@@ -1,0 +1,60 @@
+---
+- name: install nginx package
+  apt:
+    name: "{{ nginx_package_variant }}"
+    state: present
+
+- name: install snippets
+  with_fileglob: '../templates/snippets/*.j2'
+  loop_control:
+    label: "{{ item | basename | splitext | first }}"
+  template:
+    src: "snippets/{{ item | basename | splitext | first }}.j2"
+    dest: "/etc/nginx/snippets/{{ item | basename | splitext | first }}"
+  notify: reload nginx
+
+- name: install default vhost
+  template:
+    src: vhosts/default.j2
+    dest: /etc/nginx/sites-enabled/default
+  notify: reload nginx
+
+- name: generate Diffie-Hellman parameters
+  openssl_dhparam:
+    path: /etc/ssl/dhparams.pem
+    size: 2048
+  notify: reload nginx
+
+- name: check if acme certs already exists
+  stat:
+    path: "/var/lib/acme/live/{{ ansible_host }}"
+  register: acme_cert_stat
+
+- name: link nonexistent hostnames to self-signed interim cert
+  when: acme_cert_stat.stat.exists == false
+  block:
+    - name: get id of existing selfsigned interim certificate
+      command: cat /var/lib/acme/.selfsigned-interim-cert
+      changed_when: false
+      check_mode: false
+      register: selfsigned_interim_cert_id
+
+    - name: set selfsigned_interim_cert_id variable
+      set_fact:
+        selfsigned_interim_cert_id: "{{ selfsigned_interim_cert_id.stdout }}"
+
+    - name: link to snakeoil cert for nonexistent hostname
+      file:
+        src: "../certs/{{ selfsigned_interim_cert_id }}"
+        dest: "/var/lib/acme/live/{{ ansible_host }}"
+        state: link
+
+- name: make sure nginx config has been loaded
+  meta: flush_handlers
+
+- name: get certificate using acmetool
+  import_role:
+    name: acmetool/cert
+  vars:
+    acmetool_cert_name: "{{ ansible_host }}"
+    acmetool_cert_hostnames: "{{ [ansible_host] }}"

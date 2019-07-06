@@ -4,3 +4,4 @@
   roles:
   - role: base
   - role: acmetool/base
+  - role: nginx
