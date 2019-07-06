@@ -1,5 +1,5 @@
 ---
-- when: base_managed_ntpd
+- when: base_managed_ntpd | bool
   block:
     - name: check that ISC ntpd is not installed
       apt:

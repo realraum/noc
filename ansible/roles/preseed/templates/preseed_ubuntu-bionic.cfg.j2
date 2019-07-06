@@ -107,7 +107,7 @@ d-i base-installer/install-recommends boolean false
 d-i apt-setup/security_host string debian.ffgraz.net
 
 tasksel tasksel/first multiselect
-d-i pkgsel/include string openssh-server python
+d-i pkgsel/include string openssh-server python python-apt
 d-i pkgsel/upgrade select safe-upgrade
 popularity-contest popularity-contest/participate boolean false
 d-i pkgsel/update-policy select none

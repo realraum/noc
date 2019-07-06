@@ -44,6 +44,7 @@
   apt:
     name: resolvconf
     state: absent
+    force_apt_get: yes
     purge: yes
 
 - name: generate resolv.conf

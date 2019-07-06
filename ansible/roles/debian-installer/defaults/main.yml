@@ -4,6 +4,11 @@ distros:
     arch:
       - amd64
       - i386
+  - distro: debian
+    codename: buster
+    arch:
+      - amd64
+      - i386
 
   - distro: ubuntu
     codename: bionic
