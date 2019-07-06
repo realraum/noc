@@ -1,0 +1,11 @@
+---
+## TODO: fix hardcoded php version...
+- name: reload php-fpm
+  service:
+    name: php7.3-fpm.service
+    state: reloaded
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
