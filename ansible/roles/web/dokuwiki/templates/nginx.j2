@@ -4,6 +4,15 @@ server {
 
     server_name {{ dokuwiki_urls | join(' ') }};
 
+    include snippets/acmetool.conf;
+    include snippets/ssl.conf;
+    ssl_certificate /var/lib/acme/live/{{ dokuwiki_urls[0] }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ dokuwiki_urls[0] }}/privkey;
+    include snippets/hsts.conf;
+
+    include snippets/security-headers.conf;
+
+
     client_max_body_size 4M;
     client_body_buffer_size 128k;
 
