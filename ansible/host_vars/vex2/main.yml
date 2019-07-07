@@ -5,5 +5,5 @@ sshd_allowusers_host:
 r3status_spaceapi_update_user_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcwqg/oohCV3sTFHODBPUViOaGsoKL2Vp5suNAdLFJz4pdhfH7n4eXzI/3Ork6mDrDZ8XNmDq9g6jERweWQmS37THL33N2RmyDFfpwyQog/pzvEB6U0BGE6VN2zmgmrmvVZNdhKh/E74dM/22abAt32I6xSJi8C2CfVshHaFzNAV8N4lmGMGi0QXNMkAZDaYG0iptRuZOoZarCkfRybyh8pFkHt4Hl/tWocMOihI1KsWtbIgRUdTTpGMXmxMd0k2t9am+NxiUlBIRE8aEc4nTqcZTqullddEAGoksuUCLc0yYbFCzpTkZ1lrU5+oQhZyPWgnJ7s2yK7M2luBSAle8T realraum@smsgw.realraum.at
 
 r3status_www_content:
-  url: 'https://github.com/realraum/infokiosk/archive/2855b0b4ca9a982ceb01593c42223f1381afcc10.tar.gz'
-  sha256: '8e8797c948e7cd62b50023163de2ff3f344761a0c3eb3e0e4b9ad16b19c06202'
+  url: 'https://github.com/realraum/infokiosk/archive/b7df371f1854b506a63fd6fcd8fa75e8ddac4b6f.tar.gz'
+  sha256: '5b097f5d5bcd7741b5d40b9184eb068a4a6be5364f6c54ef9b07b207f06c162f'
