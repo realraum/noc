@@ -11,7 +11,7 @@
   register: r3status_acme_cert
 
 - name: link nonexistent hostname to self-signed interim cert
-  when: r3status_acme_cert.stat.exists == false
+  when: not r3status_acme_cert.stat.exists
   block:
     - name: get id of existing selfsigned interim certificate
       command: cat /var/lib/acme/.selfsigned-interim-cert
