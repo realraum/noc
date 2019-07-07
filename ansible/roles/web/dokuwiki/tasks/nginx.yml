@@ -5,13 +5,6 @@
     dest: "/etc/nginx/sites-available/{{ dokuwiki_urls[0] }}"
   notify: reload nginx
 
-- name: eanble nginx vhost config
-  file:
-    src: "../sites-available/{{ dokuwiki_urls[0] }}"
-    dest: "/etc/nginx/sites-enabled/{{ dokuwiki_urls[0] }}"
-    state: link
-  notify: reload nginx
-
 - name: check if acme certs already exists
   stat:
     path: "/var/lib/acme/live/{{ item }}"
@@ -47,6 +40,7 @@
     src: "../sites-available/{{ dokuwiki_urls[0] }}"
     dest: "/etc/nginx/sites-enabled/{{ dokuwiki_urls[0] }}"
     state: link
+  notify: reload nginx
 
 - name: make sure nginx config has been loaded
   meta: flush_handlers
