@@ -12,9 +12,13 @@ server {
 
     include snippets/security-headers.conf;
 
-    root /srv/r3status;
+    root /srv/r3status/www;
 
     location = /spaceapi.json {
         alias {{ r3status_spaceapi_path }}/spaceapi.json;
+    }
+
+    location /js/ {
+        alias /usr/share/javascript/;
     }
 }

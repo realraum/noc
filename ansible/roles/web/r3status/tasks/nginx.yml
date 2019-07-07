@@ -1,0 +1,46 @@
+---
+- name: install nginx vhost config
+  template:
+    src: nginx.j2
+    dest: /etc/nginx/sites-available/status.realraum.at
+  notify: reload nginx
+
+- name: check if acme certs already exists
+  stat:
+    path: /var/lib/acme/live/status.realraum.at
+  register: r3status_acme_cert
+
+- name: link nonexistent hostname to self-signed interim cert
+  when: r3status_acme_cert.stat.exists == false
+  block:
+    - name: get id of existing selfsigned interim certificate
+      command: cat /var/lib/acme/.selfsigned-interim-cert
+      changed_when: false
+      check_mode: false
+      register: selfsigned_interim_cert_id
+
+    - name: set selfsigned_interim_cert_id variable
+      set_fact:
+        selfsigned_interim_cert_id: "{{ selfsigned_interim_cert_id.stdout }}"
+
+    - name: link to snakeoil cert for nonexistent hostnames
+      file:
+        src: "../certs/{{ selfsigned_interim_cert_id }}"
+        dest: /var/lib/acme/live/status.realraum.at
+        state: link
+
+- name: enable nginx vhost config
+  file:
+    src: ../sites-available/status.realraum.at
+    dest: /etc/nginx/sites-enabled/status.realraum.at
+    state: link
+  notify: reload nginx
+
+- name: make sure nginx config has been loaded
+  meta: flush_handlers
+
+- name: get certificate using acmetool
+  import_role:
+    name: acmetool/cert
+  vars:
+    acmetool_cert_name: status.realraum.at
