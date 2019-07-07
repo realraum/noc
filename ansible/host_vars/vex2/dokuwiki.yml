@@ -1,6 +1,8 @@
 ---
 dokuwiki_urls:
   - wiki2.realraum.at
+#  - wiki.realraum.at
+#  - w.r3.at
 
 dokuwiki_plugins:
   diagram:
