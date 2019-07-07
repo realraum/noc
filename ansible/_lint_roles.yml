@@ -7,15 +7,22 @@
 ##
 - hosts: invalid_host_name_by_design
   roles:
+    - acmetool/base
+    - acmetool/cert
     - base
     - debian-installer
+    - dirty-hacks/vex2-base
     - localconfig
+    - nginx
     - openwrt/image
     - preseed
     - reboot-and-wait
     - usb-install
+    - vm/define
     - vm/grub
     - vm/guest
     - vm/host
     - vm/install
     - vm/network
+    - web/dokuwiki
+    - web/r3status
