@@ -1,0 +1,20 @@
+server {
+    listen [::]:443 ssl;
+    listen 443 ssl;
+
+    server_name status.realraum.at;
+
+    include snippets/acmetool.conf;
+    include snippets/ssl.conf;
+    ssl_certificate /var/lib/acme/live/status.realraum.at/fullchain;
+    ssl_certificate_key /var/lib/acme/live/status.realraum.at/privkey;
+    include snippets/hsts.conf;
+
+    include snippets/security-headers.conf;
+
+    root /srv/r3status;
+
+    location = /spaceapi.json {
+        alias {{ r3status_spaceapi_path }}/spaceapi.json;
+    }
+}

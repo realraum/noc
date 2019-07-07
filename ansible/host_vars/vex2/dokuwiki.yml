@@ -1,0 +1,40 @@
+---
+dokuwiki_urls:
+  - wiki2.realraum.at
+
+dokuwiki_plugins:
+  diagram:
+    url: 'http://nikita.melnichenko.name/download.php?q=dokuwiki-diagram-latest.tgz'
+    sha256: '6485df5eead8a99054fba007a7213d2aeea556b38ccc430586501f712799bcf6'
+  discussion:
+    url: 'https://github.com/dokufreaks/plugin-discussion/archive/5da9673dc41762074e50821627210707fdc6cd62.tar.gz'
+    sha256: '49918e5a0f04598c2544015a601e691c41dc9c0b004592e09932def19c6c83fb'
+  fontawesome:
+    url: 'https://github.com/mmedvede/dokuwiki-plugin-fontawesome/archive/7856ea2c5b2edc90ea6c2a831270e246d50f4519.tar.gz'
+    sha256: 'abeb9f39c8eee2116cb866d57dc8325d904dba497062d81b6576c726c8004fc5'
+  move:
+    url: 'https://github.com/michitux/dokuwiki-plugin-move/archive/80ab123f1c08eabbcae1a6e7bdd42dc4dada14f7.tar.gz'
+    sha256: 'fc151ed43c8e50a29ccde8ec2dc9141a7af2ee772340f5220260e646e258572a'
+  multiorphan:
+    url: 'https://github.com/i-net-software/dokuwiki-plugin-multiorphan/archive/2019-01-09.tar.gz'
+    sha256: '09b447f180654051ba81e378729edc031afc737d0eaa1bd09cdab7728e4afb98'
+  pagelist:
+    url: 'https://github.com/dokufreaks/plugin-pagelist/archive/de0bfb83d573b905ffdd050b535515aad77825dc.tar.gz'
+    sha256: '9596e851e3dfc19d7a41c6ee0794f4b42511660fc98e8723b23f58c0d4622018'
+  tag:
+    url: 'https://github.com/dokufreaks/plugin-tag/archive/0a247c7422fdaf54a89a84b9896981f515303350.tar.gz'
+    sha256: 'dda89afc681db2d03555dad6aacec5afbc06b0c05dfa95998bf7af94a2c2e0ec'
+  wrap:
+    url: 'https://github.com/selfthinker/dokuwiki_plugin_wrap/archive/9ad5fdffdf97087aef0399a82b24053bf58e4298.tar.gz'
+    sha256: '6a1c68b50208fe91bfe2be7ceca735bb45792186e4f07496897769bc82a8be76'
+  include:
+    url: 'https://github.com/dokufreaks/plugin-include/archive/511629d847c1674773a78a880df65b922b44ff7a.tar.gz'
+    sha256: '71e567bc9e2196e42e6089e3c4a1b184cfbf2023ee7e08bb0204e971ab023c57'
+  markdownextra:
+    url: 'https://github.com/naokij/dokuwiki-plugin-markdownextra/archive/6c8bd4029e821219bcb7f7165ad37680c578521e.tar.gz'
+    sha256: '2e8cae229a96f6def547cefb4d0a1c88289b845a04f9da39e7d66d9b2ecd9495'
+
+dokuwiki_templates:
+  bootstrap3:
+    url: 'https://github.com/LotarProject/dokuwiki-template-bootstrap3/archive/v2019-05-22.tar.gz'
+    sha256: 'c54e093d84d88f9c35be9e891362ff49cb630c61b9339d8c1eba9ea7cd3850e8'

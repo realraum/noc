@@ -7,3 +7,4 @@
   - role: acmetool/base
   - role: nginx
   - role: web/dokuwiki
+  - role: web/r3status
