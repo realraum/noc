@@ -13,14 +13,19 @@ d-i keyboard-configuration/layoutcode string us
 
 d-i hw-detect/load_firmware boolean false
 
-d-i netcfg/disable_dhcp boolean true
 d-i netcfg/choose_interface select {{ install_interface | default(hostvars[hostname].network_cooked.primary.interface) }}
+{% if 'install_dhcp' in hostvars[hostname] and hostvars[hostname].install_dhcp %}
+d-i netcfg/disable_dhcp boolean false
 d-i netcfg/disable_autoconfig boolean false
+{% else %}
+d-i netcfg/disable_dhcp boolean true
+d-i netcfg/disable_autoconfig boolean true
 d-i netcfg/get_ipaddress string {{ hostvars[hostname].network_cooked.primary.ip }}
 d-i netcfg/get_netmask string {{ hostvars[hostname].network_cooked.primary.mask }}
 d-i netcfg/get_gateway string {{ hostvars[hostname].network_cooked.primary.gateway }}
 d-i netcfg/get_nameservers string {{ hostvars[hostname].network_cooked.nameservers | join(' ') }}
 d-i netcfg/confirm_static boolean true
+{% endif %}
 
 d-i netcfg/hostname string {{ hostname }}
 d-i netcfg/get_hostname string {{ hostname }}
