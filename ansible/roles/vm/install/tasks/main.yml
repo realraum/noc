@@ -17,8 +17,9 @@
         name: preseed
       vars:
         ssh_users_root: "{{ hostvars[hostname].ssh_users_root }}"
-        install_interface: enp1s1
         preseed_tmpdir: "{{ tmpdir.path }}"
+        preseed_force_net_ifnames_policy: path
+        install_interface: enp1s1
 
     - name: Make preseed workdir readable by qemu
       acl:

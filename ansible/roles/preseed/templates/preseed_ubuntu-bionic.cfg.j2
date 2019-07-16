@@ -124,8 +124,14 @@ d-i preseed/late_command string \
     in-target bash -c "apt-get update -q && apt-get full-upgrade -y -q"; \
     in-target bash -c "passwd -d root && passwd -l root"; \
     in-target bash -c "sed -e 's/^allow-hotplug/auto/' -i /etc/network/interfaces"; \
-    mkdir -p -m 0700 /target/root/.ssh; \
-    cp /authorized_keys /target/root/.ssh/; \
-{% if hostvars[hostname].ansible_port is defined %}
-    in-target bash -c "sed -e 's/^\(\s*#*\s*Port.*\)/Port {{ hostvars[hostname].ansible_port }}/' -i /etc/ssh/sshd_config"
+{% if preseed_force_net_ifnames_policy is defined %}
+    mkdir -p /target/etc/systemd/network; \
+    in-target bash -c "echo '[Link]' > /etc/systemd/network/90-namepolicy.link"; \
+    in-target bash -c "echo 'NamePolicy={{ preseed_force_net_ifnames_policy }}' >> /etc/systemd/network/90-namepolicy.link"; \
+    in-target bash -c "update-initramfs -u"; \
 {% endif %}
+{% if hostvars[hostname].ansible_port is defined %}
+    in-target bash -c "sed -e 's/^\(\s*#*\s*Port.*\)/Port {{ hostvars[hostname].ansible_port }}/' -i /etc/ssh/sshd_config"; \
+{% endif %}
+    mkdir -p -m 0700 /target/root/.ssh; \
+    cp /authorized_keys /target/root/.ssh/

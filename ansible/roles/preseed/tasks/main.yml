@@ -1,3 +1,4 @@
+---
 - name: Copy initramfs into position
   copy:
     remote_src: yes
@@ -16,6 +17,21 @@
     path: "{{ preseed_tmpdir }}/authorized_keys"
     key: "{{ ssh_users_root | user_ssh_keys(users) | join('\n') }}"
 
+- name: force net interface name policy
+  when: preseed_force_net_ifnames_policy is defined
+  block:
+  - name: prepare directories to force network interface name policy
+    file:
+      path: "{{ preseed_tmpdir }}/etc/systemd/network"
+      state: directory
+
+  - name: install link unit to force network interface name policy
+    copy:
+      dest: "{{ preseed_tmpdir }}/etc/systemd/network/90-namepolicy.link"
+      content: |
+        [Link]
+        NamePolicy={{ preseed_force_net_ifnames_policy }}
+
 - name: Inject files into initramfs
   shell: cpio -H newc -o | gzip -9 >> 'initrd.preseed.gz'
   args:
@@ -23,5 +39,9 @@
     stdin: |
       preseed.cfg
       authorized_keys
+      etc/
+      etc/systemd/
+      etc/systemd/network/
+      etc/systemd/network/90-namepolicy.link
   tags:
   - skip_ansible_lint
