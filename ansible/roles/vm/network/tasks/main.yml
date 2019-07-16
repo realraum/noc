@@ -11,6 +11,7 @@
     - name: install systemd network link units
       with_items: "{{ network.systemd_link.interfaces }}"
       loop_control:
+        label: "{{ item.name }}"
         index_var: interface_index
       template:
         src: systemd.link.j2

@@ -1,6 +1,8 @@
 ---
 - name: create disks for vm
   with_dict: "{{ hostvars[hostname].install_cooked.disks.virtio | default({}) | combine(hostvars[hostname].install_cooked.disks.scsi | default({})) }}"
+  loop_control:
+    label: "{{ item.value.vg }} / {{ item.value.lv }}  ({{ item.value.size }})"
   lvol:
     vg: "{{ item.value.vg }}"
     lv: "{{ item.value.lv }}"
