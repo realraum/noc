@@ -26,11 +26,10 @@
 
 - name: redefine vm
   virt:
-    name: "{{ hostname }}"
     command: define
     xml: "{{ lookup('template', 'libvirt-domain.xml.j2') }}"
 
-- when: vm_define_start
+- when: vm_define_start | bool
   block:
     - name: start vm
       virt:
@@ -44,7 +43,7 @@
         timeout: 10
 
 - name: mark vm as autostarted
-  when: vm_define_autostart
+  when: vm_define_autostart | bool
   virt:
     name: "{{ hostname }}"
     autostart: yes
