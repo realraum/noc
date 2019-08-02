@@ -15,5 +15,7 @@ shift
 echo "installing $name with $distro/$codename"
 echo ""
 
+rm -f ".cache/facts/$name"
+
 echo "######## running the install playbook ########"
 exec ansible-playbook -e "hostname=$name" -e "install_distro=$distro" -e "install_codename=$codename" $@ $(basename "$0" .sh).yml

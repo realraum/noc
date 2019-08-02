@@ -1,15 +1,15 @@
 - name: prepare directories for installer images
-  with_subelements:
-    - "{{ distros }}"
-    - arch
+  loop: "{{ distros | subelements('arch') }}"
+  loop_control:
+    label: "{{ item.0.distro }}/{{ item.0.codename }} {{ item.1 }}"
   file:
     name: "{{ debian_installer_path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}"
     state: directory
 
 - name: download installer kernel images
-  with_subelements:
-    - "{{ distros }}"
-    - arch
+  loop: "{{ distros | subelements('arch') }}"
+  loop_control:
+    label: "{{ item.0.distro }}/{{ item.0.codename }} {{ item.1 }}"
   get_url:
     url: "{{ debian_installer_url[item.0.distro] }}/dists/{{ item.0.codename }}/main/installer-{{ item.1 }}/current/images/netboot/{{ item.0.distro }}-installer/{{ item.1 }}/linux"
     dest: "{{ debian_installer_path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}/linux"
@@ -17,9 +17,9 @@
     force: "{{ debian_installer_force_download }}"
 
 - name: download installer initrd.gz
-  with_subelements:
-    - "{{ distros }}"
-    - arch
+  loop: "{{ distros | subelements('arch') }}"
+  loop_control:
+    label: "{{ item.0.distro }}/{{ item.0.codename }} {{ item.1 }}"
   get_url:
     url: "{{ debian_installer_url[item.0.distro] }}/dists/{{ item.0.codename }}/main/installer-{{ item.1 }}/current/images/netboot/{{ item.0.distro }}-installer/{{ item.1 }}/initrd.gz"
     dest: "{{ debian_installer_path }}/{{ item.0.distro }}-{{ item.0.codename }}/{{ item.1 }}/initrd.gz"
