@@ -1,0 +1,14 @@
+---
+network:
+  domain: realraum.at
+  primary:
+    interface: enp0s9
+
+install_dhcp: true
+
+install:
+  arch: i386
+  disks:
+    primary: /dev/disk/by-id/ata-SanDisk_SDCFX3-004G_119310H2208K0505
+  kernel_cmdline:
+    - console=ttyS0,38400n8

@@ -1,0 +1,5 @@
+---
+- name: Basic Setup for cccamp19-gw
+  hosts: cccamp19-gw
+  roles:
+  - role: base
