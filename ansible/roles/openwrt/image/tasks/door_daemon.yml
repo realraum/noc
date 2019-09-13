@@ -1,0 +1,33 @@
+---
+
+# FIXME - only used as a notepad for necessary steps
+#
+#
+## Document current state (hack to make it just work till next reboot)
+#
+# - does not work after reboot, needs to be manually synced over
+# - wrong locations because ext4 from torwaechter is RO because of fs-errors
+# - /run is missing on torwaechter? (is the latest ansible applied on torwaechter?)
+# - properly run as tuerd (just guessed, but user/groups seem to be thought for this)
+#
+## Open Questions
+#
+# - how to integrate updates of key file (currently just synced once)
+# - where to store key file
+#
+## TODO
+#
+# - proper rc.common init script (just put into start()/stop()/restart() functions)
+# - start at boot, create a boot() function and call start there in the init script
+# - check status of door_client and open/close via ssh
+#
+## CMDs to make the hack work
+#
+# files for usb device /dev/door (available on device, but could not find them in any repo)
+#   rsync door_and_sensors/scripts/door.tty root@torwaechter.mgmt.realraum.at:/etc/hotplug.d/tty/
+#   rsync door_and_sensors/scripts/door.usb root@torwaechter.mgmt.realraum.at:/etc/hotplug.d/usb/
+
+# files for door_daemon
+#   rsync door_and_sensors/initscripts/tuer_core.openwrt root@torwaechter.mgmt.realraum.at:/tmp/tuer_core
+#   rsync door_and_sensors/initscripts/tuer.default root@torwaechter.mgmt.realraum.at:/tmp/tuer
+#   rsync keys/keys root@torwaechter.mgmt.realraum.at:/tmp/keys
