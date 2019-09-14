@@ -1,11 +1,13 @@
 ---
 ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis']) }}"
 
+openwrt_variant: openwrt
+openwrt_release: 18.06.4
 openwrt_arch: x86
 openwrt_target: geode
 openwrt_output_image_suffixes:
   - combined-ext4.img.gz
-  - combined-squashfs.img
+  - combined-squashfs.img.gz
 
 openwrt_packages_extra:
   - "-dropbear"
