@@ -24,6 +24,14 @@ openwrt_packages_extra:
   - lsblk
 
 openwrt_mixin:
+  /etc/default:
+    dirname:
+  /etc/hotplug.d/tty/:
+    dirname:
+  /etc/hotplug.d/usb/:
+    dirname:
+  /home:
+    dirname:
   /run:
     dirname:
 
@@ -37,6 +45,24 @@ openwrt_mixin:
   /usr/local/bin/update-keys:
     mode: '0755'
     file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/update-keys/update-keys"
+
+  # door daemon init scripts and configs
+  /etc/init.d/tuer_core:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/tuer_core.openwrt"
+  /etc/default/tuer:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/tuer.default"
+  /etc/rc.d/S50tuer_core:
+    link: "../init.d/tuer_core"
+
+  # hotplug files
+  /etc/hotplug.d/tty/door.tty:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/scripts/door.tty"
+  /etc/hotplug.d/tty/door.usb:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/scripts/door.usb"
 
   /usr/local/bin/authorized_keys.sh:
     mode: '0755'
