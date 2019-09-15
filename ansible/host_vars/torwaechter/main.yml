@@ -47,14 +47,16 @@ openwrt_mixin:
     file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/update-keys/update-keys"
 
   # door daemon init scripts and configs
-  /etc/init.d/tuer_core:
+  /etc/init.d/doord:
     mode: '0755'
-    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/tuer_core.openwrt"
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/doord.openwrt"
+  /etc/default/door:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/door.default"
   /etc/default/tuer:
-    mode: '0755'
-    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/tuer.default"
-  /etc/rc.d/S50tuer_core:
-    link: "../init.d/tuer_core"
+    link: "./door"
+  /etc/rc.d/S50doord:
+    link: "../init.d/doord"
 
   # hotplug files
   /etc/hotplug.d/tty/door.tty:
