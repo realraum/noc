@@ -33,7 +33,7 @@ openwrt_mixin:
   /home:
     dirname:
   /run:
-    dirname:
+    link: "/var/run"
 
   # Go binaries
   /usr/local/bin/door_client:
@@ -144,6 +144,7 @@ openwrt_uci:
         dns_search: realraum.at
 
 
+# does not work, using symlink to /var/run instead for now
 openwrt_mounts:
   - path: /run
     src: none
