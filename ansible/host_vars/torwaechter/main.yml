@@ -24,6 +24,9 @@ openwrt_packages_extra:
   - lsblk
 
 openwrt_mixin:
+  /run:
+    dirname:
+
   # Go binaries
   /usr/local/bin/door_client:
     mode: '0755'
