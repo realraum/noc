@@ -20,6 +20,8 @@ openwrt_packages_extra:
   - screen
   - sudo
   - usbutils
+  - rsync
+  - lsblk
 
 openwrt_mixin:
   # Go binaries
