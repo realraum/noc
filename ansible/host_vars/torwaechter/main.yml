@@ -60,7 +60,7 @@ openwrt_mixin:
   /etc/hotplug.d/tty/door.tty:
     mode: '0755'
     file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/scripts/door.tty"
-  /etc/hotplug.d/tty/door.usb:
+  /etc/hotplug.d/usb/door.usb:
     mode: '0755'
     file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/scripts/door.usb"
 
