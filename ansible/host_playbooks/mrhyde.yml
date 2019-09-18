@@ -1,0 +1,5 @@
+---
+- name: Basic Setup for mrhyde
+  hosts: mrhyde
+  roles:
+  - role: base

@@ -1,0 +1,33 @@
+---
+localconfig_ssh_config_user: root
+
+vm_host: alfred
+
+install:
+  host: "{{ vm_host }}"
+  mem: 1024
+  numcpu: 2
+  disks:
+    primary: /dev/vda
+    virtio:
+      vda:
+        vg: "{{ vm_host }}"
+        lv: "{{ inventory_hostname }}"
+        size: 10g
+  interfaces:
+  - bridge: "{{ hostvars[vm_host].vm_host.network.interface }}"
+    name: mgmt0
+  - bridge: "br-svc"
+    name: svc0
+  autostart: True
+
+network:
+  nameservers: "{{ hostvars[vm_host].vm_host.network.nameservers }}"
+  domain: realraum.at
+  systemd_link:
+    interfaces: "{{ install.interfaces }}"
+  primary:
+    interface: mgmt0
+    ip: "{{ (hostvars[vm_host].vm_host.network.ip+'/'+hostvars[vm_host].vm_host.network.mask) | ipaddr(hostvars[vm_host].vm_host.network.indices[inventory_hostname]) | ipaddr('address') }}"
+    mask: "{{ hostvars[vm_host].vm_host.network.mask }}"
+    gateway: "{{ hostvars[vm_host].vm_host.network.gateway | default(hostvars[vm_host].vm_host.network.ip) }}"
