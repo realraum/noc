@@ -24,14 +24,9 @@ openwrt_packages_extra:
   - lsblk
 
 openwrt_mixin:
-  /etc/default:
-    dirname:
-  /etc/hotplug.d/tty/:
-    dirname:
-  /etc/hotplug.d/usb/:
-    dirname:
-  /home:
-    dirname:
+  ## this file will not be created because there is no file, link or content field below it
+  ## but it will force the creation of /home
+  /home/.placeholder: {}
   /run:
     link: "/var/run"
 
