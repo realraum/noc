@@ -24,9 +24,8 @@ openwrt_packages_extra:
   - lsblk
 
 openwrt_mixin:
-  ## this file will not be created because there is no file, link or content field below it
-  ## but it will force the creation of /home
-  /home/.placeholder: {}
+  /home:
+    directory:
   /run:
     link: "/var/run"
 
