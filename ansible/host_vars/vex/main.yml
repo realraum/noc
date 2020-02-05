@@ -4,3 +4,5 @@ sshd_allowusers_host:
   - www
   - www-data
   - acme
+
+vm_guest_force_haveged: yes

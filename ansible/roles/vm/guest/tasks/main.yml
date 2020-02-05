@@ -9,6 +9,12 @@
     state: absent
     purge: yes
 
+- name: Uninstall haveged
+  when: not (vm_guest_force_haveged | default(False))
+  apt:
+    name: haveged
+    state: absent
+    purge: yes
 
 - name: Provide a root shell on the VM console [1/2]
   file:
