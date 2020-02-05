@@ -1,28 +1,14 @@
-- name: Install rngd
+- name: Install and configure rngd (on kernel < 3.17)
+  when: ansible_kernel is version('3.17', '<')
+  import_tasks: rngd.yml
+
+- name: Uninstall rngd (on kernel >= 3.17)
+  when: ansible_kernel is version('3.17', '>=')
   apt:
     name: rng-tools
-    state: present
-    force_apt_get: yes
-
-- name: Configure rngd [1/2]
-  lineinfile:
-    path: /etc/default/rng-tools
-    line: '{{ item.key }}={{ item.value }}'
-    regexp: '^#?{{ item.key }}='
-  with_dict: '{{ rngd_config }}'
-  loop_control:
-    label: "{{ item.key }}"
-  notify: restart rngd
-
-- name: Configure rngd [2/2]
-  lineinfile:
-    path: /etc/default/rng-tools
-    regexp: '^{{ item.key }}=(?!{{ item.value }})'
     state: absent
-  with_dict: '{{ rngd_config }}'
-  loop_control:
-    label: "{{ item.key }}"
-  notify: restart rngd
+    purge: yes
+
 
 - name: Provide a root shell on the VM console [1/2]
   file:
