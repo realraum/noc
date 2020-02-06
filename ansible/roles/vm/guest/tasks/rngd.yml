@@ -1,0 +1,25 @@
+- name: Install rngd
+  apt:
+    name: rng-tools
+    state: present
+    force_apt_get: yes
+
+- name: Configure rngd [1/2]
+  lineinfile:
+    path: /etc/default/rng-tools
+    line: '{{ item.key }}={{ item.value }}'
+    regexp: '^#?{{ item.key }}='
+  with_dict: '{{ rngd_config }}'
+  loop_control:
+    label: "{{ item.key }}"
+  notify: restart rngd
+
+- name: Configure rngd [2/2]
+  lineinfile:
+    path: /etc/default/rng-tools
+    regexp: '^{{ item.key }}=(?!{{ item.value }})'
+    state: absent
+  with_dict: '{{ rngd_config }}'
+  loop_control:
+    label: "{{ item.key }}"
+  notify: restart rngd
