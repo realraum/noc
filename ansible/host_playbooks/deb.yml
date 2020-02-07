@@ -1,0 +1,97 @@
+---
+- name: Basic Setup for deb.realraum.at
+  hosts: deb
+  roles:
+  - role: base
+  
+- name: Set up data volume for apt-cacher-ng
+  hosts: deb
+  tasks:
+    - name: Format the data volume
+      filesystem:
+        dev: /dev/vdb
+        fstype: ext4
+        resizefs: yes
+
+    - name: Setup mountpoint
+      mount:
+        path:   /var/cache/apt-cacher-ng
+        src:    /dev/vdb
+        state:  mounted
+        fstype: ext4
+
+    - name: Create user/group apt-cacher-ng
+      user:
+        name: apt-cacher-ng
+        system: yes
+        shell: /usr/sbin/nologin
+        home: /var/cache/apt-cacher-ng
+        create_home: no
+
+    - name: Set up permissions on /var/cache/apt-cacher-ng
+      file:
+        path: /var/cache/apt-cacher-ng
+        owner: apt-cacher-ng
+        group: apt-cacher-ng
+
+- name: Set up apt-cacher-ng
+  hosts: deb
+  handlers:
+    - name: restart acng
+      service:
+        name: apt-cacher-ng
+        state: restarted
+
+  tasks:
+    - name: Install acng
+      apt:
+        name: apt-cacher-ng
+        state: present
+
+    - name: Configure acng
+      notify: restart acng
+      lineinfile:
+        path: /etc/apt-cacher-ng/acng.conf
+        line: "{{ item.key }}: {{ item.value }}"
+        regexp: "^(#\\s*)?{{ item.key }}:"
+
+      loop_control:
+        label: "{{ item.key }}"
+      with_dict:
+        BindAddress: deb.http.realraum.at
+        Port: 8080
+        ForceManaged: 1
+        Remap-debsec: /debian-security ; file:backends_debian_security
+        Remap-grml: /grml ; file:backends_grml
+        Remap-pi: /pi ; file:backends_pi
+        Remap-raspbian: /raspbian ; file:backends_raspbian
+
+
+    - name: Configure's acng's backends
+      notify: restart acng
+      copy:
+        dest: /etc/apt-cacher-ng/backends_{{ item.key }}
+        content: |
+          {% for backend in item.value %}
+          {{ backend }}
+          {% endfor %}
+        mode: 0644
+
+      loop_control:
+        label: "{{ item.key }}"
+      with_dict:
+        debian:
+          - https://debian.ffgraz.net/debian
+          - http://cdn-fastly.deb.debian.org/debian
+
+        debian_security:
+          - https://debian.ffgraz.net/debian-security
+          - http://cdn-fastly.deb.debian.org/debian-security
+
+        pi:
+          - https://debian.ffgraz.net/pi
+          - https://archive.raspberrypi.org/debian
+
+        raspbian:
+          - https://debian.ffgraz.net/raspbian
+          - https://archive.raspbian.org/raspbian
