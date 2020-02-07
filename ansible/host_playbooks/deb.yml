@@ -62,7 +62,7 @@
         Remap-raspbian: /raspbian ; file:backends_raspbian
 
 
-    - name: Configure's acng's backends
+    - name: Configure acng's backends
       notify: restart acng
       copy:
         dest: /etc/apt-cacher-ng/backends_{{ item.key }}
