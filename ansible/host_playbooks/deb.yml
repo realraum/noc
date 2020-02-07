@@ -1,9 +1,4 @@
 ---
-- name: Basic Setup for deb.realraum.at
-  hosts: deb
-  roles:
-  - role: base
-  
 - name: Set up data volume for apt-cacher-ng
   hosts: deb
   tasks:
@@ -99,3 +94,8 @@
         raspbian:
           - https://debian.ffgraz.net/raspbian
           - https://archive.raspbian.org/raspbian
+
+- name: Basic Setup for deb.realraum.at
+  hosts: deb
+  roles:
+  - role: base
