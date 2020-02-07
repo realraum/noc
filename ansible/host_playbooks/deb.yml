@@ -88,6 +88,10 @@
           - https://debian.ffgraz.net/debian-security
           - http://cdn-fastly.deb.debian.org/debian-security
 
+        grml:
+          - https://debian.ffgraz.net/grml
+          - https://deb.grml.org/
+
         pi:
           - https://debian.ffgraz.net/pi
           - https://archive.raspberrypi.org/debian
