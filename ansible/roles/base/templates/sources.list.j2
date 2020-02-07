@@ -1,7 +1,7 @@
 {% macro deb(path, suite) -%}
 {% for type in ['deb', 'deb-src'] %}
 {% for mirror in base_debian_mirrors %}
-{{ type }}	{{ mirror }}/{{ path }}	main
+{{ type }} {{ mirror }}/{{ path }}	{{ suite }}	main
 {% endfor %}
 {% endfor %}
 {%- endmacro %}
