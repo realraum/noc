@@ -1,5 +1,5 @@
 ---
-ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis']) }}"
+ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis','d3','ruru']) }}"
 
 openwrt_arch: x86
 openwrt_target: geode
