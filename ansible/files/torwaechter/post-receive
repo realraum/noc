@@ -5,9 +5,9 @@
 
 set -eu
 
-keys_branch=$(git config hooks.keys_branch 2>/dev/null)
-keys_file=$(git config hooks.keys_file 2>/dev/null)
-keys_pipe_to=$(git config hooks.keys_pipe_to 2>/dev/null)
+keys_branch=$(git config hooks.keys_branch 2>/dev/null || echo "")
+keys_file=$(git config hooks.keys_file 2>/dev/null || echo "")
+keys_pipe_to=$(git config hooks.keys_pipe_to 2>/dev/null || echo "")
 
 keys_branch=${keys_branch:-master}
 keys_file=${keys_file:-keys}
