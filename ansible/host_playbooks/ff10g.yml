@@ -1,0 +1,5 @@
+---
+- name: Basic Setup for testvm
+  hosts: ff10g
+  roles:
+  - role: base

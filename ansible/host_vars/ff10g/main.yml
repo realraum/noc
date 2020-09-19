@@ -1,0 +1,34 @@
+---
+localconfig_ssh_config_user: root
+
+vm_host: alfred
+
+install:
+  host: "{{ vm_host }}"
+  mem: 1024
+  numcpu: 2
+  disks:
+    primary: /dev/vda
+    virtio:
+      vda:
+        vg: "{{ vm_host }}"
+        lv: "{{ inventory_hostname }}"
+        size: 10g
+  interfaces:
+  - bridge: "br-ff"
+    name: ff0
+  - bridge: "br-ff10g"
+    name: ff1
+  autostart: True
+
+network:
+  nameservers:
+  - 10.12.0.10
+  domain: ffgraz.net
+  systemd_link:
+    interfaces: "{{ install.interfaces }}"
+  primary:
+    interface: ff0
+    ip: 10.12.240.247
+    mask: 255.255.255.240
+    gateway: 10.12.240.241
