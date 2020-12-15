@@ -1,8 +1,6 @@
 ---
 ssh_users_root:
-  - verr
-  - equinox
-  - nicoo
+  {{ users.noc | union(['f0rki', 'verr']) }}
 
 sshd_allowusers_host:
   - f0rki
