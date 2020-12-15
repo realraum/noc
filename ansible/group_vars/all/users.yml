@@ -1,12 +1,20 @@
 ---
 user_groups:
   noc:
+    - aveexy
     - equinox
     - gebi
     - nicoo
     - bernhard
 
 users:
+  aveexy:
+    email: aveexy@realraum.at
+    gpg: 0x2B5E064999CBD3BC
+    ssh:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDjMcAS8fiW2EqUtPgOW+uBkr7GjVtdyRvRPHhVd7bRRFofJrggksJiF8nVqQNr2OnUeFUMAUo82bf5Wvw86SkMHSRos8eYLgkhjiLE9Ay7gAEjHU1k/FfoMXPy2bgQd4uj3xw53valfTQyTdt5jJAN3gjNRGP2veDA2J1YvB4fvDG4AEHxLwXmP2QuXdq1S6w9Jr5nom3JxQMiNlwRmTZ+7OfepwMyI8u9hpVhe7AAbQ3MurauxpJECFc+eTNvJmtnvPClKuODmpu5ylzHbpuvKqu2Pb5ZrpC0ahLpTFgW2js/9T7AkHhggOwm71ZhX5BD3SPWLYu1+rQVPIoOFJyUMK/vrMR0HLw5+2Dgf9nwC1t6rfVJvjr6rOngVX1bFqx2FHiCVAS7J2dio4n3o/BETMk583BmokWXBsCaF2Zt7y3GyTLzebrkOXsuT9AHAleKS4fRSuFYLyTyoq8eFjlaHxrGDZjDAKuXrsetrl7n4gwpI2890KXa+1SoYJPc7Iz9HZqH6TaNZ1vKHCxwGuZK3QYgsikYdJmrtubS2D5LtUH4PMqGRUkZdjLGQV851SeFknmfHdzkxTQnLe8iL6G9AxFI7nkr++P8UmSf2vG/Qqjj4K5A6XJ7NHpAHLSmfpASQn8SN7Na838Z/DxKf2JfjwI4sG+BWAyBOqR973ebnQ==
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx3bNdCoR8CmDS30bGP+/QaC/3P4XfZUz6Kt5poDfAS
+
   equinox:
     email: equinox@realraum.at
     gpg: 0xF5FCA4AE9432CF70
