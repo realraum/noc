@@ -1,5 +1,5 @@
 ---
-ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis','ruru4143','ddd']) }}"
+ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis']) }}"
 
 openwrt_variant: openwrt
 openwrt_release: 18.06.4
