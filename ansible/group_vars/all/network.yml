@@ -60,3 +60,15 @@ net:
   ff:
     vlan: 255
     prefix: 10.12.240.240/28
+
+  ff-lwl:
+    vlan: 256
+    prefix: 10.12.0.0/16
+
+  ff-koruza:
+    vlan: 257
+    prefix: 10.12.0.0/16
+
+  ff-koruza-mgmt:
+    vlan: 258
+    prefix: 10.12.230.220/30

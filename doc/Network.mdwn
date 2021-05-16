@@ -4,18 +4,22 @@
 
 NOC operates a number of networks, available as tagged VLANs on the core switches:
 
-| Name     |  ID | DNS | CIDR                               | Comment                              |
-|----------|-----|-----|------------------------------------|--------------------------------------|
-| realfunk |   6 | n   | 192.168.6.0/24                     | realfunk management network          |
-| mgmt     |  32 | y   | 192.168.32.0/24                    | management network                   |
-| iot      |  33 | y   | 192.168.33.0/24                    | IoT devices, room infrastructure     |
-| svc      |  34 | y   | 192.168.34.0/24                    | Services LAN, see below              |
-| [HAMNET] |  44 | n   | 44.0.0.0/8                         | Amateur Radio Digital Communications |
-| guests   | 127 | y   | 192.168.127.0/24                   | Exposed through the “realraum” SSIDs |
-| members  | 128 | y   | 89.106.211.32/27, 192.168.128.0/24 | Accessed with per-member credentials |
-| pub      | 130 | y   | 89.106.211.64/27                   | Publicly-available services          |
-| UPC      | 168 | n   | <dynamically assigned>             | UPC DOCSIS Internet                  |
-| `0xFF`   | 255 | n   | 10.12.240.240/28                   | Funkfeuer VLAN                       |
+| Name               |  ID | DNS | CIDR                               | Comment                              |
+|--------------------|-----|-----|------------------------------------|--------------------------------------|
+| realfunk           |   6 | n   | 192.168.6.0/24                     | realfunk management network          |
+| mgmt               |  32 | y   | 192.168.32.0/24                    | management network                   |
+| iot                |  33 | y   | 192.168.33.0/24                    | IoT devices, room infrastructure     |
+| svc                |  34 | y   | 192.168.34.0/24                    | Services LAN, see below              |
+| [HAMNET]           |  44 | n   | 44.0.0.0/8                         | Amateur Radio Digital Communications |
+| guests             | 127 | y   | 192.168.127.0/24                   | Exposed through the “realraum” SSIDs |
+| members            | 128 | y   | 89.106.211.32/27, 192.168.128.0/24 | Accessed with per-member credentials |
+| pub                | 130 | y   | 89.106.211.64/27                   | Publicly-available services          |
+| UPC                | 168 | n   | <dynamically assigned>             | UPC DOCSIS Internet                  |
+| `0xFF r3`          | 255 | n   | 10.12.240.240/28                   | Funkfeuer realraum subnet            |
+| `0xFF LWL`         | 256 | n   | 10.12.0.0/16                       | Funkfeuer Fiber to TUG/mur.at VLAN   |
+| `0xFF Koruza`      | 257 | n   | 10.12.0.0/16                       | Funkfeuer Laserlink to TUG           |
+| `0xFF Koruza Mgmt` | 258 | n   | 10.12.230.220/30                   | Funkfeuer Management for Laserlink   |
+
 
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
 
