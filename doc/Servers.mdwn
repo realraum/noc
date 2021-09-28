@@ -4,6 +4,8 @@
 - `torwaechter.mgmt.realraum.at`
 - `gw.realraum.at`
 - `smsgw.realraum.at`
+-  licht.realraum.at
+-  homeassistant.iot.realraum.at
 
 # Third-party servers running r³ services
 
