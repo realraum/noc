@@ -17,9 +17,9 @@ NOC operates a number of networks, available as tagged VLANs on the core switche
 | UPC                | 168 | n   | <dynamically assigned>             | UPC DOCSIS Internet                  |
 | `0xFF r3`          | 255 | n   | 10.12.240.240/28                   | Funkfeuer realraum subnet            |
 | `0xFF LWL`         | 256 | n   | 10.12.0.0/16                       | Funkfeuer Fiber to TUG/mur.at VLAN   |
-| `0xFF Koruza`      | 257 | n   | 10.12.0.0/16                       | Funkfeuer Laserlink to TUG           |
+| `0xFF Koruza`      | 257 | n   | 10.12.208.64/29                    | Funkfeuer Laserlink to TUG           |
 | `0xFF Koruza Mgmt` | 258 | n   | 10.12.230.220/30                   | Funkfeuer Management for Laserlink   |
-| `0xFF sch24      ` | 259 | n   | 10.12.0.0/16                       | Funkfeuer 5GHz Link to sch24         |
+| `0xFF sch24`       | 259 | n   | 10.12.210.28/30                    | Funkfeuer 5GHz Link to sch24         |
 
 
 [HAMNET]: https://wiki.oevsv.at/index.php/Kategorie:Digitaler_Backbone
