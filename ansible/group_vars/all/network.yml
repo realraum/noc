@@ -72,3 +72,7 @@ net:
   ff-koruza-mgmt:
     vlan: 258
     prefix: 10.12.230.220/30
+
+  ff-sch24:
+    vlan: 259
+    prefix: 10.12.0.0/16
