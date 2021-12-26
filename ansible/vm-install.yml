@@ -47,8 +47,6 @@
   - role: vm/network
   - role: vm/guest
 
-- import_playbook: "host_playbooks/{{ hostname }}.yml"
-
 - name: reboot and wait for VM come back
   hosts: "{{ hostname }}"
   gather_facts: no
@@ -56,3 +54,5 @@
   - role: reboot-and-wait
     reboot_delay: 10
     reboot_timeout: 120
+
+- import_playbook: "host_playbooks/{{ hostname }}.yml"

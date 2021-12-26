@@ -10,4 +10,5 @@ vm_host:
     nameservers: "{{ net.mgmt.dns }}"
     indices:
       metrics: 74
+      deb: 75
       testvm: 99
