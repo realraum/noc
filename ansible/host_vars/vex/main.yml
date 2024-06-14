@@ -4,3 +4,7 @@ sshd_allowusers_host:
   - www
   - www-data
   - acme
+
+base_debian_mirrors:
+  - https://debian.ffgraz.net
+  - https://deb.realraum.at
