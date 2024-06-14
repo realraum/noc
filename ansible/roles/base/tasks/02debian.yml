@@ -16,7 +16,6 @@
       - tcpdump
       - debian-goodies
       - lsof
-      - haveged
       - net-tools
       - screen
       - aptitude
@@ -28,6 +27,12 @@
       - command-not-found
       - man-db
       - lshw
+    state: present
+
+- name: Install haveged on physical machines
+  when: "'virtualservers' not in group_names"
+  apt:
+    name: haveged
     state: present
 
 - name: make sure grml-(etc|scripts)-core is not installed
