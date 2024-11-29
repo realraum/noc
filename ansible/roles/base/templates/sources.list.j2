@@ -1,0 +1,17 @@
+{% macro deb(path, suite) -%}
+{% for type in ['deb', 'deb-src'] %}
+{% for mirror in base_debian_mirrors %}
+{{ type }} {{ mirror }}/{{ path }}	{{ suite }}	main
+{% endfor %}
+{% endfor %}
+{%- endmacro %}
+{{ ansible_managed | comment }}
+
+# Main Debian archive
+{{ deb('debian', ansible_distribution_release) }}
+
+# Security updates
+{{ deb('debian-security', ansible_distribution_release + '/updates') }}
+
+# {{ ansible_distribution_release }}-updates, previously known as 'volatile'
+{{ deb('debian', ansible_distribution_release + '-updates') }}
