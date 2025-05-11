@@ -1,0 +1,6 @@
+name: realraum-k8s
+description: |
+  A Kubernetes/Talos cluster in realraum, declaratively managed.
+runtime:
+  name: python
+  options: {}
