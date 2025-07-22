@@ -28,7 +28,7 @@
 - name: install php-fpm config
   template:
     src: php-fpm.conf.j2
-    dest: /etc/php/7.3/fpm/pool.d/dokuwiki.conf
+    dest: /etc/php/8.2/fpm/pool.d/dokuwiki.conf
   notify: reload php-fpm
 
 
