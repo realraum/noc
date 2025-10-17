@@ -5,6 +5,7 @@ rsync -e 'ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -
 ## Fixes for newer plugins
 sed 's/<faicon.*fa-\(.*\)>/{{fa>\1}}/' -i /srv/dokuwiki/data/pages/navbar.txt
 sed '/^{{rss/d' -i /srv/dokuwiki/data/pages/realraum.txt
+sed 's|<script type="text/javascript" src="/kiosk.js"></script>|script type="text/javascript" src="//status.realraum.at/js/jquery/jquery.min.js"></script><script type="text/javascript" src="//status.realraum.at/kiosk.js"></script>|' -i /srv/dokuwiki/data/pages/r3sidebar.txt 
 
 ## Todo
 # - markdown conversion with pandoc
