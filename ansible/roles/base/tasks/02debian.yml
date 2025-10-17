@@ -24,7 +24,7 @@
       - ca-certificates
       - file
       - nano
-      - python-apt
+      - python-apt-common
       - command-not-found
       - man-db
       - lshw

@@ -1,14 +1,14 @@
 ---
-- name: check if acmetool package is new enough
-  debug:
-    msg: "Check distribution_release"
-  failed_when: (ansible_distribution == 'Debian' and ansible_distribution_major_version < 9) or (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < 17) or (ansible_distribution != 'Debian' and ansible_distribution != 'Ubuntu')
+# - name: check if acmetool package is new enough
+#   debug:
+#     msg: "Check distribution_release"
+#   failed_when: (ansible_distribution == 'Debian' and ansible_distribution_major_version < 9) or (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < 17) or (ansible_distribution != 'Debian' and ansible_distribution != 'Ubuntu')
 
 - name: install needed packages
   apt:
     name:
       - acmetool
-      - python-openssl
+      - python3-openssl
     state: present
 
 - name: create initial directory structure

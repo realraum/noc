@@ -9,14 +9,14 @@ dokuwiki_plugins:
     url: http://nikita.melnichenko.name/download.php?q=dokuwiki-diagram-latest.tgz
     sha256: c303704123fefbf00be94fa31ed4ed541c419e8375ba0a1295e8235077ba42e6
   icons:
-    url: https://github.com/giterlizzi/dokuwiki-plugin-icons/archive/refs/heads/master.zip
-    sha256: f5702a35227656dd85a1d80062418de995ff117f42f2b7d47c70812143e0769b
+    url: https://github.com/giterlizzi/dokuwiki-plugin-icons/archive/refs/heads/master.tar.gz
+    sha256: e77aacc88b058f94bfa3f1d3099339f1e0ab56a0828e9fa5cb895373eeb29b10
   move:
-    url: https://github.com/michitux/dokuwiki-plugin-move/archive/refs/tags/2025-06-09.zip
-    sha256: 93fc5c7da6d7ac92edfc8b5ea658abcaee2484c0df864f25e78056645b35579c
+    url: https://github.com/michitux/dokuwiki-plugin-move/archive/refs/tags/2025-06-09.tar.gz
+    sha256: 08c451bb7313bfbfa378f0f49df0cb6ec87c304ff692ed0a377a42272b7a5d23
   include:
-    url: https://github.com/dokufreaks/plugin-include/archive/refs/tags/2018-11-29.zip
-    sha256: 7ef1cf4b00d5af69de078865d4db77fa69595b3601cfdd0db2f228b97dafcbe4
+    url: https://github.com/dokufreaks/plugin-include/archive/refs/tags/2018-11-29.tar.gz
+    sha256: 8aba5104a072089dd1f4a158bffd7db34b951c79da9a89d5270919e9a7a7d505.
   pagelist:
     url: https://github.com/dokufreaks/plugin-pagelist/archive/refs/tags/2017-08-24.tar.gz
     sha256: 18791d19b52df21958f1aeca0ab73072370c27aa4a03f820aa1a10dcb32d33d3
@@ -32,7 +32,7 @@ dokuwiki_plugins:
 
 dokuwiki_templates:
   bootstrap3:
-    url: https://github.com/giterlizzi/dokuwiki-template-bootstrap3/archive/refs/tags/v2025-06-13.zip
-    sha256: cfde39cc8c89ccacdc545efe28abe54f8ddf10cb3d475d19c806ccbe70bdb6ef
+    url: https://github.com/giterlizzi/dokuwiki-template-bootstrap3/archive/refs/tags/v2025-06-13.tar.gz
+    sha256: d0aea1b8c5846012ee4ba6968921d97cb88b8d54eb062c62ce01a6d15a00714d
     # url: 'https://github.com/dokuwiki/dokuwiki/releases/download/release-2025-05-14a/dokuwiki-2025-05-14a.tgz'
     # sha256: '91e508832febe10c7317e484e946576692bf9181397f8dace1df006f8161176d'
