@@ -1,5 +1,5 @@
 ---
-ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis']) }}"
+ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis','ruru']) }}"
 
 openwrt_arch: x86
 openwrt_target: geode
@@ -38,6 +38,10 @@ openwrt_mixin:
   /usr/local/bin/update-keys-from-stdin.sh:
     mode: '0755'
     file: "{{ global_files_dir }}/{{ inventory_hostname }}/update-keys-from-stdin.sh"
+
+  /etc/sudoers.d/tuergitflash:
+    mode: '0440'
+    file: "{{ global_files_dir }}/{{ inventory_hostname }}/tuergitflash"
 
   /etc/ssh/sshd_config:
     content: |

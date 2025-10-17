@@ -5,13 +5,13 @@
 
 set -eu
 
-keys_branch=$(git config hooks.keys_branch 2>/dev/null)
-keys_file=$(git config hooks.keys_file 2>/dev/null)
-keys_pipe_to=$(git config hooks.keys_pipe_to 2>/dev/null)
+keys_branch=$(git config hooks.keys_branch 2>/dev/null || echo "")
+keys_file=$(git config hooks.keys_file 2>/dev/null || echo "")
+keys_pipe_to=$(git config hooks.keys_pipe_to 2>/dev/null || echo "")
 
 keys_branch=${keys_branch:-master}
 keys_file=${keys_file:-keys}
-keys_pipe_to=${keys_pipe_to:-/usr/local/bin/update-keys-from-stdin.sh}
+keys_pipe_to=${keys_pipe_to:-sudo /usr/local/bin/update-keys-from-stdin.sh}
 
 changedcommits=$( grep "refs/heads/${keys_branch}" | sed 's/\([0-9a-f]\+\)\s\+\([0-9a-f]\+\)\s\+.*/\1..\2/;' )
 
