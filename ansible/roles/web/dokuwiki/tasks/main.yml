@@ -24,11 +24,33 @@
     group: dokuwiki
     mode: 0700
 
+- name: symlink acl und userdata configs
+  with_items:
+    - acl.auth.php
+    - users.auth.php
+  file:
+    state: link
+    src: "/srv/dokuwiki/acl/{{ item }}"
+    path: "/etc/dokuwiki/{{ item }}"
+
+- name: install dokuwiki config
+  template:
+    src: dokuwiki.php.j2
+    dest: /etc/dokuwiki/dokuwiki.php
+  notify: reload php-fpm
+
+- name: install userstyle.css
+  template:
+    src: userstyle.css.j2
+    dest: /etc/dokuwiki/userstyle.css
+  notify: reload php-fpm
+
+
 ## TODO: fix hardcoded php version...
 - name: install php-fpm config
   template:
     src: php-fpm.conf.j2
-    dest: /etc/php/8.2/fpm/pool.d/dokuwiki.conf
+    dest: /etc/php/8.2/fpm/pool.d/z_read_last_dokuwiki.conf
   notify: reload php-fpm
 
 

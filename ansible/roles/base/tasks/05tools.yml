@@ -4,6 +4,7 @@
     name:
       - htop
       - zsh
+      - rsync
 
 - name: set root default shell to zsh
   user:

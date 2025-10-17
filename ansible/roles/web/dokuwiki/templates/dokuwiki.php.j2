@@ -1,0 +1,168 @@
+<?php
+
+/* Basic Settings */
+$conf['title']       = '{{ dokuwiki_config.title|default("DokuWiki") }}'; //what to show in the title
+$conf['start']       = '{{ dokuwiki_config.startpage|default("start") }}';           //name of start page
+$conf['lang']        = '{{ dokuwiki_config.language|default("en") }}';              //your language
+$conf['template']    = '{{ dokuwiki_config.template|default("dokuwiki") }}';         //see lib/tpl directory
+$conf['tagline']     = '{{ dokuwiki_config.tagline|default("") }}';                //tagline in header (if template supports it)
+$conf['sidebar']     = '{{ dokuwiki_config.sidebarpage|default("sidebar") }}';         //name of sidebar in root namespace (if template supports it)
+$conf['license']     = '{{ dokuwiki_config.license|default("cc-by-nc-sa") }}';     //see conf/license.php
+$conf['savedir']     =  '{{ dokuwiki_config.savedir | default("/srv/dokuwiki/data") }}'; //where to store all the files
+$conf['basedir']     =  '{{ dokuwiki_config.basedir | default("") }}';                //absolute dir from serveroot - blank for autodetection
+$conf['baseurl']     =  '{{ dokuwiki_config.baseurl | default("") }}';                //URL to server including protocol - blank for autodetect
+$conf['cookiedir']   =  '{{ dokuwiki_config.cookiedir | default("") }}';                //path to use in cookies - blank for basedir
+$conf['dmode']       =  {{ dokuwiki_config.dmode | default("0755") }};              //set directory creation mode
+$conf['fmode']       =  {{ dokuwiki_config.fmode | default("0644") }};              //set file creation mode
+$conf['allowdebug']  =  {{ dokuwiki_config.allowdebug | default("0") }};                 //allow debug output, enable if needed 0|1
+
+/* Display Settings */
+$conf['recent']      =  {{ dokuwiki_config.recent | default("20") }};                //how many entries to show in recent
+$conf['recent_days'] =  {{ dokuwiki_config.recent_days | default("7") }};                 //How many days of recent changes to keep. (days)
+$conf['breadcrumbs'] =  {{ dokuwiki_config.breadcrumbs | default("10") }};                //how many recent visited pages to show
+$conf['youarehere']  =  {{ dokuwiki_config.youarehere | default("0") }};                 //show "You are here" navigation? 0|1
+$conf['fullpath']    =  {{ dokuwiki_config.fullpath | default("0") }};                 //show full path of the document or relative to datadir only? 0|1
+$conf['typography']  =  {{ dokuwiki_config.typography | default("1") }};                 //smartquote conversion 0=off, 1=doublequotes, 2=all quotes
+$conf['dformat']     =  '{{ dokuwiki_config.dformat | default("%Y/%m/%d %H:%M") }}';  //dateformat accepted by PHPs strftime() function
+$conf['signature']   =  '{{ dokuwiki_config.signature | default(" --- //[[@MAIL@|@NAME@]] @DATE@//") }}'; //signature see wiki page for details
+$conf['showuseras']  =  '{{ dokuwiki_config.showuseras | default("loginname") }}';       // 'loginname' users login name
+                                          // 'username' users full name
+                                          // 'email' e-mail address (will be obfuscated as per mailguard)
+                                          // 'email_link' e-mail address as a mailto: link (obfuscated)
+$conf['toptoclevel'] =  {{ dokuwiki_config.toptoclevel | default("1") }};                 //Level starting with and below to include in AutoTOC (max. 5)
+$conf['tocminheads'] =  {{ dokuwiki_config.tocminheads | default("3") }};                 //Minimum amount of headlines that determines if a TOC is built
+$conf['maxtoclevel'] =  {{ dokuwiki_config.maxtoclevel | default("3") }};                 //Up to which level include into AutoTOC (max. 5)
+$conf['maxseclevel'] =  {{ dokuwiki_config.maxseclevel | default("3") }};                 //Up to which level create editable sections (max. 5)
+$conf['camelcase']   =  {{ dokuwiki_config.camelcase | default("0") }};                 //Use CamelCase for linking? (I don't like it) 0|1
+$conf['deaccent']    =  {{ dokuwiki_config.deaccent | default("1") }};                 //deaccented chars in pagenames (1) or romanize (2) or keep (0)?
+$conf['useheading']  =  {{ dokuwiki_config.useheading | default("0") }};                 //use the first heading in a page as its name
+$conf['sneaky_index']= 0;                 //check for namespace read permission in index view (0|1) (1 might cause unexpected behavior)
+$conf['hidepages']   =  '{{ dokuwiki_config.hidepages | default("") }}';                //Regexp for pages to be skipped from RSS, Search and Recent Changes
+
+/* Authentication Settings */
+$conf['useacl']      =  {{ dokuwiki_config.useacl | default("0") }};                //Use Access Control Lists to restrict access?
+$conf['autopasswd']  =  {{ dokuwiki_config.autopasswd | default("1") }};                //autogenerate passwords and email them to user
+$conf['authtype']    =  '{{ dokuwiki_config.authtype | default("authplain") }}';      //which authentication backend should be used
+$conf['passcrypt']   =  '{{ dokuwiki_config.passcrypt | default("bcrypt") }}';           //Used crypt method (smd5,md5,sha1,ssha,crypt,mysql,my411,bcrypt)
+$conf['defaultgroup']= 'user';           //Default groups new Users are added to
+$conf['superuser']   =  '{{ dokuwiki_config.superuser | default("!!not set!!") }}';    //The admin can be user or @group or comma separated list user1,@group1,user2
+$conf['manager']     =  '{{ dokuwiki_config.manager | default("!!not set!!") }}';    //The manager can be user or @group or comma separated list user1,@group1,user2
+$conf['profileconfirm'] =  {{ dokuwiki_config.profileconfirm | default("1") }};             //Require current password to confirm changes to user profile
+$conf['rememberme'] =  {{ dokuwiki_config.rememberme | default("1") }};                 //Enable/disable remember me on login
+$conf['disableactions'] =  '{{ dokuwiki_config.disableactions | default("") }}';            //comma separated list of actions to disable
+$conf['auth_security_timeout'] =  {{ dokuwiki_config.auth_security_timeout | default("900") }};    //time (seconds) auth data is considered valid, set to 0 to recheck on every page view
+$conf['securecookie'] =  {{ dokuwiki_config.securecookie | default("1") }};               //never send HTTPS cookies via HTTP
+$conf['remote']      =  {{ dokuwiki_config.remote | default("0") }};                //Enable/disable remote interfaces
+$conf['remoteuser']  =  '{{ dokuwiki_config.remoteuser | default("!!not set!!") }}';    //user/groups that have access to remote interface (comma separated). leave empty to allow all users
+$conf['remotecors']  =  '{{ dokuwiki_config.remotecors | default("") }}';               //enable Cross-Origin Resource Sharing (CORS) for the remote interfaces. Asterisk (*) to allow all origins. leave empty to deny.
+
+/* Antispam Features */
+$conf['usewordblock']= 1;                //block spam based on words? 0|1
+$conf['relnofollow'] =  {{ dokuwiki_config.relnofollow | default("1") }};                //use rel="ugc nofollow" for external links?
+$conf['indexdelay']  = 60*60*24*5;       //allow indexing after this time (seconds) default is 5 days
+$conf['mailguard']   =  '{{ dokuwiki_config.mailguard | default("hex") }}';            //obfuscate email addresses against spam harvesters?
+                                         //valid entries are:
+                                         //  'visible' - replace @ with [at], . with [dot] and - with [dash]
+                                         //  'hex'     - use hex entities to encode the mail address
+                                         //  'none'    - do not obfuscate addresses
+$conf['iexssprotect']= 1;                // check for JavaScript and HTML in uploaded files 0|1
+
+/* Editing Settings */
+$conf['usedraft']    =  {{ dokuwiki_config.usedraft | default("1") }};                //automatically save a draft while editing (0|1)
+$conf['htmlok']      =  {{ dokuwiki_config.htmlok | default("0") }};                //may raw HTML be embedded? This may break layout and XHTML validity 0|1
+$conf['phpok']       =  {{ dokuwiki_config.phpok | default("0") }};                //may PHP code be embedded? Never do this on the internet! 0|1
+$conf['locktime']    = 15*60;            //maximum age for lockfiles (defaults to 15 minutes)
+$conf['cachetime']   = 60*60*24;         //maximum age for cachefile in seconds (defaults to a day)
+
+/* Link Settings */
+// Set target to use when creating links - leave empty for same window
+$conf['target']['wiki']      = '';
+$conf['target']['interwiki'] = '';
+$conf['target']['extern']    = '';
+$conf['target']['media']     = '';
+$conf['target']['windows']   = '';
+
+/* Media Settings */
+$conf['mediarevisions'] =  {{ dokuwiki_config.mediarevisions | default("1") }};             //enable/disable media revisions
+$conf['refcheck']    =  {{ dokuwiki_config.refcheck | default("1") }};                //check for references before deleting media files
+$conf['gdlib']       =  {{ dokuwiki_config.gdlib | default("2") }};                //the GDlib version (0, 1 or 2) 2 tries to autodetect
+$conf['im_convert']  =  '{{ dokuwiki_config.im_convert | default("") }}';               //path to ImageMagicks convert (will be used instead of GD)
+$conf['jpg_quality'] =  '{{ dokuwiki_config.jpg_quality | default("70") }}';             //quality of compression when scaling jpg images (0-100)
+$conf['fetchsize']   =  {{ dokuwiki_config.fetchsize | default("0") }};                //maximum size (bytes) fetch.php may download from extern, disabled by default
+
+/* Notification Settings */
+$conf['subscribers'] =  {{ dokuwiki_config.subscribers | default("0") }};                //enable change notice subscription support
+$conf['subscribe_time'] = 24*60*60;      //Time after which digests / lists are sent (in sec, default 1 day)
+                                         //Should be smaller than the time specified in recent_days
+$conf['notify']      =  '{{ dokuwiki_config.notify | default("") }}';               //send change info to this email (leave blank for nobody)
+$conf['registernotify'] =  '{{ dokuwiki_config.registernotify | default("") }}';            //send info about newly registered users to this email (leave blank for nobody)
+$conf['mailfrom']    =  '{{ dokuwiki_config.mailfrom | default("") }}';               //use this email when sending mails
+$conf['mailreturnpath']    =  '{{ dokuwiki_config.mailreturnpath | default("") }}';         //use this email as returnpath for bounce mails
+$conf['mailprefix']  =  '{{ dokuwiki_config.mailprefix | default("") }}';               //use this as prefix of outgoing mails
+$conf['htmlmail']    =  {{ dokuwiki_config.htmlmail | default("1") }};                //send HTML multipart mails
+$conf['dontlog'] =  '{{ dokuwiki_config.dontlog | default("debug") }}';              //logging facilites that should be disabled
+
+/* Syndication Settings */
+$conf['sitemap']     =  {{ dokuwiki_config.sitemap | default("0") }};                //Create a google sitemap? How often? In days.
+$conf['rss_type']    =  '{{ dokuwiki_config.rss_type | default("rss2") }}';           //type of RSS feed to provide, by default:
+                                         //  'rss'  - RSS 0.91
+                                         //  'rss1' - RSS 1.0
+                                         //  'rss2' - RSS 2.0
+                                         //  'atom' - Atom 0.3
+                                         //  'atom1' - Atom 1.0
+$conf['rss_linkto'] =  '{{ dokuwiki_config.rss_linkto | default("diff") }}';            //what page RSS entries link to:
+                                         //  'diff'    - page showing revision differences
+                                         //  'page'    - the revised page itself
+                                         //  'rev'     - page showing all revisions
+                                         //  'current' - most recent revision of page
+$conf['rss_content'] =  '{{ dokuwiki_config.rss_content | default("abstract") }}';       //what to put in the items by default?
+                                         //  'abstract' - plain text, first paragraph or so
+                                         //  'diff'     - plain text unified diff wrapped in <pre> tags
+                                         //  'htmldiff' - diff as HTML table
+                                         //  'html'     - the full page rendered in XHTML
+$conf['rss_media']   =  '{{ dokuwiki_config.rss_media | default("both") }}';           //what should be listed?
+                                         //  'both'     - page and media changes
+                                         //  'pages'    - page changes only
+                                         //  'media'    - media changes only
+$conf['rss_update'] = 5*60;              //Update the RSS feed every n seconds (defaults to 5 minutes)
+$conf['rss_show_summary'] =  {{ dokuwiki_config.rss_show_summary | default("1") }};           //Add revision summary to title? 0|1
+$conf['rss_show_deleted'] =  {{ dokuwiki_config.rss_show_deleted | default("1") }};           //Show deleted items 0|1
+
+/* Advanced Settings */
+$conf['updatecheck'] =  {{ dokuwiki_config.updatecheck | default("0") }};                //automatically check for new releases?
+$conf['userewrite']  =  {{ dokuwiki_config.userewrite | default("0") }};                //this makes nice URLs: 0: off 1: .htaccess 2: internal
+$conf['useslash']    =  {{ dokuwiki_config.useslash | default("0") }};                //use slash instead of colon? only when rewrite is on
+$conf['sepchar']     =  '{{ dokuwiki_config.sepchar | default("_") }}';              //word separator character in page names; may be a
+                                         //  letter, a digit, '_', '-', or '.'.
+$conf['canonical']   =  {{ dokuwiki_config.canonical | default("0") }};                //Should all URLs use full canonical http://... style?
+$conf['fnencode']    =  '{{ dokuwiki_config.fnencode | default("url") }}';            //encode filenames (url|safe|utf-8)
+$conf['autoplural']  =  {{ dokuwiki_config.autoplural | default("0") }};                //try (non)plural form of nonexisting files?
+$conf['compression'] =  '{{ dokuwiki_config.compression | default("gz") }}';             //compress old revisions: (0: off) ('gz': gnuzip) ('bz2': bzip)
+                                         //  bz2 generates smaller files, but needs more cpu-power
+$conf['gzip_output'] =  {{ dokuwiki_config.gzip_output | default("0") }};                //use gzip content encodeing for the output xhtml (if allowed by browser)
+$conf['compress']    =  {{ dokuwiki_config.compress | default("1") }};                //Strip whitespaces and comments from Styles and JavaScript? 1|0
+$conf['cssdatauri']  =  {{ dokuwiki_config.cssdatauri | default("512") }};              //Maximum byte size of small images to embed into CSS, won't work on IE<8
+$conf['send404']     =  {{ dokuwiki_config.send404 | default("0") }};                //Send a HTTP 404 status for non existing pages?
+$conf['broken_iua']  =  {{ dokuwiki_config.broken_iua | default("0") }};                //Platform with broken ignore_user_abort (IIS+CGI) 0|1
+$conf['xsendfile']   =  {{ dokuwiki_config.xsendfile | default("0") }};                //Use X-Sendfile (1 = lighttpd, 2 = standard)
+$conf['renderer_xhtml'] =  '{{ dokuwiki_config.renderer_xhtml | default("xhtml") }}';       //renderer to use for main page generation
+$conf['readdircache'] =  {{ dokuwiki_config.readdircache | default("0") }};               //time cache in second for the readdir operation, 0 to deactivate.
+$conf['search_nslimit'] =  {{ dokuwiki_config.search_nslimit | default("0") }};             //limit the search to the current X namespaces
+$conf['search_fragment'] =  '{{ dokuwiki_config.search_fragment | default("exact") }}';      //specify the default fragment search behavior
+$conf['trustedproxy'] =  '{{ dokuwiki_config.trustedproxy | default("^(::1|[fF][eE]80:|127\.|10\.|192\.168\.|172\.((1[6-9])|(2[0-9])|(3[0-1]))\.)") }}';
+                                         //Regexp of trusted proxy address when reading IP using HTTP header
+                                         //  if blank, do not trust any proxy (including local IP)
+
+/* Feature Flags */
+$conf['defer_js'] =  {{ dokuwiki_config.defer_js | default("1") }};                   // Defer javascript to be executed after the page's HTML has been parsed. Setting will be removed in the next release.
+
+/* Network Settings */
+$conf['dnslookups'] =  {{ dokuwiki_config.dnslookups | default("1") }};                 //disable to disallow IP to hostname lookups
+$conf['jquerycdn']  =  {{ dokuwiki_config.jquerycdn | default("0") }};                 //use a CDN for delivering jQuery?
+// Proxy setup - if your Server needs a proxy to access the web set these
+$conf['proxy']['host']    = '';
+$conf['proxy']['port']    = '';
+$conf['proxy']['user']    = '';
+$conf['proxy']['pass']    = '';
+$conf['proxy']['ssl']     = 0;
+$conf['proxy']['except']  = '';

@@ -1,0 +1,125 @@
+ /** Vanilla Bootstrap Theme */
+/**
+; r3 theme:
+; body background: #D0D0AF
+; text bg: #ffffff
+; text: #000000
+; link text: #761407
+; hr line: #8CACBB
+; header bg: #761407
+; logo colour: #ffffff
+; menu bg: black
+; menu text: white
+; footer bg: #761407
+; footer text: #CCC
+; realraum text header color: #F8F8F8
+; sidebar item header: bg: #333
+; sidebar item header: text: #DDD
+
+**/
+body {
+	background-color:#D0D0AF;
+}
+
+
+@media (min-width:1300px) {
+  .container{
+	width:1280px
+  }
+}
+
+div.r3floatsidebar { 
+	  display:none;
+}
+@media (min-width:992px) {
+div.r3floatsidebar { 
+	  float:right;
+	  min-width:20em;
+	  border-left:1ex white solid;
+	  display:block;
+}
+}
+
+
+body.default.page-on-panel, body.optional.page-on-panel {
+	background-color:#D0D0AF;
+}
+
+nav.navbar,ul.dropdown-menu {
+	background-color:#761407;
+	color:white;
+}
+
+li.dropdown-header {
+	color:white;
+	font-variant:small-caps;
+}
+ul.navbar-nav > li > a{
+	padding-left:10px;
+	padding-right:10px;
+}
+ul.tools > li.dropdown-header {
+	background-color:#333;
+}
+
+
+#dw__title, #dw__taglin{
+	color:white;
+}
+
+.navbar-toggle .navbar-brand .dropdown-toggle {
+	color:white;
+}
+
+a.urlextern,
+a.wikilink1,
+a.mediafile,
+a.action,
+ul > li > a {
+	color: #761407;
+}
+.dropdown-menu>.disabled>a,.dropdown-menu>.disabled>a:focus,.dropdown-menu>.disabled>a:hover{
+	color:white;
+}
+
+.navbar-default .navbar-nav > li > a,
+h4 > small {
+	color:white;
+}
+.dropdown-menu > li > a {
+	color:white;
+}
+
+span.label {
+	background-color:#761407;
+	color:white;
+}
+.pageId {
+	font-size:150%;
+
+}
+
+div.wrap_collapse {
+	overflow:hidden;
+	max-height:1.7em;
+	background-image: linear-gradient(#337AB7 10%, white 100%);
+	transition:all 0.5s linear;
+}
+div.wrap_collapse:target {
+	overflow:show;
+	max-height:none;
+	background-image:none;
+	transition:all 0.5s linear;
+}
+
+/** needed to display sensorvalue divs **/
+div.sensorstatus {
+  width:auto;
+  padding:5px;
+  float:left;  
+  text-align:left;
+  vertical-align:middle;
+  font-size:90%;
+}
+
+

@@ -15,14 +15,14 @@ dokuwiki_plugins:
     url: https://github.com/michitux/dokuwiki-plugin-move/archive/refs/tags/2025-06-09.tar.gz
     sha256: 08c451bb7313bfbfa378f0f49df0cb6ec87c304ff692ed0a377a42272b7a5d23
   include:
-    url: https://github.com/dokufreaks/plugin-include/archive/refs/tags/2018-11-29.tar.gz
-    sha256: 8aba5104a072089dd1f4a158bffd7db34b951c79da9a89d5270919e9a7a7d505.
+    url: https://github.com/dokufreaks/plugin-include/archive/master.tar.gz
+    sha256: d73b9d833b10179c5c807175f32c3aef154fddce49095e21c4ee89a4664b5338
   pagelist:
-    url: https://github.com/dokufreaks/plugin-pagelist/archive/refs/tags/2017-08-24.tar.gz
-    sha256: 18791d19b52df21958f1aeca0ab73072370c27aa4a03f820aa1a10dcb32d33d3
+    url: https://github.com/dokufreaks/plugin-pagelist/archive/master.tar.gz
+    sha256: 1257a39f6c9a8fd5fca5726b9a4c7604b6decfa1177d887a287e7d41261a3e4f
   tag:
-    url: https://github.com/dokufreaks/plugin-tag/archive/refs/tags/2017-08-24.tar.gz
-    sha256: 4c184b1effe3c12a3c91d9046c0abd0d352891d038f8ae9b5b0fa19b0782c793
+    url: https://github.com/dokufreaks/plugin-tag/archive/master.tar.gz
+    sha256: 2ec1305c7e31954f3206a85bf6cd797871d8695e9eb0d67be553abe1df170dd8
   wrap:
     url: https://github.com/selfthinker/dokuwiki_plugin_wrap/archive/refs/tags/stable.tar.gz
     sha256: 060d72e664595c746616f1b552213ec615bcb3132e762b2d8a24f672fdd048c0
@@ -36,3 +36,28 @@ dokuwiki_templates:
     sha256: d0aea1b8c5846012ee4ba6968921d97cb88b8d54eb062c62ce01a6d15a00714d
     # url: 'https://github.com/dokuwiki/dokuwiki/releases/download/release-2025-05-14a/dokuwiki-2025-05-14a.tgz'
     # sha256: '91e508832febe10c7317e484e946576692bf9181397f8dace1df006f8161176d'
+
+dokuwiki_config:
+  title: "realraum"
+  startpage: "realraum"
+  template: "bootstrap3"
+  tagline: "Hackspace in Graz"
+  sidebarpage: "sidebar"
+  license: "cc-by-sa"
+  savedir: "/srv/dokuwiki/data"
+  recent: 50
+  recent_days: 21
+  breadcrumbs: 0
+  fullpath: 1
+  dformat: '%Y-%m-%d %H:%M'
+  sneaky_index: 1
+  useacl: 1
+  passcrypt: 'bcrypt'
+  superuser: '@admin'
+  disableactions: 'register'
+  mailguard: 'hex'
+  htmlok: 1
+  mailfrom: 'noreply@wiki.realraum.at'
+  sitemap: 5
+  dnslookups: 0
+
