@@ -18,6 +18,15 @@
     dest: /usr/local/bin/cache_realraum_imported_calendar.sh
     mode: 0755
 
+- name: install tmpfiles config
+  template:
+    src: tmpfiles.j2
+    dest: /etc/tmpfiles.d/r3cache.conf
+    mode: 0644
+
+- name: run systemd-tmpfiles to create cache directories
+  ansible.builtin.command: systemd-tmpfiles --create r3cache.conf
+
 - name: copy grical caching services
   loop:
     - cache_realraum_imported_calendar.timer
@@ -52,8 +61,6 @@
     group: spaceapi
     content: |
       no-agent-forwarding,no-port-forwarding,no-pty,no-X11-forwarding,no-user-rc,command="/usr/local/bin/ssh-spaceapi-update.py" {{ r3status_spaceapi_update_user_ssh_key }}
-
-### TODO: grical downloader script
 
 - name: create status web-root directory
   file:

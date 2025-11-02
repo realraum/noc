@@ -17,7 +17,6 @@ server {
 
     root /srv/realraumat/www/;
     access_log off;
-    error_log  /var/log/nginx/realraum.at/error.log notice;
 #    rewrite_log on;
 
 
@@ -36,14 +35,23 @@ server {
     }
 
     location = /status.json {
+        add_header Access-Control-Allow-Origin "*";
+        add_header Pragma "no-cache";
+        add_header Cache-Control "no-cache";
         return 302 https://status.realraum.at/spaceapi.json; # planned: 301
     }
 
     location = /shmcache/status.json {
+        add_header Access-Control-Allow-Origin "*";
+        add_header Pragma "no-cache";
+        add_header Cache-Control "no-cache";
         return 302 https://status.realraum.at/spaceapi.json; # planned: 301
     }
 
     location ~ ^/shmcache/(.*)$ {
+        add_header Access-Control-Allow-Origin "*";
+        add_header Pragma "no-cache";
+        add_header Cache-Control "no-cache";    
         return 302 https://status.realraum.at/ics/$1; # planned: 301
     }
 

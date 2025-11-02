@@ -21,7 +21,7 @@ server {
         add_header Cache-Control "no-cache";
     }
 
-    location ^/ics/(.*)$ {
+    location ~ ^/ics/(.*)$ {
         alias {{ r3status_ics_path }}/$1;
         add_header Access-Control-Allow-Origin "*";
         add_header Pragma "no-cache";
