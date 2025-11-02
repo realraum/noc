@@ -1,11 +1,13 @@
 ---
 ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis','ruru']) }}"
 
+openwrt_variant: openwrt
+openwrt_release: 18.06.4
 openwrt_arch: x86
 openwrt_target: geode
 openwrt_output_image_suffixes:
   - combined-ext4.img.gz
-  - combined-squashfs.img
+  - combined-squashfs.img.gz
 
 openwrt_packages_extra:
   - "-dropbear"
@@ -18,8 +20,15 @@ openwrt_packages_extra:
   - screen
   - sudo
   - usbutils
+  - rsync
+  - lsblk
 
 openwrt_mixin:
+  /home:
+    directory:
+  /run:
+    link: "/var/run"
+
   # Go binaries
   /usr/local/bin/door_client:
     mode: '0755'
@@ -30,6 +39,26 @@ openwrt_mixin:
   /usr/local/bin/update-keys:
     mode: '0755'
     file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/update-keys/update-keys"
+
+  # door daemon init scripts and configs
+  /etc/init.d/doord:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/doord.openwrt"
+  /etc/default/door:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/initscripts/door.default"
+  /etc/default/tuer:
+    link: "./door"
+  /etc/rc.d/S50doord:
+    link: "../init.d/doord"
+
+  # hotplug files
+  /etc/hotplug.d/tty/door.tty:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/scripts/door.tty"
+  /etc/hotplug.d/usb/door.usb:
+    mode: '0755'
+    file: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/scripts/door.usb"
 
   /usr/local/bin/authorized_keys.sh:
     mode: '0755'
@@ -113,6 +142,7 @@ openwrt_uci:
         dns_search: realraum.at
 
 
+# does not work, using symlink to /var/run instead for now
 openwrt_mounts:
   - path: /run
     src: none
