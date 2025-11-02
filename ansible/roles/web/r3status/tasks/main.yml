@@ -27,10 +27,9 @@
     dest: /etc/systemd/system/{{ item }}
     mode: 0644
 
-- name: install copy grical caching services
+- name: start copy grical caching timer
   loop:
     - cache_realraum_imported_calendar.timer
-    - cache_realraum_imported_calendar.service
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: started

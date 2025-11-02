@@ -2,12 +2,12 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
 
-    server_name {{ wikirealraum | join(' ') }};
+    server_name {{ wikirealraumat_urls | join(' ') }};
 
     include snippets/acmetool.conf;
     include snippets/ssl.conf;
-    ssl_certificate /var/lib/acme/live/{{ wikirealraum[0] }}/fullchain;
-    ssl_certificate_key /var/lib/acme/live/{{ wikirealraum[0] }}/privkey;
+    ssl_certificate /var/lib/acme/live/{{ wikirealraumat_urls[0] }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ wikirealraumat_urls[0] }}/privkey;
     include snippets/hsts.conf;
 
     include snippets/security-headers.conf;
