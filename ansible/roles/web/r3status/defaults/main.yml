@@ -1,2 +1,3 @@
 ---
 r3status_spaceapi_path: /dev/shm/spaceapi
+r3status_ics_path: /dev/shm/ics

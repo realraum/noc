@@ -1,0 +1,20 @@
+server {
+    listen [::]:443 ssl;
+    listen 443 ssl;
+
+    server_name {{ wikirealraum | join(' ') }};
+
+    include snippets/acmetool.conf;
+    include snippets/ssl.conf;
+    ssl_certificate /var/lib/acme/live/{{ wikirealraum[0] }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ wikirealraum[0] }}/privkey;
+    include snippets/hsts.conf;
+
+    include snippets/security-headers.conf;
+
+    access_log off;
+
+    location / {
+        return 302 https://doku.realraum.at$request_uri;
+    }
+}

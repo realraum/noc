@@ -1,0 +1,116 @@
+server {
+    listen [::]:443 ssl;
+    listen 443 ssl;
+
+    server_name {{ wwwrealraum_urls | join(' ') }};
+
+    include snippets/acmetool.conf;
+    include snippets/ssl.conf;
+    ssl_certificate /var/lib/acme/live/{{ wwwrealraum_urls[0] }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ wwwrealraum_urls[0] }}/privkey;
+    include snippets/hsts.conf;
+
+    include snippets/security-headers.conf;
+    add_header Content-Security-Policy "upgrade-insecure-requests";
+    # Can be used rather than HSTS when it shouldn't be cached
+
+
+    root /srv/realraumat/www/;
+    access_log off;
+    error_log  /var/log/nginx/realraum.at/error.log notice;
+#    rewrite_log on;
+
+
+    # Default redirect to WordPress site
+    location / {
+        return 302 https://wp.realraum.at$request_uri;
+    }
+
+    location ~ ^/wiki/(.*)$ {
+        return 302 https://doku.realraum.at/$1;
+    }
+
+    # Specific file redirects to status subdomain
+    location = /sensors.html {
+        return 302 https://status.realraum.at/; # planned: 301
+    }
+
+    location = /status.json {
+        return 302 https://status.realraum.at/spaceapi.json; # planned: 301
+    }
+
+    location = /shmcache/status.json {
+        return 302 https://status.realraum.at/spaceapi.json; # planned: 301
+    }
+
+    location ~ ^/shmcache/(.*)$ {
+        return 302 https://status.realraum.at/ics/$1; # planned: 301
+    }
+
+    location = /gc_button1.gif {
+        return 302 https://status.realraum.at/gc_button1.gif; # planned: 301
+    }
+    location = /kiosk1024x768.html {
+        return 302 https://status.realraum.at/kiosk1024x768.html; # planned: 301
+    }
+    location = /kiosk1050x1680_2.html {
+        return 302 https://status.realraum.at/kiosk1050x1680_2.html; # planned: 301
+    }
+    location = /kiosk1366x768.html {
+        return 302 https://status.realraum.at/kiosk1366x768.html; # planned: 301
+    }
+    location = /kiosk1440x900.html {
+        return 302 https://status.realraum.at/kiosk1440x900.html; # planned: 301
+    }
+    location = /kiosk1680x1050_1.html {
+        return 302 https://status.realraum.at/kiosk1680x1050_1.html; # planned: 301
+    }
+    location = /kiosk768x1366.html {
+        return 302 https://status.realraum.at/kiosk768x1366.html; # planned: 301
+    }
+    location = /kiosk768x1366sensors.html {
+        return 302 https://status.realraum.at/kiosk768x1366sensors.html; # planned: 301
+    }
+    location = /kiosk900x1440.html {
+        return 302 https://status.realraum.at/kiosk900x1440.html; # planned: 301
+    }
+    location = /kiosk.css {
+        return 302 https://status.realraum.at/kiosk.css; # planned: 301
+    }
+    location = /kiosk.js {
+        return 302 https://status.realraum.at/kiosk.js; # planned: 301
+    }
+    location = /logo-red_250x250.png {
+        return 302 https://status.realraum.at/logo-red_250x250.png; # planned: 301
+    }
+    location = /logo-re_empty_100x100.png {
+        return 302 https://status.realraum.at/logo-re_empty_100x100.png; # planned: 301
+    }
+    location = /logo-re_open_100x100.png {
+        return 302 https://status.realraum.at/logo-re_open_100x100.png; # planned: 301
+    }
+    location = /purl.js {
+        return 302 https://status.realraum.at/purl.js; # planned: 301
+    }
+    location = /vis.css {
+        return 302 https://status.realraum.at/vis.css; # planned: 301
+    }
+    location = /vis.js {
+        return 302 https://status.realraum.at/vis.js; # planned: 301
+    }
+
+    location = /logo-re_open_100x100.png {
+        return 302 https://status.realraum.at/logo-re_open_100x100.png; # planned: 301
+    }
+
+    location = /logo-re_empty_100x100.png {
+        return 302 https://status.realraum.at/logo-re_empty_100x100.png; # planned: 301
+    }
+
+    location = /logo-red_250x250.png {
+        return 302 https://status.realraum.at/logo-red_250x250.png; # planned: 301
+    }
+
+    error_page 404 /404.html;
+
+}

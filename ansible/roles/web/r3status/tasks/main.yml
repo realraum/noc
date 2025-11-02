@@ -12,6 +12,31 @@
     dest: /usr/local/bin/ssh-spaceapi-update.py
     mode: 0755
 
+- name: install grical caching script
+  template:
+    src: cache_realraum_imported_calendar.sh.j2
+    dest: /usr/local/bin/cache_realraum_imported_calendar.sh
+    mode: 0755
+
+- name: copy grical caching services
+  loop:
+    - cache_realraum_imported_calendar.timer
+    - cache_realraum_imported_calendar.service
+  template:
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
+    mode: 0644
+
+- name: install copy grical caching services
+  loop:
+    - cache_realraum_imported_calendar.timer
+    - cache_realraum_imported_calendar.service
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
 - name: create spaceapi user ssh config directory
   file:
     path: /srv/r3status/spaceapi/.ssh
@@ -29,6 +54,7 @@
     content: |
       no-agent-forwarding,no-port-forwarding,no-pty,no-X11-forwarding,no-user-rc,command="/usr/local/bin/ssh-spaceapi-update.py" {{ r3status_spaceapi_update_user_ssh_key }}
 
+### TODO: grical downloader script
 
 - name: create status web-root directory
   file:

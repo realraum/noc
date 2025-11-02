@@ -1,0 +1,23 @@
+#!/bin/zsh
+DL_PATH=/dev/shm/wget
+APACHE_PATH={{ r3status_ics_path }}
+ALL_JSON_SRC="https://grical.realraum.at/s/?query=!realraum+|+!r3extern&limit=9&view=json"
+ALL_JSON_FILE="grical_realraum.json"
+LOCALONLY_JSON_SRC="https://grical.realraum.at/s/?query=!realraum&limit=9&view=json"
+LOCALONLY_JSON_FILE="grical_realraum_only.json"
+ICAL_DATE_FROM=$(date -d "last month" +"%Y-%m-%d")
+ICAL_DATE_TILL=$(date -d "today + 3 months" +"%Y-%m-%d")
+ALL_ICAL_SRC="https://grical.realraum.at/s/?query=!realraum+|+!r3extern%20${ICAL_DATE_FROM}%20${ICAL_DATE_TILL}&view=ical"
+ALL_ICAL_FILE="grical_realraum.ical"
+LOCALONLY_ICAL_SRC="https://grical.realraum.at/s/?query=!realraum%20${ICAL_DATE_FROM}%20${ICAL_DATE_TILL}&view=ical"
+LOCALONLY_ICAL_FILE="grical_realraum_only.ical"
+mkdir $APACHE_PATH 2>/dev/null
+mkdir $DL_PATH 2>/dev/null
+### sed makes ical validate according to http://severinghaus.org/projects/icv/?url=https%3A%2F%2Fr3.at%2Fevents.ical
+for s d in $ALL_JSON_SRC $ALL_JSON_FILE $ALL_ICAL_SRC $ALL_ICAL_FILE $LOCALONLY_JSON_SRC $LOCALONLY_JSON_FILE $LOCALONLY_ICAL_SRC $LOCALONLY_ICAL_FILE; do
+	wget --no-check-certificate -o /dev/null --tries=1 "$s" -O "${DL_PATH}/${d}" \
+	&& sed -i '/^GEO:/d;/^METHOD:PUBLISH/d;s/^\(DTSTAMP:[0-9A-Z]\+\)/\1Z/' "${DL_PATH}/${d}" \
+	&& [[ -s "${DL_PATH}/${d}" ]] \
+	&& mv "${DL_PATH}/${d}" "${APACHE_PATH}/${d}"    
+done
+

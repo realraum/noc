@@ -1,11 +1,12 @@
 ---
-acmetool_directory_server_le_live: "https://acme-v01.api.letsencrypt.org/directory"
-acmetool_directory_server_le_staging: "https://acme-staging.api.letsencrypt.org/directory"
+acmetool_directory_server_le_live: "https://acme-v02.api.letsencrypt.org/directory"
+acmetool_directory_server_le_staging: "https://acme-staging-v02.api.letsencrypt.org/directory"
 
 ## this can't be changed after the account as been created (aka after the first run)
 ## and it's not recommended to keep this empty so we don't define it here which will lead to an error
 # acmetool_account_email:
 acmetool_directory_server: "{{ acmetool_directory_server_le_staging }}"
+# acmetool_directory_server: "{{ acmetool_directory_server_le_live }}"
 
 #### optionally set http(s)_proxy
 # acmetool_http_proxy:

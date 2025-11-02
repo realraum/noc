@@ -1,0 +1,17 @@
+---
+- name: create webroot path
+  file:
+    name: /srv/realraumat/www/
+    state: directory
+    owner: www-data
+
+- name: Copy files to remote locations
+  ansible.builtin.copy:
+    dest: /srv/realraumat/www/404.html
+    group: www-data
+    owner: www-data
+    src: files/404.html
+
+- import_tasks: nginx.yml
+
+

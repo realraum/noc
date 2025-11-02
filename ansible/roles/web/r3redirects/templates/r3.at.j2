@@ -1,0 +1,27 @@
+server {
+    listen [::]:443 ssl;
+    listen 443 ssl;
+
+    server_name {{ r3at_urls | join(' ') }};
+
+    include snippets/acmetool.conf;
+    include snippets/ssl.conf;
+    ssl_certificate /var/lib/acme/live/{{ r3at_urls[0] }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ r3at_urls[0] }}/privkey;
+    include snippets/hsts.conf;
+
+    include snippets/security-headers.conf;
+
+
+    location = /events.ics {
+        return 302 https://status.realraum.at/shmcache/grical_realraum.ical; # planned: 301
+    }
+
+    location = /events.ical {
+        return 302 https://status.realraum.at/shmcache/grical_realraum.ical; # planned: 301
+    }
+
+    location = / {
+        return 302 https://realraum.at/;
+    }
+}
