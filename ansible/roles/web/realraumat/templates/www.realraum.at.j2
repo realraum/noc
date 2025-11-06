@@ -1,3 +1,7 @@
+map $request_uri $wiki_page {
+    ~^/wiki/doku\.php\?(.+&)?id=([^&]*) $2;
+}
+
 server {
     listen [::]:443 ssl;
     listen 443 ssl;
@@ -25,8 +29,8 @@ server {
         return 302 https://wp.realraum.at$request_uri;
     }
 
-    location ~ ^/wiki/(.*)$ {
-        return 302 https://doku.realraum.at/$1;
+    location ~ ^/wiki/doku\.php {
+        return 302 https://doku.realraum.at/$wiki_page;
     }
 
     # Specific file redirects to status subdomain

@@ -61,4 +61,5 @@ dokuwiki_config:
   mailfrom: 'noreply@wiki.realraum.at'
   sitemap: 5
   dnslookups: 0
+  userewrite: 1
 
