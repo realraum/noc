@@ -6,7 +6,6 @@
   - role: dirty-hacks/vex2-base
   - role: acmetool/base
   - role: nginx
-  - role: web/realraumat
   - role: web/r3redirects
   - role: web/dokuwiki
   - role: web/r3status

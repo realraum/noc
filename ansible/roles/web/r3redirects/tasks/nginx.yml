@@ -1,32 +1,35 @@
 ---
 
+- name: create webroot path
+  file:
+    name: "{{ r3rsrv.rootdir }}"
+    state: directory
+    owner: www-data
+
+- name: Copy files to remote locations
+  ansible.builtin.copy:
+    dest: "{{ r3rsrv.rootdir }}/404.html"
+    group: www-data
+    owner: www-data
+    src: files/404.html
+
 - name: install nginx vhost config files
-  loop:
-    - r3.at
-    - w.r3.at
-    - sensors.realraum.at
   template:
-    src: "{{ item }}.j2"
-    dest: /etc/nginx/sites-available/{{ item }}
+    src: "{{ r3rsrv.name }}.j2"
+    dest: /etc/nginx/sites-available/{{ r3rsrv.name }}
   notify: reload nginx
 
-- name: check if acme certs already exists
-  stat:
-    path: /var/lib/acme/live/w.r3.at
-  register: wr3_acme_cert
+- name: clear variable
+  set_fact:
+    nginx_acme_cert: {}
 
 - name: check if acme certs already exists
   stat:
-    path: /var/lib/acme/live/r3.at
-  register: r3_acme_cert
-
-- name: check if acme certs already exists
-  stat:
-    path: /var/lib/acme/live/sensors.realraum.at
-  register: sensors_acme_cert
+    path: /var/lib/acme/live/{{ r3rsrv.name }}
+  register: nginx_acme_cert
 
 - name: link nonexistent hostname to self-signed interim cert
-  when: not wr3_acme_cert.stat.exists
+  when: not nginx_acme_cert.stat.exists
   block:
     - name: get id of existing selfsigned interim certificate
       command: cat /var/lib/acme/.selfsigned-interim-cert
@@ -41,55 +44,13 @@
     - name: link to snakeoil cert for nonexistent hostnames
       file:
         src: "../certs/{{ selfsigned_interim_cert_id }}"
-        dest: /var/lib/acme/live/w.r3.at
-        state: link
-
-- name: link nonexistent hostname to self-signed interim cert
-  when: not r3_acme_cert.stat.exists
-  block:
-    - name: get id of existing selfsigned interim certificate
-      command: cat /var/lib/acme/.selfsigned-interim-cert
-      changed_when: false
-      check_mode: false
-      register: selfsigned_interim_cert_id
-
-    - name: set selfsigned_interim_cert_id variable
-      set_fact:
-        selfsigned_interim_cert_id: "{{ selfsigned_interim_cert_id.stdout }}"
-
-    - name: link to snakeoil cert for nonexistent hostnames
-      file:
-        src: "../certs/{{ selfsigned_interim_cert_id }}"
-        dest: /var/lib/acme/live/r3.at
-        state: link
-
-- name: link nonexistent hostname to self-signed interim cert
-  when: not sensors_acme_cert.stat.exists
-  block:
-    - name: get id of existing selfsigned interim certificate
-      command: cat /var/lib/acme/.selfsigned-interim-cert
-      changed_when: false
-      check_mode: false
-      register: selfsigned_interim_cert_id
-
-    - name: set selfsigned_interim_cert_id variable
-      set_fact:
-        selfsigned_interim_cert_id: "{{ selfsigned_interim_cert_id.stdout }}"
-
-    - name: link to snakeoil cert for nonexistent hostnames
-      file:
-        src: "../certs/{{ selfsigned_interim_cert_id }}"
-        dest: /var/lib/acme/live/sensors.realraum.at
+        dest: /var/lib/acme/live/{{ r3rsrv.name }}
         state: link
 
 - name: enable nginx vhost config
-  loop:
-    - r3.at
-    - w.r3.at
-    - sensors.realraum.at
   file:
-    src: ../sites-available/{{ item }}
-    dest: /etc/nginx/sites-enabled/{{ item }}
+    src: ../sites-available/{{ r3rsrv.name }}
+    dest: /etc/nginx/sites-enabled/{{ r3rsrv.name }}
     state: link
   notify: reload nginx
 
@@ -100,7 +61,4 @@
 #   import_role:
 #     name: acmetool/cert
 #   vars:
-#     acmetool_cert_name: {{ item }}
-#   loop:
-#     - r3.at
-#     - w.r3.at
+#     acmetool_cert_name: {{ r3rsrv.name }}

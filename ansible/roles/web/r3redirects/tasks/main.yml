@@ -1,3 +1,6 @@
 ---
-
-- import_tasks: nginx.yml
+- name: run nginx for each server
+  loop: "{{ r3redirect_servers }}"
+  loop_control:
+    loop_var: r3rsrv
+  include_tasks: nginx.yml

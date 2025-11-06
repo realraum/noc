@@ -2,19 +2,23 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
 
-    server_name {{ wikirealraumat_urls | join(' ') }};
+    server_name {{ r3rsrv.urls | join(' ') }};
 
     include snippets/acmetool.conf;
     include snippets/ssl.conf;
-    ssl_certificate /var/lib/acme/live/{{ wikirealraumat_urls[0] }}/fullchain;
-    ssl_certificate_key /var/lib/acme/live/{{ wikirealraumat_urls[0] }}/privkey;
+    ssl_certificate /var/lib/acme/live/{{ r3rsrv.name }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ r3rsrv.name }}/privkey;
     include snippets/hsts.conf;
 
     include snippets/security-headers.conf;
+
+    root {{ r3rsrv.rootdir }};
 
     access_log off;
 
     location / {
         return 302 https://doku.realraum.at$request_uri;
     }
+
+    error_page 404 /404.html;
 }

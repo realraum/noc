@@ -6,12 +6,12 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
 
-    server_name {{ wwwrealraum_urls | join(' ') }};
+    server_name {{ r3rsrv.urls | join(' ') }};
 
     include snippets/acmetool.conf;
     include snippets/ssl.conf;
-    ssl_certificate /var/lib/acme/live/{{ wwwrealraum_urls[0] }}/fullchain;
-    ssl_certificate_key /var/lib/acme/live/{{ wwwrealraum_urls[0] }}/privkey;
+    ssl_certificate /var/lib/acme/live/{{ r3rsrv.name }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ r3rsrv.name }}/privkey;
     include snippets/hsts.conf;
 
     include snippets/security-headers.conf;
@@ -19,7 +19,7 @@ server {
     # Can be used rather than HSTS when it shouldn't be cached
 
 
-    root /srv/realraumat/www/;
+    root {{ r3rsrv.rootdir }};
     access_log off;
 #    rewrite_log on;
 

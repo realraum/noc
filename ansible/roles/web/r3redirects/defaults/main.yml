@@ -1,10 +1,21 @@
 ---
-r3at_urls:
-  - r3.at
 
-wikirealraumat_urls:
-  - wiki.realraum.at
-  - w.r3.at
-
-sensors_urls:
-  - sensors.realraum.at
+r3redirect_servers:
+  - name: r3.at
+    rootdir: /srv/r3.at/www/
+    urls:
+      - r3.at
+  - name: w.r3.at
+    rootdir: /srv/wiki.realraum.at/www/
+    urls:
+      - wiki.realraum.at
+      - w.r3.at
+  - name: sensors.realraum.at
+    rootdir: /srv/sensors.realraum.at/www/
+    urls:
+      - sensors.realraum.at
+  - name: www.realraum.at
+    rootdir: /srv/www.realraum.at/www/
+    urls:
+      - www.realraum.at
+      - realraum.at
