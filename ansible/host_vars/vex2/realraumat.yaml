@@ -7,8 +7,11 @@ r3redirect_servers:
   - name: w.r3.at
     rootdir: /srv/wiki.realraum.at/www/
     urls:
-      - wiki.realraum.at
       - w.r3.at
+  - name: wiki.realraum.at
+    rootdir: /srv/wiki.realraum.at/www/
+    urls:
+      - wiki.realraum.at
   - name: sensors.realraum.at
     rootdir: /srv/sensors.realraum.at/www/
     urls:

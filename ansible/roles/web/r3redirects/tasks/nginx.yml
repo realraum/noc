@@ -44,7 +44,7 @@
     - name: link to snakeoil cert for nonexistent hostnames
       file:
         src: "../certs/{{ selfsigned_interim_cert_id }}"
-        dest: /var/lib/acme/live/{{ r3rsrv.name }}
+        dest: "/var/lib/acme/live/{{ r3rsrv.name }}"
         state: link
 
 - name: enable nginx vhost config
@@ -61,5 +61,5 @@
   import_role:
     name: acmetool/cert
   vars:
-    acmetool_cert_name: {{ r3rsrv.name }}
+    acmetool_cert_name: "{{ r3rsrv.name }}"
 
