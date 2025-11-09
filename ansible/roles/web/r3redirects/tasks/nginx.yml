@@ -57,8 +57,9 @@
 - name: make sure nginx config has been loaded
   meta: flush_handlers
 
-# - name: get certificate using acmetool
-#   import_role:
-#     name: acmetool/cert
-#   vars:
-#     acmetool_cert_name: {{ r3rsrv.name }}
+- name: get certificate using acmetool
+  import_role:
+    name: acmetool/cert
+  vars:
+    acmetool_cert_name: {{ r3rsrv.name }}
+
