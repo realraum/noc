@@ -13,7 +13,7 @@ echo ""
 echo "=========== Applying sed fixes to pages necessary due to plugins updates ======================================"
 sed 's/<faicon.*fa-\(.*\)>/{{fa>\1}}/' -i /srv/dokuwiki/data/pages/navbar.txt
 sed '/^{{rss/d' -i /srv/dokuwiki/data/pages/realraum.txt
-sed 's|<script type="text/javascript" src="/kiosk.js"></script>|script type="text/javascript" src="//status.realraum.at/js/jquery/jquery.min.js"></script><script type="text/javascript" src="//status.realraum.at/kiosk.js"></script>|' -i /srv/dokuwiki/data/pages/r3sidebar.txt 
+sed 's|<script type="text/javascript" src="/kiosk.js"></script>|<script type="text/javascript" src="//status.realraum.at/js/jquery/jquery.min.js"></script><script type="text/javascript" src="//status.realraum.at/kiosk.js"></script>|' -i /srv/dokuwiki/data/pages/r3sidebar.txt 
 
 
 echo ""
