@@ -6,8 +6,8 @@ server {
 
     include snippets/acmetool.conf;
     include snippets/ssl.conf;
-    ssl_certificate /var/lib/acme/live/{{ r3rsrv.name }}/fullchain;
-    ssl_certificate_key /var/lib/acme/live/{{ r3rsrv.name }}/privkey;
+    ssl_certificate /var/lib/acme/live/{{ r3rsrv.urls[0] }}/fullchain;
+    ssl_certificate_key /var/lib/acme/live/{{ r3rsrv.urls[0] }}/privkey;
     include snippets/hsts.conf;
 
     include snippets/security-headers.conf;
