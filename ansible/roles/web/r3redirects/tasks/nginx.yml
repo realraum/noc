@@ -53,6 +53,12 @@
         state: link
       with_items: "{{ acmecert_missing_hostnames }}"
 
+- name: syntax check nginx config before enabling vhost
+  command: nginx -t
+  register: nginx_syntax_check
+  failed_when: nginx_syntax_check.rc != 0
+  changed_when: false
+
 - name: enable vhost config using acme cert
   file:
     src: "../sites-available/{{ r3rsrv.name }}"
