@@ -4,8 +4,10 @@
 - `torwaechter.mgmt.realraum.at`
 - `gw.realraum.at`
 - `smsgw.realraum.at`
+-  licht.realraum.at
+-  homeassistant.iot.realraum.at
 
 # Third-party servers running r³ services
 
 - `atlas.chaos-at-home.org` runs `vex.realraum.at`.
-- Otti's server for our mail and XMPP services.
+
