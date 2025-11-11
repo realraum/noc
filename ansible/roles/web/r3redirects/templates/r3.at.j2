@@ -22,6 +22,22 @@ server {
         return 302 https://status.realraum.at/shmcache/grical_realraum.ical; # planned: 301
     }
 
+    location = /statuten {
+        return 302 "https://git.realraum.at/?p=documents.git;a=blob;f=statuten/main.pdf";
+    }
+
+    location = /statutes {
+        return 302 "https://git.realraum.at/?p=documents.git;a=blob;f=statuten/main.pdf";
+    }
+
+    location = /vereinsordnung {
+        return 302 "https://git.realraum.at/?p=documents.git;a=blob;f=vereinsordnung/vereinsordnung.pdf";
+    }
+
+    location = /clubrules {
+        return 302 "https://git.realraum.at/?p=documents.git;a=blob;f=vereinsordnung/vereinsordnung.pdf";
+    }
+
     location = / {
         return 302 https://realraum.at/;
     }
