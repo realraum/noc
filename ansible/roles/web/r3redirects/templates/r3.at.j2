@@ -15,11 +15,11 @@ server {
     root {{ r3rsrv.rootdir }};
 
     location = /events.ics {
-        return 302 https://status.realraum.at/shmcache/grical_realraum.ical; # planned: 301
+        return 302 https://status.realraum.at/ics/grical_realraum.ical; # planned: 301
     }
 
     location = /events.ical {
-        return 302 https://status.realraum.at/shmcache/grical_realraum.ical; # planned: 301
+        return 302 https://status.realraum.at/ics/grical_realraum.ical; # planned: 301
     }
 
     location = /statuten {
