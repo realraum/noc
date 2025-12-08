@@ -9,3 +9,4 @@
   - role: web/r3redirects
   - role: web/dokuwiki
   - role: web/r3status
+  - role: franklinkim.ssmtp

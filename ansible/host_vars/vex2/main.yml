@@ -13,3 +13,10 @@ r3status_www_content:
 
 acmetool_directory_server: "{{ acmetool_directory_server_le_live }}"
 
+ssmtp_root: postmaster
+ssmtp_mailhub: 89.106.215.28 #aka vex1
+ssmtp_hostname: vex2.realraum.at
+smtp_from_line_override: YES
+# ssmtp_auth_user:
+# smtp_auth_pass:
+# ssmtp_use_starttls:

@@ -1,0 +1,6 @@
+---
+roles:
+  - name: franklinkim.ssmtp
+    src: franklinkim.ssmtp
+
+collections:
