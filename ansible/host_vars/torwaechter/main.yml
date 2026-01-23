@@ -135,8 +135,8 @@ openwrt_uci:
         ifname: eth0
         accept_ra: 0
         proto: static
-        ipaddr: "{{ net.mgmt.prefix | ipaddr(100) | ipaddr('address') }}"
-        netmask: "{{ net.mgmt.prefix | ipaddr('netmask') }}"
+        ipaddr: "{{ net.mgmt.prefix | ansible.utils.ipaddr(100) | ansible.utils.ipaddr('address') }}"
+        netmask: "{{ net.mgmt.prefix | ansible.utils.ipaddr('netmask') }}"
         gateway: "{{ net.mgmt.gw }}"
         dns: "{{ net.mgmt.dns | join(' ') }}"
         dns_search: realraum.at
