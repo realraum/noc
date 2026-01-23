@@ -1,10 +1,10 @@
 ---
-- include: fetch.yml
+- include_tasks: fetch.yml
   run_once: true
   when: openwrt_imgbuilder_tarball is not defined
 
 - block:
-    - include: prepare.yml
+    - include_tasks: prepare.yml
 
     - name: Create the output directory for built images
       file:
