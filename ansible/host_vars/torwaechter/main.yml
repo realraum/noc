@@ -8,8 +8,8 @@ openwrt_release: 24.10.5
 openwrt_arch: x86
 openwrt_target: geode
 openwrt_output_image_suffixes:
-  - combined-ext4.img.gz
-  - combined-squashfs.img.gz
+  - generic-ext4-combined.img.gz
+  - generic-squashfs-combined.img.gz
 
 openwrt_packages_extra:
   - "-dropbear"
