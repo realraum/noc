@@ -1,6 +1,8 @@
 ---
 ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis','ruru','stonedust','sanchez']) }}"
 
+# keep download and build artifacts for debugging
+# openwrt_debug: true
 openwrt_variant: openwrt
 openwrt_release: 24.10.5
 openwrt_arch: x86

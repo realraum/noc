@@ -48,6 +48,7 @@
         - "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256"
         - "{{ openwrt_download_dir }}/{{ openwrt_tarball_basename }}.sha256.asc"
         - "{{ openwrt_download_dir }}/{{ openwrt_tarball_name }}"
+      when: not openwrt_debug
 
     - name: the download has failed...
       fail:

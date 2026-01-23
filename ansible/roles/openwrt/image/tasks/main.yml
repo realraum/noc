@@ -37,3 +37,4 @@
       file:
         path: "{{ openwrt_imgbuilder_dir }}"
         state: absent
+      when: not openwrt_debug

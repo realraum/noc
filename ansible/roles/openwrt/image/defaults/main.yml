@@ -15,3 +15,5 @@ openwrt_output_image_suffixes:
 openwrt_packages_remove: []
 openwrt_packages_add: []
 openwrt_packages_extra: []
+# leave all artifacts in place for debugging when set to true! (both download and build dirs)
+openwrt_debug: false
