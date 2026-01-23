@@ -31,7 +31,7 @@
       environment:
         GOCACHE: "{{ global_cache_dir }}/{{ inventory_hostname }}/gocache"
         GOPATH:  "{{ global_cache_dir }}/{{ inventory_hostname }}/gopath"
-        GO386: 387
+        GO386: softfloat
         CGO_ENABLED: 0
         GOOS: linux
         GOARCH: 386
