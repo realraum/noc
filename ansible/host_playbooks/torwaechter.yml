@@ -16,7 +16,7 @@
       with_items: [ door_and_sensors ]
 
     - name: Download dependencies
-      command: go get -d ./...
+      command: go get ./...
       args:
         chdir: "{{ global_cache_dir }}/{{ inventory_hostname }}/door_and_sensors/{{ item }}"
       environment:
