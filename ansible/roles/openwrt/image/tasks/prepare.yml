@@ -9,46 +9,50 @@
     openwrt_imgbuilder_dir:   "{{ tmpdir.path }}"
     openwrt_imgbuilder_files: "{{ tmpdir.path }}/files"
 
+- name: Create the download directory
+  file:
+    path: "{{ openwrt_download_dir }}/dl/{{ openwrt_arch }}"
+    state: directory
+    mode: '0755'
+
 - name: Create the directories for mixins
   file:
     path: "{{ item }}"
     state: directory
     mode: '0755'
-  with_items:
-    - "{{ openwrt_download_dir }}/dl/{{ openwrt_arch }}"
-    - "{{ openwrt_imgbuilder_files }}/etc/config"
-    - "{{ openwrt_mixin | map('dirname') | map('regex_replace', '^', openwrt_imgbuilder_files) | unique | list }}"
+  loop: "{{ directories | flatten | unique | map('regex_replace', '^', openwrt_imgbuilder_files) | list }}"
+  vars:
+    directories:
+      - "/etc/config"
+      - "{{ openwrt_mixin | map('dirname') | list }}"
+      - "{{ openwrt_mixin | openwrt_mixin_type('directory') | map(attribute='key') | list }}"
 
-
-- name: Copy mixins in place [1/3]
+- name: Create symlinks
   file:
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
     src: "{{ item.value.link }}"
     force: yes
     follow: no
     state: link
-  with_dict: "{{ openwrt_mixin }}"
-  when: '"link" in item.value'
+  loop: "{{ openwrt_mixin | openwrt_mixin_type('link') }}"
   loop_control:
     label: "{{ item.key }}"
 
-- name: Copy mixins in place [2/3]
+- name: Copy mixins in place (from file)
   copy:
     src: "{{ item.value.file }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
     mode: "{{ item.value.mode | default('0644') }}"
-  with_dict: "{{ openwrt_mixin }}"
-  when: '"file" in item.value'
+  loop: "{{ openwrt_mixin | openwrt_mixin_type('file') }}"
   loop_control:
     label: "{{ item.key }}"
 
-- name: Copy mixins in place [3/3]
+- name: Copy mixins in place (from content)
   copy:
     content: "{{ item.value.content }}"
     dest: "{{ openwrt_imgbuilder_files }}/{{ item.key }}"
     mode: "{{ item.value.mode | default('0644') }}"
-  with_dict: "{{ openwrt_mixin }}"
-  when: '"content" in item.value'
+  loop: "{{ openwrt_mixin | openwrt_mixin_type('content') }}"
   loop_control:
     label: "{{ item.key }}"
 
