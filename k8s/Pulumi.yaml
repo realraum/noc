@@ -4,3 +4,8 @@ description: |
 runtime:
   name: python
   options: {}
+config:
+  bootstrapNode:
+    type: integer
+    description: Index of the node to use in bootstrapping
+    value: 0 # HACK due to pulumi#21797

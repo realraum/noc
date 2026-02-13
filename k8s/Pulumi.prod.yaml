@@ -1,0 +1,2 @@
+config:
+  realraum-k8s:bootstrapNode: "1"

@@ -1,2 +1,4 @@
+*.iso
 /.venv
+/talosconfig
 __pycache__/
