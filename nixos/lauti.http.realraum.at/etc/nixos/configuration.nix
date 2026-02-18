@@ -141,7 +141,7 @@
 
     settings = {
       LAUTI_ADMIN_EMAIL = "noc@r3.at";
-      LAUTI_BASE_URL = "http://lauti.realraum.at";
+      LAUTI_BASE_URL = "https://laut.realraum.at";
       LAUTI_ADDR = "192.168.34.66:3333";
       LAUTI_SQLITE_DB = "/srv/lauti/data/lauti.db";
       LAUTI_MEDIA_PATH = "/srv/lauti/media";
@@ -153,7 +153,6 @@
       LAUTI_OSM_TILE_SERVER = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
       LAUTI_TIMEZONE = "Europe/Vienna";
       LAUTI_LOCALE = "de_DE";
-      LAUTI_ADMIN_PASSWORD = "{{ lauti_admin_password }}";
       LAUTI_MAIL_SMTP_HOST = "";
       LAUTI_MAIL_SMTP_PASSWORD = "";
       LAUTI_MAIL_SMTP_USER = "";
@@ -166,14 +165,11 @@
     after = [ "srv.mount" ];
     requires = [ "srv.mount" ];
     serviceConfig = {
+      EnvironmentFile= [ "/srv/lauti/env" ];  # store persistent admin pwd here
       ReadWritePaths = [ "/srv/lauti" ];
     };
   };
 
-#  # Secure admin password storage
-#  environment.etc."lauti-secrets".text = ''
-#    LAUTI_ADMIN_PASSWORD=Ns6y39je7d3eYhmup7FSFPP6u71wPvCusYc0q4d0Io58vW3IeRgjvFT3vJ7sqh1hHXVCsNB3
-#   ''; 
 
   # SSH access
   services.openssh = {
