@@ -16,7 +16,10 @@
     inherit (pkgs) lib;
   in {
     devShells.default = let
-      pulumiSDKs = with pkgs.pulumi.pkgs; [ pulumiverse-talos ];
+      pulumiSDKs = with pkgs.pulumi.pkgs; [
+        pulumiverse-talos
+        pulumi-kubernetes
+      ];
     in pkgs.mkShellNoCC {
       buildInputs = with pkgs; [
         jq
