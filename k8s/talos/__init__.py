@@ -34,7 +34,6 @@ image_schematic = talos.imagefactory.Schematic(
         },
     }),
 )
-
 pu.export(
     "installerAmd64",
     talos.imagefactory.get_urls_output(
@@ -45,73 +44,71 @@ pu.export(
     ).urls.iso_secureboot,
 )
 
+secrets = talos.machine.Secrets(
+    "talos-secrets",
+    talos_version = version,
+)
+
+cluster_cfg = talos.machine.get_configuration_output(
+    cluster_name = "rkube",
+    talos_version = version,
+    machine_type = "controlplane",
+    cluster_endpoint = f"https://{cluster_vip}:6443",
+    machine_secrets = secrets.machine_secrets.apply(lambda ms: {  # HACK for pulumiverse/pulumi-talos#103
+        "certs": {
+            "k8sAggregator": ms.certs.k8s_aggregator,
+            "os": ms.certs.os,
+            "etcd": ms.certs.etcd,
+            "k8s": ms.certs.k8s,
+            "k8sServiceaccount": ms.certs.k8s_serviceaccount,
+        },
+        "secrets": {
+            "bootstrapToken": ms.secrets.bootstrap_token,
+            "secretboxEncryptionSecret": ms.secrets.secretbox_encryption_secret,
+        },
+        "trustdinfo": ms.trustdinfo,
+        "cluster": {
+            "id": ms.cluster.id,
+            "secret": ms.cluster.secret,
+        },
+    }),
+    config_patches = [
+        yaml.dump({
+            # Use TPM-backed disk encryption from the start
+            "machine": {
+                "systemDiskEncryption": {
+                    vol: {
+                        "provider": "luks2",
+                        "keys": [ {
+                            "tpm": {},
+                            "slot": 0,
+                        } ],
+                    }
+                    for vol in ("ephemeral", "state")
+                },
+            },
+        }),
+    ]
+)
+pu.export(
+    "talosconfig",
+    secrets.client_configuration.apply(lambda ccfg: yaml.dump({
+        # talos.client.get_configuration_output doesn't seem to work
+        "context": "rkube",
+        "contexts": { "rkube": {
+            "endpoints": [ str(cluster_vip) ],
+            "nodes": [ str(cluster_vip + node) for node in nodes ],
+            "ca":  ccfg.ca_certificate,
+            "crt": ccfg.client_certificate,
+            "key": ccfg.client_key,
+        } },
+    })),
+)
+
 config = pu.Config()
 bootstrap_idx = config.get_int("bootstrapNode")
 if bootstrap_idx:
     assert bootstrap_idx in nodes
-
-    secrets = talos.machine.Secrets(
-        "talos-secrets",
-        talos_version = version,
-    )
-
-    cluster_cfg = talos.machine.get_configuration_output(
-        cluster_name = "rkube",
-        talos_version = version,
-        machine_type = "controlplane",
-        cluster_endpoint = f"https://{cluster_vip}:6443",
-        machine_secrets = secrets.machine_secrets.apply(lambda ms: {  # HACK for pulumiverse/pulumi-talos#103
-            "certs": {
-                "k8sAggregator": ms.certs.k8s_aggregator,
-                "os": ms.certs.os,
-                "etcd": ms.certs.etcd,
-                "k8s": ms.certs.k8s,
-                "k8sServiceaccount": ms.certs.k8s_serviceaccount,
-            },
-            "secrets": {
-                "bootstrapToken": ms.secrets.bootstrap_token,
-                "secretboxEncryptionSecret": ms.secrets.secretbox_encryption_secret,
-            },
-            "trustdinfo": ms.trustdinfo,
-            "cluster": {
-                "id": ms.cluster.id,
-                "secret": ms.cluster.secret,
-            },
-        }),
-        config_patches = [
-            yaml.dump({
-                # Use TPM-backed disk encryption from the start
-                "machine": {
-                    "systemDiskEncryption": {
-                        vol: {
-                            "provider": "luks2",
-                            "keys": [ {
-                                "tpm": {},
-                                "slot": 0,
-                            } ],
-                        }
-                        for vol in ("ephemeral", "state")
-                    },
-                },
-            }),
-        ]
-    )
-
-
-    pu.export(
-        "talosconfig",
-        secrets.client_configuration.apply(lambda ccfg: yaml.dump({
-            # talos.client.get_configuration_output doesn't seem to work
-            "context": "rkube",
-            "contexts": { "rkube": {
-                "endpoints": [ str(cluster_vip) ],
-                "nodes": [ str(cluster_vip + node) for node in nodes ],
-                "ca":  ccfg.ca_certificate,
-                "crt": ccfg.client_certificate,
-                "key": ccfg.client_key,
-            } },
-        }))
-    )
 
     nodes_install = {
         idx: talos.machine.ConfigurationApply(
@@ -166,3 +163,15 @@ if bootstrap_idx:
         client_configuration = secrets.client_configuration,
         opts = pu.ResourceOptions(depends_on = nodes_install[bootstrap_idx]),
     )
+
+
+    kubeconfig = talos.cluster.get_kubeconfig_output(
+        client_configuration = talos.cluster.GetKubeconfigClientConfigurationArgs(
+            # WTF, why does passing secrets.client_configuration not work?
+            ca_certificate = secrets.client_configuration.ca_certificate,
+            client_certificate = secrets.client_configuration.client_certificate,
+            client_key = secrets.client_configuration.client_key,
+        ),
+        node = str(k8s_vip),
+    )
+    pu.export("kubeconfig", kubeconfig.kubeconfig_raw)

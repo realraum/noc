@@ -19,7 +19,13 @@ from talos import cluster_vip
 
 Feature = Literal["gatewayAPI", "hubble"]
 
-def deploy(cfg: pu.Config, deps, *, features: Set[Feature] = frozenset()) -> k8s.helm.v4.Chart:
+def deploy(
+    cfg: pu.Config,
+    cluster: k8s.Provider,
+    deps,
+    *,
+    features: Set[Feature] = frozenset()
+) -> k8s.helm.v4.Chart:
     """Deploy Cilium with a given set of features.
 
     Requires `k8sEndpoint` to be set in the Pulumi configuration;
@@ -33,7 +39,7 @@ def deploy(cfg: pu.Config, deps, *, features: Set[Feature] = frozenset()) -> k8s
         chart = "oci://quay.io/cilium/charts/cilium",
         version = "1.18.7",  # TODO: autoupdate?
         namespace = "kube-system",
-        opts = pu.ResourceOptions(depends_on = deps),
+        opts = pu.ResourceOptions(depends_on = deps, provider = cluster),
         # TODO signature verification?
         values = {
             # Necessary permissions for Cilium to function on Talos
