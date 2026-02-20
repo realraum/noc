@@ -14,7 +14,7 @@ from typing import Literal
 import pulumi as pu
 import pulumi_kubernetes as k8s
 
-from talos import cluster_vip
+from networking import k8s_vip, svc_net, pod_net, pod_prefix_len
 
 
 Feature = Literal["gatewayAPI", "hubble"]
@@ -31,9 +31,6 @@ def deploy(
     Requires `k8sEndpoint` to be set in the Pulumi configuration;
       possible values can be obtained from `kubectl get endpoints kubernetes`.
     """
-    # TODO centralize the network config & tie to Netbox
-    cluster_net = "2a02:3e0:4000:cafe::/64"
-
     return k8s.helm.v4.Chart(
         "cilium",
         chart = "oci://quay.io/cilium/charts/cilium",
@@ -56,18 +53,18 @@ def deploy(
             },
 
             "ipam": {
-                # Use a prefix for each node
-                #  see https://docs.cilium.io/en/stable/network/concepts/ipam/kubernetes/
-                "mode": "kubernetes",
+                # Use a prefix for each node (default)
+                #  see https://docs.cilium.io/en/latest/network/concepts/ipam/cluster-pool/
+                "mode": "cluster-pool",
                 "operator": {
                     # Use only IPv6 addresses for pods
-                    #"clusterPoolIPv4PodCIDRList": [],
-                    #"clusterPoolIPv6PodCIDRList": [ cluster_net ],
-                    #"clusterPoolIPv6MaskSize": 96,
+                    "clusterPoolIPv4PodCIDRList": [],
+                    "clusterPoolIPv6PodCIDRList": [ str(pod_net) ],
+                    "clusterPoolIPv6MaskSize": pod_prefix_len,
                 },
             },
-            #"ipv6": { "enabled": True },
-            #"ipv4": { "enabled": False },
+            "ipv6": { "enabled": True },
+            "ipv4": { "enabled": False },
             #"k8s": {
             #    "requireIPv4PodCIDR": False,
             #    "requireIPv6PodCIDR": True,
@@ -75,7 +72,7 @@ def deploy(
 
             # Avoid `kube-proxy`, let Cilium sling packets around
             "kubeProxyReplacement": True,
-            "k8sServiceHost": str(cluster_vip),
+            "k8sServiceHost": "localhost",  # KubePrism runs on every node
             "k8sServicePort": 6443,
 
             # TODO: Use native routing, rather than VXLAN encapsulation
