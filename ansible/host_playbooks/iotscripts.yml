@@ -1,8 +1,0 @@
----
-- name: Deploy stuff to iotscripts.mqmt.realraum.at
-  hosts: iotscripts
-  become: true
-  roles:
-    - base
-    - iotscripts
-
