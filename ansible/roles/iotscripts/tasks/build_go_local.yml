@@ -1,0 +1,42 @@
+---
+- name: "Ensure local build directory exists"
+  ansible.builtin.file:
+    path: "{{ local_build_dir }}"
+    state: directory
+    mode: "0755"
+  delegate_to: localhost
+  become: false
+  run_once: true  # shared across all binaries; repo cloned once
+
+- name: "Clone door_and_sensors repo locally"
+  ansible.builtin.git:
+    repo: "{{ door_and_sensors_repo }}"
+    dest: "{{ local_build_dir }}/door_and_sensors"
+    version: "{{ door_and_sensors_ref }}"
+    force: false
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+- name: "Build {{ go_binary.name }} locally (cross-compile)"
+  ansible.builtin.command:
+    cmd: >
+      go build
+      -o {{ local_build_dir }}/{{ go_binary.name }}
+      ./{{ go_binary.subdir }}
+    chdir: "{{ local_build_dir }}/door_and_sensors"
+  delegate_to: localhost
+  become: false
+  environment:
+    GOOS: "{{ go_target_goos }}"
+    GOARCH: "{{ go_target_goarch }}"
+    CGO_ENABLED: "0"
+  changed_when: true  # always rebuild to pick up upstream changes
+
+- name: "Copy {{ go_binary.name }} to target host"
+  ansible.builtin.copy:
+    src: "{{ local_build_dir }}/{{ go_binary.name }}"
+    dest: "{{ realraum_bin }}/{{ go_binary.name }}"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0755"

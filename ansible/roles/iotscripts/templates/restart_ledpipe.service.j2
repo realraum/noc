@@ -1,0 +1,12 @@
+[Unit]
+Description=Reset LED LoTHR Pipe
+Wants=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory={{ realraum_home }}
+ExecStart={{ realraum_bin }}/ledpipe_restart.sh
+SyslogIdentifier=%i
+
+[Install]
+WantedBy=default.target

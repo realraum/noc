@@ -1,0 +1,18 @@
+[Unit]
+Description=SpaceApi Publisher
+Wants=network.target
+# Wants=mosquitto.service
+# After=mosquitto.service
+After=r3-metaevt-maker.service
+# OnFailure=xmppnotifyxro@r3-spaceapistatus.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60
+WorkingDirectory={{ realraum_home }}
+EnvironmentFile={{ realraum_config_dir }}/smsgw.env
+ExecStart={{ realraum_bin }}/r3-spaceapistatus
+
+[Install]
+WantedBy=default.target

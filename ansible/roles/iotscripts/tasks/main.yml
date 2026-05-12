@@ -1,0 +1,129 @@
+---
+- name: Ensure realraum group exists
+  ansible.builtin.group:
+    name: "{{ realraum_user }}"
+    state: present
+
+- name: Create realraum user
+  ansible.builtin.user:
+    name: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    home: "{{ realraum_home }}"
+    shell: /bin/zsh
+    create_home: true
+    state: present
+
+- name: Enable loginctl linger for realraum
+  ansible.builtin.command:
+    cmd: loginctl enable-linger {{ realraum_user }}
+    creates: /var/lib/systemd/linger/{{ realraum_user }}
+
+- name: Create required directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0750"
+  loop:
+    - "{{ realraum_bin }}"
+    - "{{ realraum_config_dir }}"
+    - "{{ realraum_systemd_user_dir }}"
+    - "{{ realraum_home }}/.ssh"
+    - "{{ realraum_home }}/.config/systemd/user/default.target.wants"
+
+- name: Set strict permissions on .ssh
+  ansible.builtin.file:
+    path: "{{ realraum_home }}/.ssh"
+    state: directory
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0700"
+
+- name: Deploy smsgw.env
+  ansible.builtin.template:
+    src: "smsgw.env.j2"
+    dest: "{{ realraum_config_dir }}/smsgw.env"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0600"
+  no_log: true
+
+- name: Deploy SSH private key
+  ansible.builtin.copy:
+    content: "{{ vault_iotscripts_realraum_spaceapi_ssh_key_content }}"
+    dest: "{{ realraum_home }}/.ssh/{{ vault_iotscripts_realraum_spaceapi_ssh_key_name }}"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0600"
+  no_log: true
+
+- name: Download Python scripts
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ realraum_bin }}/{{ item.name }}"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0755"
+  loop: "{{ python_scripts }}"
+
+- name: Deploy ledpipe_restart.sh
+  ansible.builtin.copy:
+    src: ledpipe_restart.sh
+    dest: "{{ realraum_bin }}/ledpipe_restart.sh"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0755"
+
+- name: Build Go binaries locally and copy to host
+  ansible.builtin.include_tasks: build_go_local.yml
+  loop: "{{ go_binaries }}"
+  loop_control:
+    loop_var: go_binary
+
+- name: Deploy systemd user service units
+  ansible.builtin.template:
+    src: "{{ item }}.service.j2"
+    dest: "{{ realraum_systemd_user_dir }}/{{ item }}.service"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0644"
+  loop: "{{ systemd_user_services }}"
+  notify: Reload systemd user daemon
+
+- name: Deploy systemd user timer units
+  ansible.builtin.template:
+    src: "{{ item }}.timer.j2"
+    dest: "{{ realraum_systemd_user_dir }}/{{ item }}.timer"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0644"
+  loop: "{{ systemd_user_timers }}"
+  notify: Reload systemd user daemon
+
+- name: Flush handlers before enabling units
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start systemd user services
+  ansible.builtin.systemd:
+    name: "{{ item }}.service"
+    enabled: true
+    state: started
+    scope: user
+  become: true
+  become_user: "{{ realraum_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd'][realraum_user][1] }}"
+  loop: "{{ systemd_user_services }}"
+
+- name: Enable and start systemd user timers
+  ansible.builtin.systemd:
+    name: "{{ item }}.timer"
+    enabled: true
+    state: started
+    scope: user
+  become: true
+  become_user: "{{ realraum_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd'][realraum_user][1] }}"
+  loop: "{{ systemd_user_timers }}"

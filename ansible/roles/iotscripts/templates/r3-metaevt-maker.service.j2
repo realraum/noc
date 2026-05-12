@@ -1,0 +1,16 @@
+[Unit]
+Description=r3events meta event maker
+Wants=network.target
+#Wants=mosquitto.service
+#After=mosquitto.service
+#OnFailure=xmppnotifyxro@r3-metaevt-maker.service
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory={{ realraum_home }}
+EnvironmentFile={{ realraum_config_dir }}/smsgw.env
+ExecStart={{ realraum_bin }}/r3-metaevt-maker
+
+[Install]
+WantedBy=default.target

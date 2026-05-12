@@ -1,0 +1,45 @@
+---
+realraum_user: realraum
+realraum_home: /home/realraum
+realraum_bin: /home/realraum/bin
+realraum_config_dir: /home/realraum/.config/realraum
+realraum_systemd_user_dir: /home/realraum/.local/share/systemd/user
+
+door_and_sensors_repo: "https://github.com/realraum/door_and_sensors"
+door_and_sensors_ref: "master"
+
+# Architecture of the target host
+go_target_goarch: "amd64"
+go_target_goos: "linux"
+
+# Local temporary build directory (on the Ansible controller)
+local_build_dir: "/tmp/ansible_iotscripts_build"
+
+python_scripts:
+  - name: dostuff_switch_lights.py
+    url: "https://github.com/realraum/door_and_sensors/raw/refs/heads/master/scripts/dostuff_switch_lights.py"
+  - name: olga_freezer_sensordata_forwarder.py
+    url: "https://github.com/realraum/door_and_sensors/raw/refs/heads/master/scripts/olga_freezer_sensordata_forwarder.py"
+
+go_binaries:
+  - name: r3-metaevt-maker
+    subdir: r3-metaevt-maker
+  - name: r3-spaceapistatus
+    subdir: r3-spaceapistatus
+
+systemd_user_services:
+  - dostuff_switch_lights
+  - olga_freezer_sensordata_forwarder
+  - r3-metaevt-maker
+  - r3-spaceapistatus
+  - restart_ledpipe
+
+systemd_user_timers:
+  - restart_ledpipe
+
+mqtt_broker_uri: "tcp://mqtt.realraum.at:1883"
+
+spaceapi_publish_username: spaceapi
+spaceapi_publish_host_port: "vex2.realraum.at:22000"
+
+realraum_member_count: 80

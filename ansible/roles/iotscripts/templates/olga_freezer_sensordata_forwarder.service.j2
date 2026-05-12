@@ -1,0 +1,15 @@
+[Unit]
+Description=OlgaFreezer SMS Notifier and SensorData Forwarder
+Wants=network.target
+#OnFailure=xmppnotifyxro@olga_freezer_sensordata_forwarder.service
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory={{ realraum_home }}
+EnvironmentFile={{ realraum_config_dir }}/smsgw.env
+ExecStart={{ realraum_bin }}/olga_freezer_sensordata_forwarder.py
+SyslogIdentifier=%i
+
+[Install]
+WantedBy=default.target

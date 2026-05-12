@@ -1,0 +1,14 @@
+[Unit]
+Description=Switch Lights depending on members present or not
+Wants=network.target
+
+[Service]
+Nice=2
+Type=simple
+Restart=always
+WorkingDirectory={{ realraum_home }}
+ExecStart={{ realraum_bin }}/dostuff_switch_lights.py
+SyslogIdentifier=%i
+
+[Install]
+WantedBy=default.target
