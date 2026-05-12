@@ -1,9 +1,12 @@
 ---
 - import_tasks: 01ssh.yml
+  when: not (is_lxc_container | default(false))
 - import_tasks: 02debian.yml
+  when: not (is_lxc_container | default(false))
 - import_tasks: 03ntp.yml
-- when: ansible_service_mgr == "systemd"
+- when: ansible_service_mgr == "systemd" and not (is_lxc_container | default(false))
   import_tasks: 04systemd.yml
 - import_tasks: 05tools.yml
 - import_tasks: 06net.yml
+  when: not (is_lxc_container | default(false))
 - import_tasks: 07grub.yml

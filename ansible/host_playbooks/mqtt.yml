@@ -1,0 +1,6 @@
+---
+- name: Basic Setup for mqtt.mgmt.realraum.at
+  hosts: mqtt
+  roles:
+  - role: base
+  - role: mosquitto

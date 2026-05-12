@@ -1,0 +1,16 @@
+---
+mosquitto_packages:
+  - mosquitto
+  - mosquitto-clients
+mosquitto_conf_dir: /etc/mosquitto
+mosquitto_conf_file: /etc/mosquitto/mosquitto.conf
+mosquitto_confd_dir: /etc/mosquitto/conf.d/
+mosquitto_port: 1883
+mosquitto_bind_address: "0.0.0.0"
+mosquitto_allow_anonymous: true
+mosquitto_persistence: true
+mosquitto_log_target: stdout
+mosquitto_max_inflight_messages: 20
+mosquitto_max_queued_messages: 10
+mosquitto_message_size_limit: 102400
+mosquitto_queue_qos0_messages: false

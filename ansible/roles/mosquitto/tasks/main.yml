@@ -1,0 +1,30 @@
+---
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Mosquitto packages
+  ansible.builtin.apt:
+    name: "{{ mosquitto_packages }}"
+    state: present
+
+- name: Deploy Mosquitto conf.d
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ mosquitto_confd_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart mosquitto
+  with_items:
+    - limits.conf
+    - nosdcardwrites.conf
+    - listen.conf
+
+- name: Ensure Mosquitto service is enabled and started
+  ansible.builtin.service:
+    name: mosquitto
+    state: started
+    enabled: true
