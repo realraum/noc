@@ -6,9 +6,10 @@ Wants=network.target
 [Service]
 Type=simple
 Restart=always
+RestartSec=40
 WorkingDirectory={{ realraum_home }}
 EnvironmentFile={{ realraum_config_dir }}/smsgw.env
-ExecStart={{ realraum_bin }}/olga_freezer_sensordata_forwarder.py
+ExecStart={{ iotscripts_python_venv }}/bin/python {{ realraum_bin }}/olga_freezer_sensordata_forwarder.py
 SyslogIdentifier=%i
 
 [Install]

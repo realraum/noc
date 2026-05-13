@@ -58,6 +58,39 @@
     mode: "0600"
   no_log: true
 
+- name: Ensure python3-venv is installed
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-venv
+      - python3-pip
+    state: present
+
+- name: Download requirements.txt from upstream
+  ansible.builtin.get_url:
+    url: "{{ python_requirements_url }}"
+    dest: "{{ realraum_config_dir }}/requirements.txt"
+    owner: "{{ realraum_user }}"
+    group: "{{ realraum_user }}"
+    mode: "0644"
+    force: true          # always refresh so upstream changes are picked up
+  register: requirements_download
+
+- name: Create Python virtualenv
+  ansible.builtin.command:
+    cmd: python3 -m venv {{ iotscripts_python_venv }}
+    creates: "{{ iotscripts_python_venv }}/bin/python"
+  become: true
+  become_user: "{{ realraum_user }}"
+
+- name: Install Python dependencies into virtualenv
+  ansible.builtin.pip:
+    requirements: "{{ realraum_config_dir }}/requirements.txt"
+    virtualenv: "{{ iotscripts_python_venv }}"
+    state: present
+  become: true
+  become_user: "{{ realraum_user }}"
+
 - name: Download Python scripts
   ansible.builtin.get_url:
     url: "{{ item.url }}"

@@ -12,6 +12,10 @@ go_target_goos: "linux"
 # Local temporary build directory (on the Ansible controller)
 local_build_dir: "/tmp/ansible_iotscripts_build"
 
+
+python_requirements_url: "https://github.com/realraum/door_and_sensors/raw/refs/heads/master/scripts/requirements.txt"
+iotscripts_python_venv: /home/{{ realraum_user }}/venv
+
 python_scripts:
   - name: dostuff_switch_lights.py
     url: "https://github.com/realraum/door_and_sensors/raw/refs/heads/master/scripts/dostuff_switch_lights.py"
