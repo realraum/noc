@@ -8,23 +8,30 @@
   become: false
   run_once: true  # shared across all binaries; repo cloned once
 
-- name: "Clone door_and_sensors repo locally"
+- name: "Clone repo locally"
   ansible.builtin.git:
-    repo: "{{ door_and_sensors_repo }}"
-    dest: "{{ local_build_dir }}/door_and_sensors"
-    version: "{{ door_and_sensors_ref }}"
+    repo: "{{ go_binary.repo }}"
+    dest: "{{ local_build_dir }}/{{go_binary.name}}_repo"
+    version: "{{ go_binary.ref }}"
     force: false
   delegate_to: localhost
   become: false
   run_once: true
 
+- name: "Run go get ."
+  ansible.builtin.command:
+    cmd: >
+      go get .
+    chdir: "{{ local_build_dir }}/{{go_binary.name}}_repo/{{ go_binary.subdir }}"
+  delegate_to: localhost
+  become: false
+  changed_when: true  # always rebuild to pick up upstream changes
+
 - name: "Build {{ go_binary.name }} locally (cross-compile)"
   ansible.builtin.command:
     cmd: >
-      go build
-      -o {{ local_build_dir }}/{{ go_binary.name }}
-      ./{{ go_binary.subdir }}
-    chdir: "{{ local_build_dir }}/door_and_sensors"
+      go build -o {{ go_binary.name }}
+    chdir: "{{ local_build_dir }}/{{go_binary.name}}_repo/{{ go_binary.subdir }}"
   delegate_to: localhost
   become: false
   environment:
@@ -35,8 +42,15 @@
 
 - name: "Copy {{ go_binary.name }} to target host"
   ansible.builtin.copy:
-    src: "{{ local_build_dir }}/{{ go_binary.name }}"
+    src: "{{ local_build_dir }}/{{go_binary.name}}_repo/{{ go_binary.subdir }}/{{ go_binary.name }}"
     dest: "{{ realraum_bin }}/{{ go_binary.name }}"
     owner: "{{ realraum_user }}"
     group: "{{ realraum_user }}"
     mode: "0755"
+
+- name: "Clean up local build directory for {{ go_binary.name }}"
+  ansible.builtin.file:
+    path: "{{ local_build_dir }}/{{go_binary.name}}_repo/"
+    state: absent
+  delegate_to: localhost
+  become: false

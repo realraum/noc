@@ -112,8 +112,6 @@
     scope: user
   become: true
   become_user: "{{ realraum_user }}"
-  environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd'][realraum_user][1] }}"
   loop: "{{ systemd_user_services }}"
 
 - name: Enable and start systemd user timers
@@ -124,6 +122,4 @@
     scope: user
   become: true
   become_user: "{{ realraum_user }}"
-  environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd'][realraum_user][1] }}"
   loop: "{{ systemd_user_timers }}"

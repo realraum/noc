@@ -5,9 +5,6 @@ realraum_bin: /home/realraum/bin
 realraum_config_dir: /home/realraum/.config/realraum
 realraum_systemd_user_dir: /home/realraum/.local/share/systemd/user
 
-door_and_sensors_repo: "https://github.com/realraum/door_and_sensors"
-door_and_sensors_ref: "master"
-
 # Architecture of the target host
 go_target_goarch: "amd64"
 go_target_goos: "linux"
@@ -24,8 +21,12 @@ python_scripts:
 go_binaries:
   - name: r3-metaevt-maker
     subdir: r3-metaevt-maker
+    repo: "https://github.com/realraum/door_and_sensors"
+    ref: "master"
   - name: r3-spaceapistatus
     subdir: r3-spaceapistatus
+    repo: "https://github.com/realraum/door_and_sensors"
+    ref: "master"
 
 systemd_user_services:
   - dostuff_switch_lights

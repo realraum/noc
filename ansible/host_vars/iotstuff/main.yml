@@ -1,4 +1,6 @@
 ---
 
 is_lxc_container: true
+base_managed_ntpd: false
+
 realraum_member_count: 82
