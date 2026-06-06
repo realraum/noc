@@ -28,6 +28,12 @@ dokuwiki_plugins:
   multiorphan:
     url: https://github.com/i-net-software/dokuwiki-plugin-multiorphan/archive/refs/tags/2021-12-20.tar.gz
     sha256: bd8b4d81955714620773e0c884295673d496cc690e38b3aa1fbd70ea3b219205
+  bureaucracy:
+    url: https://github.com/splitbrain/dokuwiki-plugin-bureaucracy/zipball/master
+    sha256: d90fca2b9b870d7c278df89faa3644a75e9d73fa4fd2219414e59dff7b4815dc
+  confightmlok:
+    url: https://codeberg.org/lmachucabezzaza0/dw-plugin-htmlok/archive/master.zip
+    sha256: b911f7e4a4b6ffa423ee33103a29a778edd1e1f959fa438330fb1aeb8efafbd8
 
 dokuwiki_templates:
   bootstrap3:

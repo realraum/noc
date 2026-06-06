@@ -127,10 +127,10 @@
   # Create lauti data directory structure
   systemd.tmpfiles.rules = [
     "d /srv/lauti 0755 root root -"
-    "d /srv/lauti/media 0755 root root -"
-    "d /srv/lauti/themes 0755 root root -"
-    "d /srv/lauti/osm 0755 root root -"
-    "d /srv/lauti/data 0755 root root -"
+    "d /srv/lauti/media 0777 root root -"
+    "d /srv/lauti/themes 0777 root root -"
+    "d /srv/lauti/osm 0777 root root -"
+    "d /srv/lauti/data 0777 root root -"
   ];
 
   # Lauti service configuration with custom data path
