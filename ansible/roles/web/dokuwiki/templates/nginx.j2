@@ -12,6 +12,8 @@ server {
 
     include snippets/security-headers.conf;
 
+    access_log off;
+    error_log syslog:server=unix:/dev/log,facility=local1,severity=info;
 
     client_max_body_size 4M;
     client_body_buffer_size 128k;

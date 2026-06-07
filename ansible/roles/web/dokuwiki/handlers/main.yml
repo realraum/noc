@@ -2,7 +2,7 @@
 ## TODO: fix hardcoded php version...
 - name: reload php-fpm
   service:
-    name: php8.2-fpm.service
+    name: php8.4-fpm.service
     state: reloaded
 
 - name: reload nginx

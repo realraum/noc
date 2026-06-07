@@ -50,7 +50,7 @@
 - name: install php-fpm config
   template:
     src: php-fpm.conf.j2
-    dest: /etc/php/8.2/fpm/pool.d/z_read_last_dokuwiki.conf
+    dest: /etc/php/8.4/fpm/pool.d/z_read_last_dokuwiki.conf
   notify: reload php-fpm
 
 

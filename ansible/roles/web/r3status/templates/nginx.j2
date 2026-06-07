@@ -14,6 +14,9 @@ server {
 
     root /srv/r3status/www;
 
+    access_log off;
+    error_log syslog:server=unix:/dev/log,facility=local1,severity=info;
+
     location = /spaceapi.json {
         alias {{ r3status_spaceapi_path }}/spaceapi.json;
         add_header Access-Control-Allow-Origin "*";

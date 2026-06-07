@@ -21,6 +21,8 @@ server {
 
     root {{ r3rsrv.rootdir }};
     access_log off;
+    error_log syslog:server=unix:/dev/log,facility=local1,severity=info;
+
 #    rewrite_log on;
 
 
