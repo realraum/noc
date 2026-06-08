@@ -28,11 +28,11 @@ body {
   }
 }
 
-div.r3floatsidebar { 
+div.r3floatsidebar {
 	  display:none;
 }
 @media (min-width:992px) {
-div.r3floatsidebar { 
+div.r3floatsidebar {
 	  float:right;
 	  min-width:20em;
 	  border-left:1ex white solid;
@@ -116,10 +116,46 @@ div.wrap_collapse:target {
 div.sensorstatus {
   width:auto;
   padding:5px;
-  float:left;  
+  float:left;
   text-align:left;
   vertical-align:middle;
   font-size:90%;
 }
 
+/* Force Bureaucracy form elements to stack vertically */
+.dokuwiki form.bureaucracy__plugin fieldset {
+    display: block;
+    margin-bottom: 15px;
+    width: 500px;
+    text-align: left;
+}
 
+.dokuwiki form.bureaucracy__plugin label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.dokuwiki form.bureaucracy__plugin input[type="text"],
+.dokuwiki form.bureaucracy__plugin textarea,
+.dokuwiki form.bureaucracy__plugin select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Fix radio button/checkbox alignment if they are appearing inline */
+.dokuwiki form.bureaucracy__plugin .bureaucracy__item {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.dokuwiki form.bureaucracy__plugin label input.edit,
+.dokuwiki form.bureaucracy__plugin label select {
+    width:100%;
+  }
+
+.dokuwiki form.bureaucracy__plugin label input[type="radio"] ~ span {
+  width: 80%;
+}
