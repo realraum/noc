@@ -52,6 +52,7 @@ $conf['rememberme'] =  {{ dokuwiki_config.rememberme | default("1") }};         
 $conf['disableactions'] =  '{{ dokuwiki_config.disableactions | default("") }}';            //comma separated list of actions to disable
 $conf['auth_security_timeout'] =  {{ dokuwiki_config.auth_security_timeout | default("900") }};    //time (seconds) auth data is considered valid, set to 0 to recheck on every page view
 $conf['securecookie'] =  {{ dokuwiki_config.securecookie | default("1") }};               //never send HTTPS cookies via HTTP
+$conf['samesitecookie'] = '{{ dokuwiki_config.samesitecookie | default("Lax") }}';         //SameSite attribute for cookies (Lax|Strict|None|Empty)
 $conf['remote']      =  {{ dokuwiki_config.remote | default("0") }};                //Enable/disable remote interfaces
 $conf['remoteuser']  =  '{{ dokuwiki_config.remoteuser | default("!!not set!!") }}';    //user/groups that have access to remote interface (comma separated). leave empty to allow all users
 $conf['remotecors']  =  '{{ dokuwiki_config.remotecors | default("") }}';               //enable Cross-Origin Resource Sharing (CORS) for the remote interfaces. Asterisk (*) to allow all origins. leave empty to deny.
@@ -69,8 +70,6 @@ $conf['iexssprotect']= 1;                // check for JavaScript and HTML in upl
 
 /* Editing Settings */
 $conf['usedraft']    =  {{ dokuwiki_config.usedraft | default("1") }};                //automatically save a draft while editing (0|1)
-$conf['htmlok']      =  {{ dokuwiki_config.htmlok | default("0") }};                //may raw HTML be embedded? This may break layout and XHTML validity 0|1
-$conf['phpok']       =  {{ dokuwiki_config.phpok | default("0") }};                //may PHP code be embedded? Never do this on the internet! 0|1
 $conf['locktime']    = 15*60;            //maximum age for lockfiles (defaults to 15 minutes)
 $conf['cachetime']   = 60*60*24;         //maximum age for cachefile in seconds (defaults to a day)
 
@@ -101,6 +100,7 @@ $conf['mailreturnpath']    =  '{{ dokuwiki_config.mailreturnpath | default("") }
 $conf['mailprefix']  =  '{{ dokuwiki_config.mailprefix | default("") }}';               //use this as prefix of outgoing mails
 $conf['htmlmail']    =  {{ dokuwiki_config.htmlmail | default("1") }};                //send HTML multipart mails
 $conf['dontlog'] =  '{{ dokuwiki_config.dontlog | default("debug") }}';              //logging facilites that should be disabled
+$conf['logretain'] = {{ dokuwiki_config.logretain | default("3") }};                  //how many days of logs to keep
 
 /* Syndication Settings */
 $conf['sitemap']     =  {{ dokuwiki_config.sitemap | default("0") }};                //Create a google sitemap? How often? In days.
