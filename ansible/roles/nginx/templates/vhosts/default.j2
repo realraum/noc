@@ -6,6 +6,9 @@ server {
 
     include snippets/acmetool.conf;
 
+    access_log off;
+    error_log syslog:server=unix:/dev/log,facility=local1,severity=info;
+
     location / {
         return 301 https://$host$request_uri;
     }
@@ -24,6 +27,9 @@ server {
     include snippets/hsts.conf;
 
     include snippets/security-headers.conf;
+
+    access_log off;
+    error_log syslog:server=unix:/dev/log,facility=local1,severity=info;
 
     location / {
         default_type text/plain;
