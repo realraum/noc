@@ -11,8 +11,8 @@ dokuwiki_plugins:
     url: https://github.com/giterlizzi/dokuwiki-plugin-icons/archive/refs/heads/master.tar.gz
     sha256: e77aacc88b058f94bfa3f1d3099339f1e0ab56a0828e9fa5cb895373eeb29b10
   move:
-    url: https://github.com/michitux/dokuwiki-plugin-move/archive/refs/tags/2025-06-09.tar.gz
-    sha256: 08c451bb7313bfbfa378f0f49df0cb6ec87c304ff692ed0a377a42272b7a5d23
+    url: https://github.com/michitux/dokuwiki-plugin-move/archive/refs/tags/2025-10-01.tar.gz
+    sha256: 54f2fe5fa12fc6e0f6c1f94a8eec75de1801c92daab674aa58a21f4a376df475
   include:
     url: https://github.com/dokufreaks/plugin-include/archive/master.tar.gz
     sha256: d73b9d833b10179c5c807175f32c3aef154fddce49095e21c4ee89a4664b5338
