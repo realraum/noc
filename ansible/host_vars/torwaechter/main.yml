@@ -1,13 +1,15 @@
 ---
 ssh_users_tuergit: "{{ user_groups.noc | union(['fgenesis','ruru','stonedust','sanchez']) }}"
 
+# keep download and build artifacts for debugging
+# openwrt_debug: true
 openwrt_variant: openwrt
-openwrt_release: 18.06.4
+openwrt_release: 24.10.5
 openwrt_arch: x86
 openwrt_target: geode
 openwrt_output_image_suffixes:
-  - combined-ext4.img.gz
-  - combined-squashfs.img.gz
+  - generic-ext4-combined.img.gz
+  - generic-squashfs-combined.img.gz
 
 openwrt_packages_extra:
   - "-dropbear"
@@ -135,8 +137,8 @@ openwrt_uci:
         ifname: eth0
         accept_ra: 0
         proto: static
-        ipaddr: "{{ net.mgmt.prefix | ipaddr(100) | ipaddr('address') }}"
-        netmask: "{{ net.mgmt.prefix | ipaddr('netmask') }}"
+        ipaddr: "{{ net.mgmt.prefix | ansible.utils.ipaddr(100) | ansible.utils.ipaddr('address') }}"
+        netmask: "{{ net.mgmt.prefix | ansible.utils.ipaddr('netmask') }}"
         gateway: "{{ net.mgmt.gw }}"
         dns: "{{ net.mgmt.dns | join(' ') }}"
         dns_search: realraum.at
