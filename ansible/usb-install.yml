@@ -41,7 +41,7 @@
           loop_control:
             label: "{{ item | basename }}"
 
-        - name: Generate syslinux configuration
+        - name: Generate syslinux configuration for BIOS boot
           copy:
             dest: "{{ usbdrive_path }}/syslinux.cfg"
             content: |
@@ -50,6 +50,22 @@
               LABEL linux
                KERNEL linux
                INITRD initrd.preseed.gz
+               APPEND install {{ (install.kernel_cmdline | default([])) | join(' ') }}
+
+        - name: create EFI boot directory
+          file:
+            path: "{{ usbdrive_path }}/EFI/boot"
+            state: directory
+
+        - name: Generate syslinux configuration for UEFI boot
+          copy:
+            dest: "{{ usbdrive_path }}/EFI/boot/syslinux.cfg"
+            content: |
+              DEFAULT linux
+               SAY SYSLINUX booting an automated installer for {{ hostname }}...
+              LABEL linux
+               KERNEL ../../linux
+               INITRD ../../initrd.preseed.gz
                APPEND install {{ (install.kernel_cmdline | default([])) | join(' ') }}
 
         - name: Make the USB disk bootable
@@ -64,5 +80,11 @@
               $ sudo syslinux -i /dev/CHANGEME1
               $ sudo fdisk       /dev/CHANGEME
               [Here, make sure partition 1 is marked bootable.]
+
+              for UEFI these steps need to be done
+
+              $ sudo apt install syslinux-efi
+              $ cp /usr/lib/syslinux/modules/efi64/* {{ usbdrive_path }}/EFI/boot/
+              $ cp /usr/lib/SYSLINUX.EFI/efi64/syslinux.efi {{ usbdrive_path }}/EFI/boot/bootx64.efi
 
               This will NOT be done automatically.

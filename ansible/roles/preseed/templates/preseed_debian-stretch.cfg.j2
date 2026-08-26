@@ -65,8 +65,19 @@ d-i partman-md/device_remove_md boolean true
 d-i partman-lvm/confirm boolean true
 d-i partman-lvm/confirm_nooverwrite boolean true
 
+{% if (hostvars[hostname].install_cooked.efi | default(false)) %}
+d-i partman-efi/non_efi_system boolean true
+d-i partman/choose_label string gpt
+d-i partman/default_label string gpt
+{% endif %}
 d-i partman-auto/expert_recipe string                                    \
       boot-root ::                                                       \
+{% if (hostvars[hostname].install_cooked.efi | default(false)) %}
+              100 100 128 fat16                                          \
+                      $defaultignore{ } $primary{ } $bootable{ }         \
+                      method{ efi } format{ }                            \
+              .                                                          \
+{% endif %}
               1000 10000 -1 ext4                                         \
                       $defaultignore{ } $primary{ } $bootable{ }         \
                       method{ lvm } vg_name{ {{ hostname }} }            \
