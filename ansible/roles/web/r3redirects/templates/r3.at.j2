@@ -53,6 +53,10 @@ server {
         return 302 "https://git.realraum.at/?p=documents.git;a=blob;f=vereinsordnung/vereinsordnung.pdf";
     }
 
+    location = /cal {
+        return 302 "https://laut.realraum.at";
+    }
+
     location = / {
         return 302 https://realraum.at/;
     }

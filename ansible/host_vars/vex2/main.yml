@@ -7,8 +7,8 @@ r3status_ics_path: /dev/shm/ics
 r3status_spaceapi_update_user_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJG4w4B95bogd2HOCZNY+OMx+fdo6iPI2tLUPu3RJOUp realraum@iotscripts.mgmt.realraum.at
 
 r3status_www_content:
-  url: 'https://github.com/realraum/infokiosk/archive/c2571da52f5c68d11d8d2e2d00a4580aea7b83e7.tar.gz'
-  sha256: '406844afd3ebc483ddbfc06a398182566579b9be0b935f83bcacfd2479cc54f5'
+  url: 'https://github.com/realraum/infokiosk/archive/94e29c6a342a455bdef5a4088aa51dcd38e4e101.tar.gz'
+  sha256: 'f8b97765fa331aad0b26e0357644af83fb0c1794702fecfdae6918e3c05cee5c'
 
 
 acmetool_directory_server: "{{ acmetool_directory_server_le_live }}"

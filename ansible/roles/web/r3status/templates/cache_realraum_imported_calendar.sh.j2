@@ -60,7 +60,7 @@ for t in "${publish[@]}"; do
   local src_varname="${t}_ICAL_SRC"
   local altnames_varname="${t}_ALTERNATE_FILE_NAMES"
   local d="${(P)dst_varname}"
-  local -a altnames=${(P)altnames_varname}
+  local -a altnames=( ${(P)altnames_varname} )
 
   get_merge_ics "${DL_PATH}/${d}" ${(P)src_varname} \
 	&& sed -i '/^GEO:/d;/^METHOD:PUBLISH/d;s/^\(DTSTAMP:[0-9A-Z]\+\)/\1Z/' "${DL_PATH}/${d}" \
