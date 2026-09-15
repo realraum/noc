@@ -25,6 +25,18 @@ server {
         return 302 https://status.realraum.at/ics/grical_realraum.ical; # planned: 301
     }
 
+    location = /events_not_extern.ics {
+        return 302 https://status.realraum.at/ics/grical_realraum_only.ical; # planned: 301
+    }
+
+    location = /local_events.ics {
+        return 302 https://status.realraum.at/ics/grical_realraum_only.ical; # planned: 301
+    }
+
+    location = /public_events.ics {
+        return 302 https://status.realraum.at/ics/public_events.ics; # planned: 301
+    }
+
     location = /statuten {
         return 302 "https://git.realraum.at/?p=documents.git;a=blob;f=statuten/main.pdf";
     }

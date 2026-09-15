@@ -1,23 +1,71 @@
 #!/bin/zsh
 DL_PATH=/dev/shm/wget
 APACHE_PATH={{ r3status_ics_path }}
-ALL_JSON_SRC="https://grical.realraum.at/s/?query=!realraum+|+!r3extern&limit=9&view=json"
-ALL_JSON_FILE="grical_realraum.json"
-LOCALONLY_JSON_SRC="https://grical.realraum.at/s/?query=!realraum&limit=9&view=json"
-LOCALONLY_JSON_FILE="grical_realraum_only.json"
-ICAL_DATE_FROM=$(date -d "last month" +"%Y-%m-%d")
-ICAL_DATE_TILL=$(date -d "today + 3 months" +"%Y-%m-%d")
-ALL_ICAL_SRC="https://grical.realraum.at/s/?query=!realraum+|+!r3extern%20${ICAL_DATE_FROM}%20${ICAL_DATE_TILL}&view=ical"
-ALL_ICAL_FILE="grical_realraum.ical"
-LOCALONLY_ICAL_SRC="https://grical.realraum.at/s/?query=!realraum%20${ICAL_DATE_FROM}%20${ICAL_DATE_TILL}&view=ical"
-LOCALONLY_ICAL_FILE="grical_realraum_only.ical"
+
+local publiconly_ICAL_SRC=("https://laut.realraum.at/groups/80217d4a-1ca5-490e-a8dd-1439b1d92145/ical")
+local localonly_ICAL_SRC=("https://laut.realraum.at/groups/80217d4a-1ca5-490e-a8dd-1439b1d92145/ical" "https://laut.realraum.at/groups/ad1e2cb2-d7cc-4ca6-bb98-c3e12fbe5eb2/ical")
+local all_ICAL_SRC=("https://laut.realraum.at/groups/80217d4a-1ca5-490e-a8dd-1439b1d92145/ical" "https://laut.realraum.at/groups/ad1e2cb2-d7cc-4ca6-bb98-c3e12fbe5eb2/ical" "https://laut.realraum.at/groups/f23e210b-41da-423a-9261-6ce581437c1e/ical")
+
+local all_ICAL_FILE="grical_realraum.ical"
+local localonly_ICAL_FILE="grical_realraum_only.ical"
+local publiconly_ICAL_FILE="public_events.ics"
+
+local all_ALTERNATE_FILE_NAMES=("all_events.ics")
+local localonly_ALTERNATE_FILE_NAMES=("local_events.ics")
+local publiconly_ALTERNATE_FILE_NAMES=()
+
+publish=(publiconly localonly all)
+
+
+function get_merge_ics
+{
+  local out=$1
+  shift
+  local sources=("$@")
+  {
+    # Emit a VCALENDAR header
+    echo "BEGIN:VCALENDAR"
+    echo "VERSION:2.0"
+    echo "PRODID:-//merge-ics//zsh//lauti.org//EN"
+#    echo "CALSCALE:GREGORIAN"
+
+    # For each .ics file, strip the outer VCALENDAR block but keep events
+    for s in "$sources[@]"; do
+      [[ -n $s ]] || continue
+      # Remove BEGIN:VCALENDAR / END:VCALENDAR lines (and their associated
+      # header properties like VERSION, PRODID, CALSCALE, X-WR-CALNAME)
+      # by extracting only the VEVENT (and VTODO/VALARM) blocks.
+  awk '
+        /^BEGIN:V(EVENT|TODO|TIMEZONE)/ { print; inblock=1; depth=0 }
+        inblock {
+          if      (/^BEGIN:/) depth++
+          else if (/^END:/)   { depth--; if (depth==0) inblock=0 }
+          print
+        }
+      ' =( wget --no-check-certificate -o /dev/null --tries=1 "$s" --quiet -o /dev/null -O - 2>/dev/null)
+      echo
+    done
+
+    echo "END:VCALENDAR"
+  } >! "$out"
+}
+
+
+
 mkdir $APACHE_PATH 2>/dev/null
 mkdir $DL_PATH 2>/dev/null
 ### sed makes ical validate according to http://severinghaus.org/projects/icv/?url=https%3A%2F%2Fr3.at%2Fevents.ical
-for s d in $ALL_JSON_SRC $ALL_JSON_FILE $ALL_ICAL_SRC $ALL_ICAL_FILE $LOCALONLY_JSON_SRC $LOCALONLY_JSON_FILE $LOCALONLY_ICAL_SRC $LOCALONLY_ICAL_FILE; do
-	wget --no-check-certificate -o /dev/null --tries=1 "$s" -O "${DL_PATH}/${d}" \
+for t in "${publish[@]}"; do
+  local dst_varname="${t}_ICAL_FILE"
+  local src_varname="${t}_ICAL_SRC"
+  local altnames_varname="${t}_ALTERNATE_FILE_NAMES"
+  local d="${(P)dst_varname}"
+  local -a altnames=${(P)altnames_varname}
+
+  get_merge_ics "${DL_PATH}/${d}" ${(P)src_varname} \
 	&& sed -i '/^GEO:/d;/^METHOD:PUBLISH/d;s/^\(DTSTAMP:[0-9A-Z]\+\)/\1Z/' "${DL_PATH}/${d}" \
 	&& [[ -s "${DL_PATH}/${d}" ]] \
-	&& mv "${DL_PATH}/${d}" "${APACHE_PATH}/${d}"    
+	&& mv "${DL_PATH}/${d}" "${APACHE_PATH}/${d}" \
+	&& for an in "${altnames[@]}"; do cp "${APACHE_PATH}/${d}" "${DL_PATH}/${an}.tmp" && mv "${DL_PATH}/${an}.tmp" "${APACHE_PATH}/${an}" ; done
 done
 
