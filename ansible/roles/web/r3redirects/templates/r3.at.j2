@@ -18,19 +18,23 @@ server {
     error_log syslog:server=unix:/dev/log,facility=local1,severity=info;
 
     location = /events.ics {
-        return 302 https://status.realraum.at/ics/grical_realraum.ical; # planned: 301
+        return 302 https://status.realraum.at/ics/all_events.ics; # planned: 301
     }
 
     location = /events.ical {
-        return 302 https://status.realraum.at/ics/grical_realraum.ical; # planned: 301
+        return 302 https://status.realraum.at/ics/all_events.ics; # planned: 301
+    }
+
+    location = /all_events.ics {
+        return 302 https://status.realraum.at/ics/all_events.ics; # planned: 301
     }
 
     location = /events_not_extern.ics {
-        return 302 https://status.realraum.at/ics/grical_realraum_only.ical; # planned: 301
+        return 302 https://status.realraum.at/ics/local_events.ics; # planned: 301
     }
 
     location = /local_events.ics {
-        return 302 https://status.realraum.at/ics/grical_realraum_only.ical; # planned: 301
+        return 302 https://status.realraum.at/ics/local_events.ics; # planned: 301
     }
 
     location = /public_events.ics {
