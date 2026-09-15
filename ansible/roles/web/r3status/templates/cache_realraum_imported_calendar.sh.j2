@@ -23,7 +23,6 @@ function get_merge_ics
   shift
   local sources=("$@")
   {
-    # Emit a VCALENDAR header
     echo "BEGIN:VCALENDAR"
     echo "VERSION:2.0"
     echo "PRODID:-//merge-ics//zsh//lauti.org//EN"
@@ -32,25 +31,20 @@ function get_merge_ics
     # For each .ics file, strip the outer VCALENDAR block but keep events
     for s in "$sources[@]"; do
       [[ -n $s ]] || continue
-      # Remove BEGIN:VCALENDAR / END:VCALENDAR lines (and their associated
-      # header properties like VERSION, PRODID, CALSCALE, X-WR-CALNAME)
-      # by extracting only the VEVENT (and VTODO/VALARM) blocks.
-  awk '
-        /^BEGIN:V(EVENT|TODO|TIMEZONE)/ { print; inblock=1; depth=0 }
+      awk '
+        /^BEGIN:V(EVENT|TODO|TIMEZONE)/ { inblock=1; depth=1; print; next }
         inblock {
           if      (/^BEGIN:/) depth++
           else if (/^END:/)   { depth--; if (depth==0) inblock=0 }
           print
         }
-      ' =( wget --no-check-certificate -o /dev/null --tries=1 "$s" --quiet -o /dev/null -O - 2>/dev/null)
+      ' =( wget --no-check-certificate --tries=1 "$s" --quiet -o /dev/null -O - 2>/dev/null )
       echo
     done
 
     echo "END:VCALENDAR"
   } >! "$out"
 }
-
-
 
 mkdir $APACHE_PATH 2>/dev/null
 mkdir $DL_PATH 2>/dev/null
