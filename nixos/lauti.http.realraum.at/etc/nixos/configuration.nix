@@ -6,8 +6,9 @@ let
     group = "calendarbot";
     home = "/home/calendarbot";
     # Code and config live in the Nix store; the only mutable state is the
-    # Mobilizon login session, which the application rewrites itself.
-    sessionFile = "/home/calendarbot/session.json";
+    # Mobilizon login session, which the application rewrites itself. It lives
+    # on the data disk (/srv) so it survives independent of the home directory.
+    sessionFile = "/srv/calendarbot/session.json";
     branch = "lauti-to-mobilizon";
   };
 
@@ -283,7 +284,7 @@ in
     "d /srv/lauti/themes 0777 root root -"
     "d /srv/lauti/osm 0777 root root -"
     "d /srv/lauti/data 0777 root root -"
-    "d /home/calendarbot/.cache 0755 calendarbot calendarbot -"
+    "d /srv/calendarbot 0700 calendarbot calendarbot -"
   ];
 
   # Lauti service configuration with custom data path
@@ -330,7 +331,7 @@ in
   # Mobilizon calendar mirror (grical-to-mobilizon).
   #
   # The application is pinned in the Nix store. The only file that changes at
-  # runtime is session.json in the service home; it is created once by hand
+  # runtime is session.json in /srv/calendarbot; it is created once by hand
   # (`node new-session.js` with a creds.json) and then refreshed/rewritten by
   # the application itself after every successful login.
   users.groups.calendarbot = { };
@@ -347,7 +348,8 @@ in
   systemd.services.mobilizon-calendar-mirror = {
     description = "Mobilizon calendar mirror (grical-to-mobilizon)";
     wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
+    after = [ "network-online.target" "srv.mount" ];
+    requires = [ "srv.mount" ];
     path = [ nodejs pkgs.coreutils ];
     environment = {
       HOME = mobilizonCalendarMirror.home;
@@ -382,7 +384,7 @@ in
       AmbientCapabilities = "";
       ProtectSystem = "strict";
       ProtectHome = false;
-      ReadWritePaths = [ mobilizonCalendarMirror.home ];
+      ReadWritePaths = [ "/srv/calendarbot" mobilizonCalendarMirror.home ];
       PrivateTmp = true;
       PrivateDevices = true;
       ProtectKernelTunables = true;
