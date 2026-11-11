@@ -11,8 +11,10 @@ let
     fallbackBranch = "master";
   };
 
-  nodejs = pkgs.nodejs_22 or pkgs.nodejs;
-  pnpm = pkgs.pnpm_10 or pkgs.pnpm;
+  nodejs = pkgs.nodejs_22;
+  # pnpm_10 is flagged as insecure in nixpkgs 26.05; pnpm_10_latest is the
+  # patched 10.x release and still understands the project's lockfile (9.0).
+  pnpm = pkgs.pnpm_10_latest;
 
   # Pre-built node_modules for grical-to-mobilizon.
   #
@@ -38,8 +40,8 @@ let
     pnpmDeps = pkgs.fetchPnpmDeps {
       inherit (finalAttrs) pname version src;
       inherit pnpm;
-      fetcherVersion = 3;
-      hash = "sha256-C17PgTEtduoqGmJjKbAGKhvtmuy/mvqv8AvAMtM91MM=";
+      fetcherVersion = 4;
+      hash = "sha256-NNe3vTqrNVHLzOatU1mhABorSE8dEaUE7UH0SCKU9oQ=";
     };
 
     nativeBuildInputs = [
@@ -274,10 +276,12 @@ in
 
   services.resolved = {
     enable = true;
-    dnssec = "false";
-    domains = [ "~." ];
-    fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
-    dnsovertls = "false";
+    settings.Resolve = {
+      DNSSEC = false;
+      Domains = [ "~." ];
+      FallbackDNS = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+      DNSOverTLS = false;
+    };
   };
 
   # Add lauti package
@@ -328,8 +332,12 @@ in
   # Lauti service configuration with custom data path
   # Configure lauti service
   services.qemuGuest.enable = true;
-  services.eintopf = {
+  # services.eintopf was renamed to services.lauti in NixOS 26.05.
+  services.lauti = {
     enable = true;
+    dataDir = "/srv/lauti";
+    # Persistent admin password; read by systemd before privileges are dropped.
+    secrets = [ "/srv/lauti/env" ];
 
     settings = {
       LAUTI_ADMIN_EMAIL = "noc@r3.at";
@@ -353,11 +361,10 @@ in
   };
 
   # Bind mount for lauti service to use /srv/lauti
-  systemd.services.eintopf = {
+  systemd.services.lauti = {
     after = [ "srv.mount" ];
     requires = [ "srv.mount" ];
     serviceConfig = {
-      EnvironmentFile= [ "/srv/lauti/env" ];  # store persistent admin pwd here
       ReadWritePaths = [ "/srv/lauti" ];
     };
   };
@@ -426,8 +433,7 @@ in
   systemd.services.mobilizon-calendar-mirror = {
     description = "Mobilizon calendar mirror (grical-to-mobilizon)";
     wants = [ "network-online.target" ];
-    requires = [ "mobilizon-calendar-mirror-update.service" ];
-    after = [ "network-online.target" "mobilizon-calendar-mirror-update.service" ];
+    after = [ "network-online.target" ];
     path = [ nodejs pkgs.coreutils ];
     environment = {
       HOME = mobilizonCalendarMirror.home;
