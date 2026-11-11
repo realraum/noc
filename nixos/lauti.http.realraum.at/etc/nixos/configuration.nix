@@ -14,6 +14,73 @@ let
   nodejs = pkgs.nodejs_22 or pkgs.nodejs;
   pnpm = pkgs.pnpm_10 or pkgs.pnpm;
 
+  # Pre-built node_modules for grical-to-mobilizon.
+  #
+  # Dependencies are fetched by a fixed-output derivation (fetchPnpmDeps), which
+  # is the only way to get network access inside the Nix sandbox. The native
+  # node-libcurl binding is then compiled offline against nixpkgs' curl, so no
+  # vcpkg bootstrap (which would need network + writable $HOME) ever runs.
+  #
+  # When the branch moves, refresh both hashes:
+  #   nix-prefetch-github --owner realraum --repo grical-to-mobilizon --rev lauti-to-mobilizon
+  #   (then set pnpmDeps.hash = "" and read the "got:" value from the build error)
+  grical-to-mobilizon-deps = pkgs.stdenv.mkDerivation (finalAttrs: {
+    pname = "grical-to-mobilizon-deps";
+    version = "1.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "realraum";
+      repo = "grical-to-mobilizon";
+      rev = mobilizonCalendarMirror.branch;
+      sha256 = "sha256-lm9GVInuqQT6P85mWD/71Sm22padhCf0s1xNpmwiYKI=";
+    };
+
+    pnpmDeps = pkgs.fetchPnpmDeps {
+      inherit (finalAttrs) pname version src;
+      inherit pnpm;
+      fetcherVersion = 3;
+      hash = "sha256-C17PgTEtduoqGmJjKbAGKhvtmuy/mvqv8AvAMtM91MM=";
+    };
+
+    nativeBuildInputs = [
+      nodejs
+      pnpm
+      pkgs.pnpmConfigHook
+      pkgs.pkg-config
+      pkgs.python3
+      pkgs.curl.dev # provides curl-config, used by binding.gyp
+    ];
+
+    buildInputs = [
+      pkgs.curl.out
+      pkgs.openssl
+      pkgs.zlib
+    ];
+
+    buildPhase = ''
+      runHook preBuild
+
+      export npm_config_nodedir=${nodejs}
+      export HOME=$(mktemp -d)
+
+      libcurlDir=$(echo node_modules/.pnpm/node-libcurl@*/node_modules/node-libcurl)
+      echo "Building native node-libcurl binding in $libcurlDir"
+      pushd "$libcurlDir"
+        ./node_modules/.bin/node-pre-gyp configure --nodedir=${nodejs}
+        ./node_modules/.bin/node-pre-gyp build --nodedir=${nodejs}
+      popd
+
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r node_modules $out/
+      runHook postInstall
+    '';
+  });
+
   mobilizonCalendarMirrorConfig = {
     usernames = [ "realraum" ];
     defaultPicture = "5d5efceb-8c08-436b-a906-8172c5008366";
@@ -50,19 +117,9 @@ let
   mobilizonCalendarMirrorUpdate = pkgs.writeShellApplication {
     name = "mobilizon-calendar-mirror-update";
     runtimeInputs = with pkgs; [
-      binutils
       cacert
       coreutils
-      curl.dev
-      gcc
       git
-      gnumake
-      nodejs
-      openssl.dev
-      pkg-config
-      pnpm
-      python3
-      zlib.dev
     ];
     text = ''
       set -euo pipefail
@@ -75,17 +132,6 @@ let
       export HOME=${lib.escapeShellArg mobilizonCalendarMirror.home}
       export SSL_CERT_FILE=${lib.escapeShellArg "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"}
       export GIT_SSL_CAINFO="$SSL_CERT_FILE"
-
-      # Build native npm modules (node-libcurl) against Nix-provided libraries.
-      export npm_config_nodedir=${lib.escapeShellArg "${nodejs}"}
-      export npm_config_build_from_source=true
-      export CFLAGS=${lib.escapeShellArg "-I${pkgs.curl.dev}/include"}
-      export CXXFLAGS=${lib.escapeShellArg "-I${pkgs.curl.dev}/include"}
-      export PKG_CONFIG_PATH=${lib.escapeShellArg "${pkgs.curl.dev}/lib/pkgconfig:${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig"}
-      export NIX_CFLAGS_COMPILE=${lib.escapeShellArg "-I${pkgs.curl.dev}/include -I${pkgs.openssl.dev}/include -I${pkgs.zlib.dev}/include"}
-      linkFlags=${lib.escapeShellArg "-L${pkgs.curl.out}/lib -L${pkgs.openssl.out}/lib -L${pkgs.zlib.out}/lib -Wl,-rpath,${pkgs.curl.out}/lib -Wl,-rpath,${pkgs.openssl.out}/lib -Wl,-rpath,${pkgs.zlib.out}/lib"}
-      export NIX_LDFLAGS="$linkFlags"
-      export LDFLAGS="$linkFlags"
 
       mkdir -p "$repoDir"
 
@@ -132,8 +178,13 @@ let
       # refreshed/rewritten by the application itself.
       install -m 0640 ${mobilizonCalendarMirrorConfigFile} "$repoDir/config.json"
 
-      cd "$repoDir"
-      pnpm install --frozen-lockfile
+      # node_modules (including the compiled node-libcurl binding) comes from
+      # the Nix store. Symlinking keeps it in sync with the configuration and
+      # avoids running pnpm install at runtime, which cannot work here: the
+      # node-libcurl preinstall script bootstraps vcpkg and needs network
+      # access plus writable non-store paths.
+      rm -rf "$repoDir/node_modules"
+      ln -sfn ${grical-to-mobilizon-deps}/node_modules "$repoDir/node_modules"
     '';
   };
 in
@@ -194,7 +245,7 @@ in
       linkConfig.Name = "eth1http";
     };
   };
-  
+
   # Networking
   networking = {
     hostName = "lauti";
@@ -223,7 +274,7 @@ in
 
   services.resolved = {
     enable = true;
-    dnssec = "true";
+    dnssec = "false";
     domains = [ "~." ];
     fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
     dnsovertls = "false";
@@ -271,6 +322,7 @@ in
     "d /srv/lauti/themes 0777 root root -"
     "d /srv/lauti/osm 0777 root root -"
     "d /srv/lauti/data 0777 root root -"
+    "d /home/calendarbot/.cache 0755 calendarbot calendarbot -"
   ];
 
   # Lauti service configuration with custom data path
@@ -330,9 +382,19 @@ in
   };
 
   systemd.services.mobilizon-calendar-mirror-update = {
-    description = "Clone/update grical-to-mobilizon and install its pnpm dependencies";
+    description = "Clone/update grical-to-mobilizon and link pre-built dependencies";
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
+    path = with pkgs; [
+      cacert
+      coreutils
+      git
+    ];
+    environment = {
+      HOME = mobilizonCalendarMirror.home;
+      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+      GIT_SSL_CAINFO = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+    };
     serviceConfig = {
       Type = "oneshot";
       User = mobilizonCalendarMirror.user;
@@ -340,8 +402,8 @@ in
       WorkingDirectory = mobilizonCalendarMirror.home;
       ExecStart = "${mobilizonCalendarMirrorUpdate}/bin/mobilizon-calendar-mirror-update";
 
-      # Fetching and building native node modules needs more time than a run.
-      TimeoutStartSec = "20min";
+      # Only a git fetch plus a symlink; no builds happen here anymore.
+      TimeoutStartSec = "5min";
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ProtectHome = false;
@@ -366,7 +428,7 @@ in
     wants = [ "network-online.target" ];
     requires = [ "mobilizon-calendar-mirror-update.service" ];
     after = [ "network-online.target" "mobilizon-calendar-mirror-update.service" ];
-    path = [ nodejs pnpm pkgs.coreutils ];
+    path = [ nodejs pkgs.coreutils ];
     environment = {
       HOME = mobilizonCalendarMirror.home;
       SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
@@ -379,10 +441,12 @@ in
       WorkingDirectory = mobilizonCalendarMirror.repoDir;
 
       # Best-effort report first, then the actual sync. A failing report must
-      # not prevent the sync from running.
+      # not prevent the sync from running. These invoke node directly (the
+      # package.json "report"/"start" scripts) so that pnpm never needs a
+      # writable store or home directory at runtime.
       ExecStart = [
-        "-${pnpm}/bin/pnpm report --autoremove-deleted"
-        "${pnpm}/bin/pnpm start"
+        "-${nodejs}/bin/node --experimental-json-modules --experimental-loader node-esm-loader report-foreign-events.js --autoremove-deleted"
+        "${nodejs}/bin/node --experimental-json-modules --experimental-loader node-esm-loader index.js"
       ];
 
       # Type=oneshot: TimeoutStartSec doubles as the runtime limit.
