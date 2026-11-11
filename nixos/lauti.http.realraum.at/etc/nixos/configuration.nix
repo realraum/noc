@@ -5,16 +5,26 @@ let
     user = "calendarbot";
     group = "calendarbot";
     home = "/home/calendarbot";
-    repoDir = "/home/calendarbot/lauti-to-mobilizon";
-    repository = "https://github.com/realraum/grical-to-mobilizon.git";
+    # Code and config live in the Nix store; the only mutable state is the
+    # Mobilizon login session, which the application rewrites itself.
+    sessionFile = "/home/calendarbot/session.json";
     branch = "lauti-to-mobilizon";
-    fallbackBranch = "master";
   };
 
   nodejs = pkgs.nodejs_22;
   # pnpm_10 is flagged as insecure in nixpkgs 26.05; pnpm_10_latest is the
   # patched 10.x release and still understands the project's lockfile (9.0).
   pnpm = pkgs.pnpm_10_latest;
+
+  # Pinned checkout of the mirror application. Nothing is cloned or fetched at
+  # runtime anymore; to follow a new upstream commit, bump sha256 here.
+  #   nix-prefetch-github --owner realraum --repo grical-to-mobilizon --rev lauti-to-mobilizon
+  grical-to-mobilizon-src = pkgs.fetchFromGitHub {
+    owner = "realraum";
+    repo = "grical-to-mobilizon";
+    rev = mobilizonCalendarMirror.branch;
+    sha256 = "sha256-lm9GVInuqQT6P85mWD/71Sm22padhCf0s1xNpmwiYKI=";
+  };
 
   # Pre-built node_modules for grical-to-mobilizon.
   #
@@ -30,12 +40,7 @@ let
     pname = "grical-to-mobilizon-deps";
     version = "1.0";
 
-    src = pkgs.fetchFromGitHub {
-      owner = "realraum";
-      repo = "grical-to-mobilizon";
-      rev = mobilizonCalendarMirror.branch;
-      sha256 = "sha256-lm9GVInuqQT6P85mWD/71Sm22padhCf0s1xNpmwiYKI=";
-    };
+    src = grical-to-mobilizon-src;
 
     pnpmDeps = pkgs.fetchPnpmDeps {
       inherit (finalAttrs) pname version src;
@@ -116,77 +121,29 @@ let
     pkgs.writeText "mobilizon-calendar-mirror-config.json"
       (builtins.toJSON mobilizonCalendarMirrorConfig);
 
-  mobilizonCalendarMirrorUpdate = pkgs.writeShellApplication {
-    name = "mobilizon-calendar-mirror-update";
-    runtimeInputs = with pkgs; [
-      cacert
-      coreutils
-      git
-    ];
-    text = ''
-      set -euo pipefail
+  # The mirror application. The upstream files are kept as-is, but:
+  #  - config.json is generated from this NixOS configuration (the file tracked
+  #    upstream is ignored),
+  #  - node_modules comes from the Nix store instead of a runtime pnpm install,
+  #  - session.json is a symlink into the writable home, because the app
+  #    imports it relative to the module files and rewrites it after login.
+  grical-to-mobilizon = pkgs.stdenv.mkDerivation {
+    pname = "grical-to-mobilizon";
+    version = "1.0";
+    src = grical-to-mobilizon-src;
 
-      repoDir=${lib.escapeShellArg mobilizonCalendarMirror.repoDir}
-      repository=${lib.escapeShellArg mobilizonCalendarMirror.repository}
-      branch=${lib.escapeShellArg mobilizonCalendarMirror.branch}
-      fallbackBranch=${lib.escapeShellArg mobilizonCalendarMirror.fallbackBranch}
+    dontConfigure = true;
+    dontBuild = true;
 
-      export HOME=${lib.escapeShellArg mobilizonCalendarMirror.home}
-      export SSL_CERT_FILE=${lib.escapeShellArg "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"}
-      export GIT_SSL_CAINFO="$SSL_CERT_FILE"
-
-      mkdir -p "$repoDir"
-
-      # session.json is ignored upstream, but protect the live credentials from a
-      # forced checkout in case upstream ever starts tracking a file with that
-      # name. If it does not exist, no session file is created here.
-      sessionFile="$repoDir/session.json"
-      sessionBackup=
-      if [ -f "$sessionFile" ]; then
-        sessionBackup=$(mktemp "$repoDir/.session.json.backup.XXXXXX")
-        cp -p "$sessionFile" "$sessionBackup"
-      fi
-
-      restoreSession() {
-        if [ -n "$sessionBackup" ] && [ -f "$sessionBackup" ]; then
-          mv -f "$sessionBackup" "$sessionFile"
-        fi
-      }
-      trap restoreSession EXIT
-
-      if [ ! -d "$repoDir/.git" ]; then
-        git -C "$repoDir" init -q
-        git -C "$repoDir" remote add origin "$repository"
-      else
-        git -C "$repoDir" remote set-url origin "$repository"
-      fi
-
-      if git ls-remote --exit-code --heads "$repository" "refs/heads/$branch" >/dev/null 2>&1; then
-        selectedBranch="$branch"
-      else
-        echo "Branch '$branch' no longer exists upstream; falling back to '$fallbackBranch'." >&2
-        selectedBranch="$fallbackBranch"
-      fi
-
-      git -C "$repoDir" fetch --prune --force origin "+refs/heads/*:refs/remotes/origin/*"
-      git -C "$repoDir" checkout -f -B "$selectedBranch" "origin/$selectedBranch"
-      git -C "$repoDir" reset --hard "origin/$selectedBranch"
-
-      restoreSession
-      trap - EXIT
-
-      # config.json is generated from this NixOS configuration. session.json is
-      # intentionally left alone: it is created once (pnpm new-session) and is
-      # refreshed/rewritten by the application itself.
-      install -m 0640 ${mobilizonCalendarMirrorConfigFile} "$repoDir/config.json"
-
-      # node_modules (including the compiled node-libcurl binding) comes from
-      # the Nix store. Symlinking keeps it in sync with the configuration and
-      # avoids running pnpm install at runtime, which cannot work here: the
-      # node-libcurl preinstall script bootstraps vcpkg and needs network
-      # access plus writable non-store paths.
-      rm -rf "$repoDir/node_modules"
-      ln -sfn ${grical-to-mobilizon-deps}/node_modules "$repoDir/node_modules"
+    installPhase = ''
+      runHook preInstall
+      mkdir -p "$out"
+      cp -a ./. "$out/"
+      chmod -R u+w "$out"
+      install -m 0644 ${mobilizonCalendarMirrorConfigFile} "$out/config.json"
+      ln -s ${grical-to-mobilizon-deps}/node_modules "$out/node_modules"
+      ln -s ${mobilizonCalendarMirror.sessionFile} "$out/session.json"
+      runHook postInstall
     '';
   };
 in
@@ -372,11 +329,10 @@ in
 
   # Mobilizon calendar mirror (grical-to-mobilizon).
   #
-  # The application is checked out at runtime so the lauti-to-mobilizon branch
-  # can be followed and automatically falls back to master once that branch is
-  # deleted. session.json is expected to exist in the checkout; it is never
-  # created or overwritten here, because the application refreshes and rewrites
-  # it after every successful login.
+  # The application is pinned in the Nix store. The only file that changes at
+  # runtime is session.json in the service home; it is created once by hand
+  # (`node new-session.js` with a creds.json) and then refreshed/rewritten by
+  # the application itself after every successful login.
   users.groups.calendarbot = { };
 
   users.users.calendarbot = {
@@ -386,48 +342,6 @@ in
     homeMode = "0750";
     createHome = true;
     shell = "${pkgs.shadow}/bin/nologin";
-  };
-
-  systemd.services.mobilizon-calendar-mirror-update = {
-    description = "Clone/update grical-to-mobilizon and link pre-built dependencies";
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
-    path = with pkgs; [
-      cacert
-      coreutils
-      git
-    ];
-    environment = {
-      HOME = mobilizonCalendarMirror.home;
-      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-      GIT_SSL_CAINFO = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    };
-    serviceConfig = {
-      Type = "oneshot";
-      User = mobilizonCalendarMirror.user;
-      Group = mobilizonCalendarMirror.group;
-      WorkingDirectory = mobilizonCalendarMirror.home;
-      ExecStart = "${mobilizonCalendarMirrorUpdate}/bin/mobilizon-calendar-mirror-update";
-
-      # Only a git fetch plus a symlink; no builds happen here anymore.
-      TimeoutStartSec = "5min";
-      NoNewPrivileges = true;
-      ProtectSystem = "strict";
-      ProtectHome = false;
-      ReadWritePaths = [ mobilizonCalendarMirror.home ];
-      PrivateTmp = true;
-      ProtectKernelTunables = true;
-      ProtectKernelModules = true;
-      ProtectControlGroups = true;
-      ProtectClock = true;
-      ProtectHostname = true;
-      RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" "AF_NETLINK" ];
-      RestrictRealtime = true;
-      RestrictSUIDSGID = true;
-      LockPersonality = true;
-      SystemCallFilter = [ "@system-service" ];
-      SystemCallArchitectures = "native";
-    };
   };
 
   systemd.services.mobilizon-calendar-mirror = {
@@ -444,12 +358,13 @@ in
       Type = "oneshot";
       User = mobilizonCalendarMirror.user;
       Group = mobilizonCalendarMirror.group;
-      WorkingDirectory = mobilizonCalendarMirror.repoDir;
+      WorkingDirectory = grical-to-mobilizon;
 
       # Best-effort report first, then the actual sync. A failing report must
       # not prevent the sync from running. These invoke node directly (the
       # package.json "report"/"start" scripts) so that pnpm never needs a
-      # writable store or home directory at runtime.
+      # writable store or home directory at runtime. The loader resolves
+      # relative to the working directory, which is why that is the app itself.
       ExecStart = [
         "-${nodejs}/bin/node --experimental-json-modules --experimental-loader node-esm-loader report-foreign-events.js --autoremove-deleted"
         "${nodejs}/bin/node --experimental-json-modules --experimental-loader node-esm-loader index.js"
@@ -467,7 +382,7 @@ in
       AmbientCapabilities = "";
       ProtectSystem = "strict";
       ProtectHome = false;
-      ReadWritePaths = [ mobilizonCalendarMirror.repoDir mobilizonCalendarMirror.home ];
+      ReadWritePaths = [ mobilizonCalendarMirror.home ];
       PrivateTmp = true;
       PrivateDevices = true;
       ProtectKernelTunables = true;
