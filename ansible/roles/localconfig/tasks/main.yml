@@ -1,13 +1,18 @@
 ---
 - name: load additional config from .ssh dir
   include_vars:
-    dir: "{{ '~/.ssh' | expanduser }}"
+    dir: "{{ localconfig_ssh_dir }}"
     depth: 1
     files_matching: 'r3_localconfig.yml'
 
+- name: check ssh config mode
+  assert:
+    that: localconfig_ssh_config_mode in ['include', 'assemble']
+    fail_msg: "localconfig_ssh_config_mode must be 'include' or 'assemble', not '{{ localconfig_ssh_config_mode }}'"
+
 - name: create .ssh/config.d
   file:
-    path: "~/.ssh/config.d/"
+    path: "{{ localconfig_ssh_dir }}/config.d/"
     state: directory
 
 - name: install generated ssh config snippets
@@ -15,16 +20,34 @@
     - "../templates/ssh/*.conf.j2"
   template:
     src: "ssh/{{ item | basename }}"
-    dest: "~/.ssh/config.d/{{ item | basename | regex_replace('^(.*)\\.j2$', '\\1') }}"
+    dest: "{{ localconfig_ssh_dir }}/config.d/{{ item | basename | regex_replace('^(.*)\\.j2$', '\\1') }}"
 
 - name: install static ssh config snippets
   copy:
     src: ssh/
-    dest: ~/.ssh/config.d/
+    dest: "{{ localconfig_ssh_dir }}/config.d/"
+  when: localconfig_ssh_config_mode == 'assemble'
 
 - name: assemble ssh config
   assemble:
-    src: ~/.ssh/config.d/
+    src: "{{ localconfig_ssh_dir }}/config.d/"
     regexp: "\\.conf$"
-    dest: ~/.ssh/config
-  when: localconfig_overwrite_ssh_config | bool
+    dest: "{{ localconfig_ssh_dir }}/config"
+  when: localconfig_ssh_config_mode == 'assemble'
+
+- name: check whether ~/.ssh/config includes the snippets
+  command: grep -qiE '^[[:space:]]*Include[[:space:]].*config\.d/' {{ (localconfig_ssh_dir + '/config') | quote }}
+  register: localconfig_ssh_include_check
+  changed_when: false
+  failed_when: false
+  when: localconfig_ssh_config_mode == 'include'
+
+- name: warn if ~/.ssh/config does not include the snippets
+  debug:
+    msg: >-
+      {{ localconfig_ssh_dir }}/config does not include {{ localconfig_ssh_dir }}/config.d/,
+      so the generated host aliases are not used.
+      Add `Include config.d/*.conf` at the top of it (before any Host or Match line).
+  when:
+    - localconfig_ssh_config_mode == 'include'
+    - localconfig_ssh_include_check.rc != 0
