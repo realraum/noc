@@ -70,10 +70,23 @@ ssh config snippet to add nicer/shorter aliases for the hosts and also
 to automatically add jump hosts and some other special settings.
 
 The way this works is that config snippets are generated inside
-`~/.ssh/config.d/` and (optionally) then compiled to a single file
-`~/.ssh/config`. If you want to use it as well you should move your
-current ssh config file to `~/.ssh/config.d/` and run the playbook
-`localconfig.yml`.
+`~/.ssh/config.d/` and included by `~/.ssh/config`. If you want to use it
+as well, put this at the top of your `~/.ssh/config` (before any `Host`
+or `Match` line) and run the playbook `localconfig.yml`:
+
+```
+Include config.d/*.conf
+```
+
+The playbook warns if `~/.ssh/config` doesn't include `config.d/`.
+
+If your ssh client doesn't support `Include` or you prefer a single file,
+set `localconfig_ssh_config_mode: assemble` in `~/.ssh/r3_localconfig.yml`.
+The playbook then also installs a `Makefile` into `~/.ssh/config.d/` and
+concatenates all snippets into `~/.ssh/config`, overwriting it. In that case
+move your current ssh config file to `~/.ssh/config.d/` first. The old
+setting `localconfig_overwrite_ssh_config: true` still selects this mode.
+
 In order to make the generated config snippet work for different
 people the role sources the file `~/.ssh/r3_localconfig.yml`.
 All variables inside that file will take precedence of files from

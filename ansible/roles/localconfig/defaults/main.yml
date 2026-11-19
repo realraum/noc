@@ -1,6 +1,16 @@
 ---
 ### use .ssh/r3_localconfig.yml to overwrite
-localconfig_overwrite_ssh_config: False
+
+## ssh config directory (expanded on the controller, the play runs on localhost)
+localconfig_ssh_dir: "{{ '~/.ssh' | expanduser }}"
+
+## How the generated snippets in ~/.ssh/config.d/ are used:
+##   include  ... only write the snippets, ~/.ssh/config is expected to contain
+##                `Include config.d/*.conf` (default)
+##   assemble ... also install a Makefile and concatenate all snippets into ~/.ssh/config
+## `localconfig_overwrite_ssh_config: true` is still honored and selects `assemble`.
+localconfig_ssh_config_mode: "{{ 'assemble' if (localconfig_overwrite_ssh_config | default(false) | bool) else 'include' }}"
+
 # localconfig_ssh_user:
 localconfig_ssh_ids:
   - ~/.ssh/id_r3_rsa
