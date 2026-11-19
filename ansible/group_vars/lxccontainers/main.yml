@@ -1,0 +1,3 @@
+---
+is_lxc_container: true
+base_managed_ntpd: false
