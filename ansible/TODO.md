@@ -23,16 +23,15 @@ DNS (zones on oldgw, `/etc/bind/`)
   - `drucker` is 192.168.127.240, the printer answers on .192
   - `real486` is 192.168.127.224, which is netbox-scanner
 - [ ] Add missing records: `homepage` only has the name `tools`, and `ns` and
-      `mysql` (phoxmox VMs 102/103) have none, so their default `ansible_host`
-      names don't resolve.
+      `mysql` (phoxmox VMs 102/103) have none. The inventory uses IP addresses,
+      so this only matters for humans; `ns` and `mysql` still need an
+      `ansible_host` once they are installed.
 
 Access
 ------
 
 - [ ] No working credentials:
   - `immich`: root has no `authorized_keys` (only `pct enter 110` on phoxmox)
-  - `lauti`: NixOS, `PermitRootLogin no`, only user `bernhard` has keys; set
-    `ansible_user` or add a key in the NixOS config
   - `homeassistant`, `smsgw`, `smallkiosk`, `phoxmox-idrac`, `kunigunde-idrac`:
     reject the `rr`, `sec` and `rr1` keys
 - [ ] `amateur-radio` (kunigunde VM 114): address unknown, it is on VLAN 69
