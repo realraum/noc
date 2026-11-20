@@ -14,3 +14,13 @@ root_password: "{{ vault_root_password }}"
 ssh_users_root: "{{ user_groups.noc }}"
 
 acmetool_account_email: noc@realraum.at
+
+## Legacy ssh algorithms for old hosts, set per host in the inventory:
+##   ssh_kex_algorithms    -> KexAlgorithms (e.g. "+diffie-hellman-group1-sha1")
+##   ssh_pubkey_algorithms -> HostKeyAlgorithms and PubkeyAcceptedKeyTypes (e.g. "+ssh-rsa")
+## The localconfig ssh template uses the same variables.
+ansible_ssh_extra_args: >-
+  {{ ((['-o KexAlgorithms=' ~ ssh_kex_algorithms] if ssh_kex_algorithms is defined else [])
+    + (['-o HostKeyAlgorithms=' ~ ssh_pubkey_algorithms, '-o PubkeyAcceptedKeyTypes=' ~ ssh_pubkey_algorithms]
+       if ssh_pubkey_algorithms is defined else []))
+    | join(' ') }}

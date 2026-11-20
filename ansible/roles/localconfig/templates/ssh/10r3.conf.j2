@@ -21,6 +21,13 @@ Host {{ fqdn }}{% if hostvars[host].ansible_host != fqdn %} {{ hostvars[host].an
 {% if hostvars[host].ansible_port != 22000 %}
     Port {{ hostvars[host].ansible_port }}
 {% endif %}
+{% if hostvars[host].ssh_kex_algorithms is defined %}
+    KexAlgorithms {{ hostvars[host].ssh_kex_algorithms }}
+{% endif %}
+{% if hostvars[host].ssh_pubkey_algorithms is defined %}
+    HostKeyAlgorithms {{ hostvars[host].ssh_pubkey_algorithms }}
+    PubkeyAcceptedKeyTypes {{ hostvars[host].ssh_pubkey_algorithms }}
+{% endif %}
 
 {% endfor %}
 #######################################
@@ -28,10 +35,14 @@ Host {{ fqdn }}{% if hostvars[host].ansible_host != fqdn %} {{ hostvars[host].an
 
 Host gw.realraum.at r3-gw
     Hostname gw.realraum.at
+    HostKeyAlgorithms +ssh-rsa
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 Host licht.realraum.at r3-licht r3g-licht r3e-licht
     Hostname licht.realraum.at
     User realraum
+    ## needed for root logins
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 
 #############################################################

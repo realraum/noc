@@ -36,9 +36,8 @@ Access
     reject the `rr`, `sec` and `rr1` keys
 - [ ] `amateur-radio` (kunigunde VM 114): address unknown, it is on VLAN 69
       (nt, 192.168.69.0/24), which is not reachable from guests/mgmt.
-- [ ] `oldgw`: only offers an ssh-rsa host key and runs Debian squeeze. Ansible
-      needs `HostKeyAlgorithms=+ssh-rsa` / `PubkeyAcceptedKeyTypes=+ssh-rsa`
-      (not set in the inventory), and modules probably won't run on its old Python.
+- [ ] `oldgw`: runs Debian squeeze, ansible modules probably won't run on its
+      old Python (ssh access works via `ssh_pubkey_algorithms=+ssh-rsa`).
 
 Unidentified devices (not in the inventory)
 -------------------------------------------
