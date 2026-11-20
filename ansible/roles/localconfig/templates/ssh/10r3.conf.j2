@@ -5,8 +5,13 @@
 ### dynamically generated host configs
 
 {% for host in (groups['all'] | sort) %}
-Host {{ hostvars[host].ansible_host }} r3-{{ host }} r3g-{{ host }} r3e-{{ host }}
+{# match the FQDN, but connect to ansible_host (the IP if known) so ssh works without DNS #}
+{% set fqdn = host ~ '.' ~ hostvars[host].host_domain %}
+Host {{ fqdn }}{% if hostvars[host].ansible_host != fqdn %} {{ hostvars[host].ansible_host }}{% endif %} r3-{{ host }} r3g-{{ host }} r3e-{{ host }}
     Hostname {{ hostvars[host].ansible_host }}
+{% if hostvars[host].ansible_host != fqdn %}
+    HostKeyAlias {{ fqdn }}
+{% endif %}
 {% if 'localconfig_ssh_config_proxycommand' in hostvars[host] %}
     ProxyCommand {{ hostvars[host].localconfig_ssh_config_proxycommand }}
 {% endif %}
@@ -16,6 +21,13 @@ Host {{ hostvars[host].ansible_host }} r3-{{ host }} r3g-{{ host }} r3e-{{ host 
 {% if hostvars[host].ansible_port != 22000 %}
     Port {{ hostvars[host].ansible_port }}
 {% endif %}
+{% if hostvars[host].ssh_kex_algorithms is defined %}
+    KexAlgorithms {{ hostvars[host].ssh_kex_algorithms }}
+{% endif %}
+{% if hostvars[host].ssh_pubkey_algorithms is defined %}
+    HostKeyAlgorithms {{ hostvars[host].ssh_pubkey_algorithms }}
+    PubkeyAcceptedKeyTypes {{ hostvars[host].ssh_pubkey_algorithms }}
+{% endif %}
 
 {% endfor %}
 #######################################
@@ -23,10 +35,14 @@ Host {{ hostvars[host].ansible_host }} r3-{{ host }} r3g-{{ host }} r3e-{{ host 
 
 Host gw.realraum.at r3-gw
     Hostname gw.realraum.at
+    HostKeyAlgorithms +ssh-rsa
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 Host licht.realraum.at r3-licht r3g-licht r3e-licht
     Hostname licht.realraum.at
     User realraum
+    ## needed for root logins
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 
 #############################################################
@@ -43,7 +59,14 @@ Host r3g-*
 Host r3e-*
     ProxyCommand ssh -q -a entrance.realraum.at -W %h:%p
 
-Host r3-* r3g-* r3e-* *.realraum.at
+{# also match the IP addresses ansible connects to #}
+{% set ns = namespace(ips=[]) %}
+{% for host in (groups['all'] | sort) %}
+{%   if hostvars[host].ansible_host is not search('realraum\\.at$') %}
+{%     set ns.ips = ns.ips + [hostvars[host].ansible_host] %}
+{%   endif %}
+{% endfor %}
+Host r3-* r3g-* r3e-* *.realraum.at {{ ns.ips | unique | join(' ') }}
 {% for id_file in localconfig_ssh_ids %}
     IdentityFile {{ id_file }}
 {% endfor %}
